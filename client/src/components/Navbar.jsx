@@ -10,9 +10,10 @@ const Navbar = ({sidebarToggle, setSidebarToggle}) => {
       </div>
       <div className='flex items-center gap-x-5'>
         
-        <div className='relative'>
+        <div className='relative flex gap-6 items-center'>
+          <p className='text-white '>Welcome, Gimhan</p>
             <button className='text-white group'>
-                <FaUserCircle className='w-6 h-6 mt-1'/>
+                <FaUserCircle className='w-7 h-7 mt-1'/>
                 <div className='z-10 hidden absolute bg-white rounded-lg shadow w-32 group-focus:block top-full right-0'>
                     <ul className='py-2 text-sm text-gray-950'>
                         <li><a href=''>Profile</a></li>

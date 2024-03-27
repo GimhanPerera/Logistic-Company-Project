@@ -1,5 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from 'react';
+import SearchBar from "../../../components/SearchBar";
+import CustomerDetailsCard from "./CustomerDetailsCard";
 
 
 const CustomersDetails = () => {
@@ -13,16 +15,13 @@ const CustomersDetails = () => {
 
   return (
     <div>
+        <SearchBar/>
         {/* key kiyanne index in the array */}
-        {listOfPosts.map((value, key) => {
-        return(
-          <div className="post">
-            <div className="title">{value.customer_id}</div>
-            <div className="body">{value.f_name}</div>
-            <div className="footer">{value.l_name}</div>
-          </div>
-        )
-        })}
+        {listOfPosts.map((customer, index) => (
+        <div key={index} className="post flex flex-col items-center">
+          <CustomerDetailsCard customer={customer} />
+        </div>
+      ))}
     </div>
   )
 
