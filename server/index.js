@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const cors = require("cors");
 
-
 const db = require('./models');
 app.use(express.json());
 app.use(cors());
@@ -15,6 +14,9 @@ app.use("/posts",postRouter);
 // http://localhost:3001/customers Ekata ena ewa okkoma mekata yanne
 const customerRouter = require('./routes/Customers');
 app.use("/customers",customerRouter);
+
+const courierRouter = require('./routes/Courier');
+app.use("/courier",courierRouter);
 
 
 db.sequelize.sync().then(() => {

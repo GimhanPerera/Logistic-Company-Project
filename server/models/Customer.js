@@ -44,5 +44,11 @@ module.exports = (sequelize, DataTypes) => {
         timestamps: false
     });
 
+    Customer.associate = models => {
+        //associations
+        Customer.hasMany(models.Order, { foreignKey: 'customer_id' });
+    };
+
     return Customer;
 };
+

@@ -1,6 +1,7 @@
 import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
 import './App.css';
 import { RootLayout } from './RootLayout';
+import CourierDetails from './managementSystem/Pages/Courier/courierDetails';
 import CustomersDetails from './managementSystem/Pages/Customer/customersDetails';
 import Dashboard from './managementSystem/Pages/Dashboard/Dashboard';
 import ManagmentSystem from './managementSystem/managmentSystem';
@@ -17,6 +18,7 @@ const router = createBrowserRouter(
       <Route path="cmsystem" element={<ManagmentSystem/>}>
         <Route index element={<Dashboard/>}/>
         <Route path='customers' element={<CustomersDetails/>}/>
+        <Route path='courier' element={<CourierDetails/>}/>
       </Route>
     </Route>
   )

@@ -24,5 +24,9 @@ module.exports = (sequelize, DataTypes) => {
         timestamps: false
     });
 
+    Shipment.associate = models => {
+        Shipment.hasMany(models.Order, { foreignKey: 'BL_no' });
+    };
+
     return Shipment;
 };

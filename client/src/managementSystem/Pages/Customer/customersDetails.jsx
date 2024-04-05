@@ -6,10 +6,10 @@ import CustomerDetailsCard from "./CustomerDetailsCard";
 
 const CustomersDetails = () => {
   
-  const [listOfPosts, setListOfPosts] = useState([]);
+  const [listOfCustomers, setListOfCustomers] = useState([]);
     useEffect(() => {
         axios.get("http://localhost:3001/customers").then((response)=>{
-            setListOfPosts(response.data);
+          setListOfCustomers(response.data);
         })
     }, [])
 
@@ -17,7 +17,7 @@ const CustomersDetails = () => {
     <div>
         <SearchBar/>
         {/* key kiyanne index in the array */}
-        {listOfPosts.map((customer, index) => (
+        {listOfCustomers.map((customer, index) => (
         <div key={index} className="post flex flex-col items-center">
           <CustomerDetailsCard customer={customer} />
         </div>

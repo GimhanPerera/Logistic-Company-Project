@@ -42,5 +42,11 @@ module.exports = (sequelize, DataTypes) => {
         timestamps: false
     });
 
+    Order.associate = models => {
+        Order.hasOne(models.Payment, { foreignKey: 'order_id' });
+        Order.hasOne(models.Price_quotation, { foreignKey: 'order_id' });
+        Order.belongsTo(models.Shipment, { foreignKey: 'order_id' });
+    };
+
     return Order;
 };
