@@ -4,6 +4,7 @@ import { RootLayout } from './RootLayout';
 import CourierDetails from './managementSystem/Pages/Courier/courierDetails';
 import CustomersDetails from './managementSystem/Pages/Customer/customersDetails';
 import Dashboard from './managementSystem/Pages/Dashboard/Dashboard';
+import OrderDetails from './managementSystem/Pages/Order/orderDetails';
 import ManagmentSystem from './managementSystem/managmentSystem';
 import { CustomerLogin } from './website/CustomerLogin';
 import { StaffLogin } from './website/StaffLogin';
@@ -19,6 +20,7 @@ const router = createBrowserRouter(
         <Route index element={<Dashboard/>}/>
         <Route path='customers' element={<CustomersDetails/>}/>
         <Route path='courier' element={<CourierDetails/>}/>
+        <Route path='order' element={<OrderDetails/>}/>
       </Route>
     </Route>
   )

@@ -3,7 +3,6 @@ module.exports = (sequelize, DataTypes) => {
         courier_id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
-            allowNull: false,
         },
         name: {
             type: DataTypes.STRING(20),
@@ -17,5 +16,5 @@ module.exports = (sequelize, DataTypes) => {
         timestamps: false
     });
 
-    return Courier; 
+    return Courier;
 };

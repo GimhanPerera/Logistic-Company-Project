@@ -1,9 +1,7 @@
-const Payment = require("./Payment");
-
 module.exports = (sequelize, DataTypes) => {
     const Order = sequelize.define("Order", {
         order_id: {
-            type: DataTypes.STRING(11),
+            type: DataTypes.STRING(12),
             primaryKey: true
         },
         order_open_date: {
@@ -12,7 +10,11 @@ module.exports = (sequelize, DataTypes) => {
         },
         order_close_date: {
             type: DataTypes.DATE,
-            allowNull: false
+            allowNull: true
+        },
+        issue_date_time: {
+            type: DataTypes.DATE,
+            allowNull: true
         },
         supplier_loc: {
             type: DataTypes.STRING(20),
@@ -22,17 +24,21 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(20),
             allowNull: false
         },
+        courier_tracking_number: {
+            type: DataTypes.STRING(20),
+            allowNull: true
+        },
         rating: {
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: true
         },
         feedback_des: {
             type: DataTypes.STRING(200),
-            allowNull: false
+            allowNull: true
         },
         issue_date: {
             type: DataTypes.DATEONLY,
-            allowNull: false
+            allowNull: true
         },
         status: {
             type: DataTypes.STRING(15),
@@ -42,11 +48,11 @@ module.exports = (sequelize, DataTypes) => {
         timestamps: false
     });
 
-    Order.associate = models => {
-        Order.hasOne(models.Payment, { foreignKey: 'order_id' });
-        Order.hasOne(models.Price_quotation, { foreignKey: 'order_id' });
-        Order.belongsTo(models.Shipment, { foreignKey: 'order_id' });
-    };
+    // Order.associate = models => {
+    //     Order.hasOne(models.Payment, { foreignKey: 'order_id' });
+    //     Order.hasOne(models.Price_quotation, { foreignKey: 'order_id' });
+    //     Order.belongsTo(models.Shipment, { foreignKey: 'order_id' });
+    // };
 
     return Order;
 };

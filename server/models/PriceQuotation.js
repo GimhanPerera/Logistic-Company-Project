@@ -40,9 +40,9 @@ module.exports = (sequelize, DataTypes) => {
         timestamps: false
     });
 
-    Price_quotation.associate = models => {
-        Price_quotation.belongsTo(models.Order, { foreignKey: 'order_id' });
-    };
+    // Price_quotation.associate = models => {
+    //     Price_quotation.belongsTo(models.Order, { foreignKey: 'order_id' });
+    // };
 
     return Price_quotation;
 };

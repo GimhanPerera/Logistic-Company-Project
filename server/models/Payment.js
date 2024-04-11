@@ -20,9 +20,9 @@ module.exports = (sequelize, DataTypes) => {
         timestamps: false
     });
 
-    Payment.associate = models => {
-        Payment.belongsTo(models.Order, { foreignKey: 'order_id' });
-    };
+    // Payment.associate = models => {
+    //     Payment.belongsTo(models.Order, { foreignKey: 'order_id' });
+    // };
 
     return Payment;
 };

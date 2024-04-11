@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         Date_time: {
-            type: DataTypes.DATEONLY,
+            type: DataTypes.DATE,
             allowNull: false
         }
     }, {
