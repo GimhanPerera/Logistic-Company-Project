@@ -28,8 +28,13 @@ const getCourierAndOrder = async (req, res) => {
     res.status(200).json(customer)
 }
 
+const test = async (req, res) => {
+    res.status(200).json("TESTING DATA")
+}
+
 module.exports = {
     addCourier,
     getAllCourier,
-    getCourierAndOrder
+    getCourierAndOrder,
+    test
 }

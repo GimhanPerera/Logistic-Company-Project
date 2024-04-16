@@ -18,6 +18,11 @@ app.use("/courier",courierRouter);
 const orderRouter = require('./routes/Order');
 app.use("/order",orderRouter);
 
+const loginRouter = require('./routes/Login');
+app.use("/login",loginRouter);
+
+const shipmentRouter = require('./routes/Shipment');
+app.use("/shipment",shipmentRouter);
 
 db.sequelize.sync().then(() => {
     app.listen(3001, () => {

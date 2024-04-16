@@ -1,11 +1,38 @@
-import React, { useState } from 'react'
-import Navbar from './navbar'
+import axios from "axios";
+import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import Navbar from './navbar';
 
 export const CustomerLogin = () => {
-    const [show,setShow]=useState(true)
+    const [show,setShow]=useState(true);
+    const [trackingNumber, setTrackingNumber] = useState("");
+    const [errorMessage, setErrorMessage] = useState(null);
+    const navigate = useNavigate();
+    
+    const checkTrackingNumber = async (e) => {
+        e.preventDefault();
+        try {
+          const response = await axios.post("http://localhost:3001/order/isvalidtrackingnum", {
+            "tracking_id":trackingNumber
+          });
+          if(response.data.isValid){
+            navigate(`./${trackingNumber}`);
+          }else{
+            
+          }
+        } catch (error) {
+          if (error.response && error.response.data) {
+            setErrorMessage(error.response.data);
+          } else {
+            setErrorMessage("An unexpected error occurred. Please try again.");
+          }
+        }
+      };
+    
   return (
     <div>
     <Navbar/>
+    {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}{" "}
     <section className="bg-[#EDFEFF]">
     <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <div className="w-full bg-white shadow dark:border md:mt-0 sm:max-w-md xl:p-0 ">
@@ -49,7 +76,7 @@ export const CustomerLogin = () => {
                 <h1 className="text-xl font-bold leading-tight tracking-tight  md:text-2xl ">
                     Check My Orders
                 </h1>
-                <form className="space-y-4 md:space-y-6" action="#">
+                <form className="space-y-4 md:space-y-6" onSubmit={checkTrackingNumber}>
                     <div>
                     <input
                         type="text"
@@ -57,6 +84,8 @@ export const CustomerLogin = () => {
                         id="trNumber"
                         className="border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Tracking number"
+                        value={trackingNumber}
+                        onChange={(e) => setTrackingNumber(e.target.value)}
                         required
                     />
                     </div>

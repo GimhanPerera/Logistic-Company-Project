@@ -1,36 +1,41 @@
-import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import './App.css';
 import { RootLayout } from './RootLayout';
 import CourierDetails from './managementSystem/Pages/Courier/courierDetails';
 import CustomersDetails from './managementSystem/Pages/Customer/customersDetails';
 import Dashboard from './managementSystem/Pages/Dashboard/Dashboard';
 import OrderDetails from './managementSystem/Pages/Order/orderDetails';
+import { ShipmentDetails } from './managementSystem/Pages/Shipment/shipmentDetails';
 import ManagmentSystem from './managementSystem/managmentSystem';
 import { CustomerLogin } from './website/CustomerLogin';
 import { StaffLogin } from './website/StaffLogin';
+import { AllMyOrders } from './website/allMyOrders';
+import { OrderTrackingDetails } from './website/orderTrackingDetails';
 import { Website } from './website/website';
 
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route path="/" element={<RootLayout/>}>
-      <Route index element={<Website/>}></Route>
-      <Route path="stafflogin" element={<StaffLogin/>}></Route>
-      <Route path="checkmyorder" element={<CustomerLogin/>}></Route>
-      <Route path="cmsystem" element={<ManagmentSystem/>}>
-        <Route index element={<Dashboard/>}/>
-        <Route path='customers' element={<CustomersDetails/>}/>
-        <Route path='courier' element={<CourierDetails/>}/>
-        <Route path='order' element={<OrderDetails/>}/>
-      </Route>
-    </Route>
-  )
-)
-
 function App() {
-
   return (
-    <RouterProvider router={router}/>
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={<RootLayout />}>
+          <Route index element={<Website />} />
+          <Route path="stafflogin" element={<StaffLogin />} />
+          <Route path="checkmyorder">
+            <Route index element={<CustomerLogin />} />
+            <Route path=":trackingNumber" element={<OrderTrackingDetails/>}/>
+            <Route path="myorders" element={<AllMyOrders/>}/>
+          </Route>
+          <Route path="cmsystem" element={<ManagmentSystem />}>
+            <Route index element={<Dashboard />} />
+            <Route path="customers" element={<CustomersDetails />} />
+            <Route path="courier" element={<CourierDetails />} />
+            <Route path="order" element={<OrderDetails />} />
+            <Route path="shipment" element={<ShipmentDetails />} />
+          </Route>
+        </Route>
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
