@@ -14,8 +14,11 @@ const OrderDetails = () => {
     }, [])
 
   return (
-    <div>
+    <div className="relative">
         <SearchBar/>
+        <button className="bg-[#68DD62] absolute right-10 top-0 hover:bg-blue-600 text-white px-4 py-2 rounded-md focus:outline-none">
+                New Order
+            </button>
         {/* key kiyanne index in the array */}
         {listOfOrderDetails.map((order, index) => (
         <div key={index} className="post flex flex-col items-center">

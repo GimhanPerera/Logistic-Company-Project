@@ -1,12 +1,12 @@
 import React from 'react'
 import { FaBars, FaUserCircle } from 'react-icons/fa'
 
-const Navbar = ({sidebarToggle, setSidebarToggle}) => {
+const Navbar = ({sidebarToggle, setSidebarToggle, value }) => {
   return (
     <nav className='bg-[#00084E] px-4 py-3 flex justify-between'>
       <div className='flex items-center text-xl'>
         <FaBars className='text-white me-4 cursor-pointer' onClick={() => setSidebarToggle(!sidebarToggle)}/>
-        <span className='text-white font-semibold'>Dashboard</span>
+        <span className='text-white font-semibold'>{value}</span>
       </div>
       <div className='flex items-center gap-x-5'>
         

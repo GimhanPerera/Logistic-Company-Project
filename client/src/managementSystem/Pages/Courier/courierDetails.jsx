@@ -20,8 +20,11 @@ const CourierDetails = () => {
     }, []);
 
     return (
-        <div>
+        <div className="relative">
             <SearchBar />
+            <button className="bg-[#68DD62] absolute right-10 top-0 hover:bg-blue-600 text-white px-4 py-2 rounded-md focus:outline-none">
+                Add courier
+            </button>
             {/* Show loading indicator if data is being fetched */}
             {/* NEED TO ADD LOADING PAGE*/}
             {loading ? (

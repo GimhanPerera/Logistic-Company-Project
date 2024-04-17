@@ -4,7 +4,9 @@ import { RootLayout } from './RootLayout';
 import CourierDetails from './managementSystem/Pages/Courier/courierDetails';
 import CustomersDetails from './managementSystem/Pages/Customer/customersDetails';
 import Dashboard from './managementSystem/Pages/Dashboard/Dashboard';
+import NewOrder from './managementSystem/Pages/Order/newOrder';
 import OrderDetails from './managementSystem/Pages/Order/orderDetails';
+import Reports from './managementSystem/Pages/Reports/Reports';
 import { ShipmentDetails } from './managementSystem/Pages/Shipment/shipmentDetails';
 import ManagmentSystem from './managementSystem/managmentSystem';
 import { CustomerLogin } from './website/CustomerLogin';
@@ -31,6 +33,9 @@ function App() {
             <Route path="courier" element={<CourierDetails />} />
             <Route path="order" element={<OrderDetails />} />
             <Route path="shipment" element={<ShipmentDetails />} />
+            <Route path="reports" element={<Reports />} />
+
+            <Route path="neworder" element={<NewOrder />} />
           </Route>
         </Route>
       </Routes>
