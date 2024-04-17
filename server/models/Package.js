@@ -2,7 +2,7 @@ module.exports = (sequelize, DataTypes) => {
     const Package = sequelize.define("Package",{
         shipping_mark: {
             type: DataTypes.STRING(20),
-            allowNull: false,
+            primaryKey: true
         },
         items: {
             type: DataTypes.STRING(50),
@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         local_tracking_number: {
             type: DataTypes.STRING(20),
-            allowNull: false,
+            allowNull: true,
         },
         warehouse_tracking_number: {
             type: DataTypes.STRING(20),
@@ -22,23 +22,23 @@ module.exports = (sequelize, DataTypes) => {
         },
         length: {
             type: DataTypes.DECIMAL(6, 2),
-            allowNull: false,
+            allowNull: true,
         },
         height: {
             type: DataTypes.DECIMAL(6, 2),
-            allowNull: false,
+            allowNull: true,
         },
         width: {
             type: DataTypes.DECIMAL(6, 2),
-            allowNull: false,
+            allowNull: true,
         },
         weight: {
             type: DataTypes.DECIMAL(6, 2),
-            allowNull: false,
+            allowNull: true,
         },
         volume_metric_weight: {
             type: DataTypes.DECIMAL(6, 2),
-            allowNull: false,
+            allowNull: true,
         },
         gross_weight: {
             type: DataTypes.DECIMAL(6, 2),
@@ -48,13 +48,17 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DECIMAL(6, 2),
             allowNull: false,
         },
+        collected_date_time: {
+            type: DataTypes.DATE,
+            allowNull: true,
+        },
         rate: {
             type: DataTypes.INTEGER,
             allowNull: false,
         },
         tax: {
             type: DataTypes.DECIMAL(6, 2),
-            allowNull: false,
+            allowNull: true,
         },
         total: {
             type: DataTypes.DECIMAL(6, 2),

@@ -5,11 +5,11 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true
         },
         items: {
-            type: DataTypes.STRING(10),
+            type: DataTypes.STRING(40),
             allowNull: false
         },
         raugh_weight: {
-            type: DataTypes.STRING(10),
+            type: DataTypes.DECIMAL(7, 3), //kg
             allowNull: false
         },
         shipping_method: {
@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         no_of_packages: {
-            type: DataTypes.STRING(20),
+            type: DataTypes.INTEGER,
             allowNull: false
         },
         description: {
@@ -25,20 +25,24 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         image: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.INTEGER, //NEED TO UPDATE
             allowNull: false
         },
         performa_invoice: {
-            type: DataTypes.STRING(20),
+            type: DataTypes.STRING(20), //NEED TO UPDATE
             allowNull: false
         },
         quotation: {
-            type: DataTypes.STRING(20),
+            type: DataTypes.DECIMAL(8, 2),
             allowNull: false
         }
     }, {
         timestamps: false
     });
+
+    // Price_quotation.associate = models => {
+    //     Price_quotation.belongsTo(models.Order, { foreignKey: 'order_id' });
+    // };
 
     return Price_quotation;
 };

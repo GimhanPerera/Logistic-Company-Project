@@ -2,7 +2,7 @@ module.exports = (sequelize, DataTypes) => {
     const SpecialNotice = sequelize.define("SpecialNotice",{
         notice_id: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            primaryKey: true
         },
         title: {
             type: DataTypes.STRING(30),
@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         expire_date: {
             type: DataTypes.DATEONLY,
-            allowNull: false,
+            allowNull: true,
         }
     }, {
         timestamps: false

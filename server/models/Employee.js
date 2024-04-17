@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(10),
             allowNull: false
         },
-        first_attempt_date_time: {
+        last_attempt_date_time: {
             type: DataTypes.DATE,
             allowNull: false
         },

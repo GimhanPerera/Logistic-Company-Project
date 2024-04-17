@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         discount: {
             type: DataTypes.DECIMAL(10, 2),
-            allowNull: false
+            allowNull: true
         },
         total: {
             type: DataTypes.DECIMAL(10, 2),

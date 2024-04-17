@@ -2,7 +2,7 @@ module.exports = (sequelize, DataTypes) => {
     const Shipment = sequelize.define("Shipment",{
         BL_no: {
             type: DataTypes.STRING(20),
-            allowNull: false,
+            primaryKey: true
         },
         shipping_method: {
             type: DataTypes.STRING(10),
@@ -23,6 +23,10 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         timestamps: false
     });
+
+    // Shipment.associate = models => {
+    //     Shipment.hasMany(models.Order, { foreignKey: 'BL_no' });
+    // };
 
     return Shipment;
 };

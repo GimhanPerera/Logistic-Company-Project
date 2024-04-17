@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        first_attempt_date_time: {
+        last_attempt_date_time: {
             type: DataTypes.DATE,
             allowNull: false
         }
@@ -44,5 +44,11 @@ module.exports = (sequelize, DataTypes) => {
         timestamps: false
     });
 
+    // Customer.associate = models => {
+    //     //associations
+    //     Customer.hasMany(models.Order, { foreignKey: 'customer_id' });
+    // };
+
     return Customer;
 };
+

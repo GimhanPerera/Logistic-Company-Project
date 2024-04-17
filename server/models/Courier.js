@@ -3,10 +3,9 @@ module.exports = (sequelize, DataTypes) => {
         courier_id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
-            allowNull: false,
         },
         name: {
-            type: DataTypes.STRING(20),
+            type: DataTypes.STRING(30),
             allowNull: false,
         },
         tel_number: {
@@ -17,5 +16,5 @@ module.exports = (sequelize, DataTypes) => {
         timestamps: false
     });
 
-    return Courier; 
+    return Courier;
 };
