@@ -6,7 +6,7 @@ import CourierDetailsCard from "./CourierDetailsCard";
 const CourierDetails = () => {
     const [listOfCourier, setListOfCourier] = useState([]);
     const [loading, setLoading] = useState(true); // State to track loading status
-    
+    7
     useEffect(() => {
         axios.get("http://localhost:3001/courier")
             .then((response) => {

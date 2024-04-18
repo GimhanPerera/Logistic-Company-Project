@@ -1,4 +1,4 @@
-const { Order, Customer, Shipment } = require('../models');
+const { Order, Customer, Shipment,Price_quotation } = require('../models');
 
 
 
@@ -43,9 +43,9 @@ const getCourierAndOrder = async (req, res) => {
 
 //After customer login, Access the tracking details
 const trackingDetailsOfACustomer = async (req, res) => {
-    console.table(req.user)
-    const cus_id = req.user.sub
-    console.log(cus_id)
+    //console.table(req.user)
+    const cus_id = "CFL610" //req.user.sub
+    //console.log(cus_id)
     const order = await Order.findAll({
         attributes: ['order_id', 'main_tracking_number', 'status', 'supplier_loc', 'order_open_date'],
         include: [{
@@ -67,6 +67,9 @@ const trackingDetailsOfAOrder = async (req, res) => {//All good
         include: [{
             model: Shipment,
             attributes: ['desplayed_arriveal_date']
+        },{
+            model: Price_quotation,
+            attributes: ['no_of_packages','quotation','shipping_method']
         }],
         where: {
             main_tracking_number: tracking_id
