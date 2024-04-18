@@ -1,15 +1,18 @@
 import axios from "axios";
 import React, { useEffect, useState } from 'react';
-
+import { useNavigate } from "react-router-dom";
 
 const NewOrder = () => {
-
+    const navigate = useNavigate();
     const [listOfOrderDetails, setListOfOrder] = useState([]);
     useEffect(() => {
         axios.get("http://localhost:3001/order").then((response)=>{
             setListOfOrder(response.data);
         })
     }, [])
+    const toOrders = () => {
+        navigate('../order');
+      }
 
     return (
     <div className="relative">
@@ -69,7 +72,7 @@ const NewOrder = () => {
                     <td><p>New customer?</p><a>Yes</a></td>
                 </tr>
             </table>
-            <button type="submit" className="bg-[#ffffff] hover:bg-blue-600 text-[#68DD62] border-solid border-2 border-[#68DD62] px-4 py-2 rounded-md focus:outline-none ml-2">
+            <button  onClick={toOrders} className="bg-[#ffffff] hover:bg-blue-600 text-[#68DD62] border-solid border-2 border-[#68DD62] px-4 py-2 rounded-md focus:outline-none ml-2">
                 Cancel
             </button>
             <button type="submit" className="bg-[#68DD62] text-white px-4 py-2 rounded-md border-solid border-2 border-[#68DD62] focus:outline-none ml-2">

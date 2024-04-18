@@ -1,6 +1,5 @@
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import './App.css';
-import { RootLayout } from './RootLayout';
 import CourierDetails from './managementSystem/Pages/Courier/courierDetails';
 import CustomersDetails from './managementSystem/Pages/Customer/customersDetails';
 import Dashboard from './managementSystem/Pages/Dashboard/Dashboard';
@@ -19,7 +18,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<RootLayout />}>
+        <Route path="/">
           <Route index element={<Website />} />
           <Route path="stafflogin" element={<StaffLogin />} />
           <Route path="checkmyorder">

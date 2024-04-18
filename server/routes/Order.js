@@ -9,7 +9,7 @@ router.get("/", orderController.getAllOrderDetailsForOrderCard)
 router.post("/", orderController.addOrder)//DIDN'T USED OR CHECKED YET
 
 //In the website, After custoemr login
-router.get("/myTrackingDetails",loginController.authenticateToken, orderController.trackingDetailsOfACustomer)
+router.get("/myTrackingDetails", orderController.trackingDetailsOfACustomer)//loginController.authenticateToken,
 
 //Tracking details of paticulaer order
 router.post("/trackorder", orderController.trackingDetailsOfAOrder)

@@ -22,15 +22,15 @@ module.exports = (sequelize, DataTypes) => {
         },
         description: {
             type: DataTypes.STRING(20),
-            allowNull: false
+            allowNull: true
         },
         image: {
             type: DataTypes.INTEGER, //NEED TO UPDATE
-            allowNull: false
+            allowNull: true
         },
         performa_invoice: {
             type: DataTypes.STRING(20), //NEED TO UPDATE
-            allowNull: false
+            allowNull: true
         },
         quotation: {
             type: DataTypes.DECIMAL(8, 2),
