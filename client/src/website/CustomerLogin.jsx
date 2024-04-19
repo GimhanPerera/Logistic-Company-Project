@@ -6,6 +6,8 @@ import Navbar from './navbar';
 export const CustomerLogin = () => {
     const [show,setShow]=useState(true);
     const [trackingNumber, setTrackingNumber] = useState("");
+    const [customerID, setCustomerID] = useState("");
+    const [pwd, setPwd] = useState("");
     const [errorMessage, setErrorMessage] = useState(null);
     const navigate = useNavigate();
     
@@ -17,6 +19,28 @@ export const CustomerLogin = () => {
           });
           if(response.data.isValid){
             navigate(`./${trackingNumber}`);
+          }else{
+            
+          }
+        } catch (error) {
+          if (error.response && error.response.data) {
+            setErrorMessage(error.response.data);
+          } else {
+            setErrorMessage("An unexpected error occurred. Please try again.");
+          }
+        }
+      };
+
+      const loginAsCustomer = async (e) => {
+        e.preventDefault();
+        try {
+          const response = await axios.post("http://localhost:3001/login/customer", {
+            "cus_id":customerID,
+            "pwd":pwd
+        });
+          if(response.data.isValid){
+            localStorage.setItem('token', response.data.accessToken);
+            navigate('./myorders');
           }else{
             
           }
@@ -46,7 +70,7 @@ export const CustomerLogin = () => {
                 <h1 className="text-xl font-bold leading-tight tracking-tight  md:text-2xl ">
                     Check My Orders
                 </h1>
-                <form className="space-y-4 md:space-y-6" action="#">
+                <form className="space-y-4 md:space-y-6"  onSubmit={loginAsCustomer}>
                     <div>
                     <input
                         type="text"
@@ -54,12 +78,16 @@ export const CustomerLogin = () => {
                         id="customerId"
                         className="border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Customer ID"
+                        value={customerID}
+                        onChange={(e) => setCustomerID(e.target.value)}
                         required
                     />
                     </div>
                     <div>
                         <input type="password" name="password" id="password" placeholder="Passcode"
                         className=" border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        value={pwd}
+                        onChange={(e) => setPwd(e.target.value)}
                         required/>
                     </div>
                     <div className="flex ">
