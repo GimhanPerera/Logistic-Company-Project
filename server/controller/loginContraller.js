@@ -11,8 +11,11 @@ const customerLogin = async (req, res) => {
         sub: req.body.cus_id,
         role: 'customer'
     }
-    const accessToken = createToken(user, 600) //Create the access token
-    res.json({accessToken: accessToken})
+    const accessToken = createToken(user, 120) //Create the access token
+    res.json({
+        isValid: "True",
+        accessToken: accessToken
+    })
 }
 
 const stuffLogin = async (req, res) => {
@@ -25,6 +28,7 @@ const stuffLogin = async (req, res) => {
         role: 'user'
     }
     const accessToken = createToken(user, 120) //Create the access token
+    console.log("Access token: "+accessToken)
     res.json({accessToken: accessToken})
 }
 
@@ -44,6 +48,7 @@ const authenticateToken  = async (req, res, next) => {
     if (token == null) return res.sendStatus(401)
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+        console.log(user) //For testing
         if (err) return res.sendStatus(403)
         req.user = user
         next()

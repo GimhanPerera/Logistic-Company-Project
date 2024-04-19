@@ -2,15 +2,13 @@ const { Order, Customer, Shipment,Price_quotation } = require('../models');
 
 
 
-// //1. Add a order
-const addOrder = async (req, res) => {
+const addOrder = async (req, res) => {//Add a order - NOT TESTED
     const order = req.body;
     await Order.create(order);
     res.status(200),json(order)
 }
 
-// 2. Get all Order
-const getAllOrderDetailsForOrderCard = async (req, res) => {
+const getAllOrderDetailsForOrderCard = async (req, res) => { //Get all Order
     try{
         const orders = await Order.findAll({
             include: [{
@@ -41,10 +39,9 @@ const getCourierAndOrder = async (req, res) => {
     res.status(200).json(courier)
 }
 
-//After customer login, Access the tracking details
-const trackingDetailsOfACustomer = async (req, res) => {
+const trackingDetailsOfACustomer = async (req, res) => { //After customer login, Access the tracking details
     //console.table(req.user)
-    const cus_id = "CFL610" //req.user.sub
+    const cus_id = req.user.sub //"CFL610"
     //console.log(cus_id)
     const order = await Order.findAll({
         attributes: ['order_id', 'main_tracking_number', 'status', 'supplier_loc', 'order_open_date'],
@@ -59,7 +56,7 @@ const trackingDetailsOfACustomer = async (req, res) => {
     res.status(200).json(order)
 }
 
-const trackingDetailsOfAOrder = async (req, res) => {//All good
+const trackingDetailsOfAOrder = async (req, res) => {//Tracking details of individual orders
     const tracking_id = req.body.tracking_id
     console.log(tracking_id)
     const order = await Order.findAll({
@@ -78,7 +75,7 @@ const trackingDetailsOfAOrder = async (req, res) => {//All good
     res.status(200).json(order)
 }
 
-const isvalidtrackingnum = async (req, res) => {
+const isvalidtrackingnum = async (req, res) => {//When customer enter the tracking number. This check it is valid or not
     try {
         const tracking_id = req.body.tracking_id;
         console.log(tracking_id);
