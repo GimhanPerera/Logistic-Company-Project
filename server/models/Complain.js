@@ -2,10 +2,11 @@ module.exports = (sequelize, DataTypes) => {
     const Complain = sequelize.define("Complain", {
         complain_id: {
             type: DataTypes.INTEGER,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true,
         },
         complain: {
-            type: DataTypes.STRING(100),
+            type: DataTypes.STRING,
             allowNull: false
         },
         status: {

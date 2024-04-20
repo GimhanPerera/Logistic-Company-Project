@@ -1,22 +1,28 @@
 import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import ComplainModel from '../Modals/complainModal';
+import FeedbackModel from '../Modals/feedbackModel';
 
 export const OrderTrackingDetailsValidated = () => {
     const navigate = useNavigate();
     // Extract the parameter from the URL
-    const { trackingNumber } = useParams();
+    //const { trackingNumber } = useParams();
+    const [isComplainOpen, setComplainIsOpen] = useState(false);
+    const [isFeedbackOpen, setFeedackIsOpen] = useState(false);
 
     const [trackingDetails, setTrackingDetails] = useState([]);
     const [loading, setLoading] = useState(true);
+    const { id } = useParams();
     const toLogin = () => {
         navigate('../');
     }
     useEffect(() => {
         axios.post("http://localhost:3001/order/trackorder", {
-            "tracking_id": trackingNumber
+            "tracking_id": id
         })
         .then((response) => {
+            console.log("This is the ID: "+id)
             setTrackingDetails(response.data);
             setLoading(false);
             console.log(response.data);
@@ -60,8 +66,18 @@ export const OrderTrackingDetailsValidated = () => {
                                 <p>Shipping method: {firstTrackingDetails.Price_quotation.shipping_method}</p>
                                 ) : (<p>Shipping method: -</p>)}
                         </div>
+                        <div>
+                            <p>If you have any issue with our service, You can <a onClick={() => setComplainIsOpen(true)} className="text-[#1E90FF] underline cursor-pointer">open a complain</a></p>
+                            <p>Give your <a onClick={() => setFeedackIsOpen(true)} className="text-[#1E90FF] underline cursor-pointer">feedback</a></p>
                         </div>
+                        <ComplainModel open={isComplainOpen} onClose={() => setComplainIsOpen(false)} ordId={firstTrackingDetails.order_id}>
+                        </ComplainModel>
+                        <FeedbackModel open={isFeedbackOpen} onClose={() => setFeedackIsOpen(false)} ordId={firstTrackingDetails.order_id}>
+                        </FeedbackModel>
+                        </div>
+                        
                 )}
+                
             </div>
         </div>
     )

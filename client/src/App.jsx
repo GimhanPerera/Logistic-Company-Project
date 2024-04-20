@@ -8,10 +8,11 @@ import OrderDetails from './managementSystem/Pages/Order/orderDetails';
 import Reports from './managementSystem/Pages/Reports/Reports';
 import { ShipmentDetails } from './managementSystem/Pages/Shipment/shipmentDetails';
 import ManagmentSystem from './managementSystem/managmentSystem';
-import { CustomerLogin } from './website/CustomerLogin';
 import { StaffLogin } from './website/StaffLogin';
 import { AllMyOrders } from './website/allMyOrders';
+import { CustomerLogin } from './website/customerLogin';
 import { OrderTrackingDetails } from './website/orderTrackingDetails';
+import { OrderTrackingDetailsValidated } from './website/orderTrackingDetailsValidated';
 import { Website } from './website/website';
 
 function App() {
@@ -24,7 +25,10 @@ function App() {
           <Route path="checkmyorder">
             <Route index element={<CustomerLogin />} />
             <Route path=":trackingNumber" element={<OrderTrackingDetails/>}/>
-            <Route path="myorders" element={<AllMyOrders/>}/>
+            <Route path="myorders">
+              <Route index element={<AllMyOrders />} />
+              <Route path=":id" element={<OrderTrackingDetailsValidated/>}/>
+            </Route>
           </Route>
           <Route path="cmsystem" element={<ManagmentSystem />}>
             <Route index element={<Dashboard />} />
