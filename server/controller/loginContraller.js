@@ -11,7 +11,7 @@ const customerLogin = async (req, res) => {
         sub: req.body.cus_id,
         role: 'customer'
     }
-    const accessToken = createToken(user, 120) //Create the access token
+    const accessToken = createToken(user, 600) //Create the access token
     res.json({
         isValid: "True",
         accessToken: accessToken
