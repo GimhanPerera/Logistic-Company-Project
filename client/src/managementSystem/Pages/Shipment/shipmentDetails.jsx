@@ -8,7 +8,7 @@ export const ShipmentDetails = () => {
     const [loading, setLoading] = useState(true); // State to track loading status
     
     useEffect(() => {
-        axios.get("http://localhost:3001/shipment")
+        axios.get("http://localhost:3001/api/shipment")
             .then((response) => {
                 setListOfShipment(response.data);
                 setLoading(false); // Set loading to false once data is fetched

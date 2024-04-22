@@ -18,7 +18,7 @@ export const OrderTrackingDetailsValidated = () => {
         navigate('../');
     }
     useEffect(() => {
-        axios.post("http://localhost:3001/order/trackorder", {
+        axios.post("http://localhost:3001/api/order/trackorder", {
             "tracking_id": id
         })
         .then((response) => {

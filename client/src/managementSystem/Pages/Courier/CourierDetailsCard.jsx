@@ -1,6 +1,22 @@
+import axios from 'axios';
 import React from 'react';
 
-const CourierDetailsCard = ({ courier }) => {
+const CourierDetailsCard = ({ courier,reload,clickEdit }) => {
+
+  const deleteCourier = () => {
+    axios.delete(`http://localhost:3001/api/courier/${courier.courier_id}`)
+    .then((response) => {
+        reload;
+        console.log("Not worked")
+    })
+    .catch((error) => {
+        console.error("Error fetching courier details:", error);
+    });
+  }
+  const handleEditClick = () => {
+    clickEdit(courier.courier_id)
+  }
+
   // Check if courier is defined before trying to access its properties
   if (!courier) {
     return null; // or handle the case where courier is undefined/null
@@ -15,9 +31,9 @@ const CourierDetailsCard = ({ courier }) => {
       </div>
       <div>
         <div className='text-blue-500 flex flex-col justify-between items-end h-full underline'>
-          <p>History</p>
-          <p className=''>Edit</p>
-          <p>Delete</p>
+          <p className='cursor-pointer'>History</p>
+          <p className='cursor-pointer' onClick={handleEditClick}>Edit</p>
+          <p className='text-red-600 underline cursor-pointer' onClick={deleteCourier}>Delete</p>
         </div>
       </div>
     </div>

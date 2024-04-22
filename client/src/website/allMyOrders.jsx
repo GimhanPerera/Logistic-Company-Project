@@ -11,7 +11,7 @@ export const AllMyOrders = () => {
   const [listOfOrders, setListOfOrders] = useState([]);
     useEffect(() => {
       const token = localStorage.getItem('token');
-        axios.get("http://localhost:3001/order/myTrackingDetails",{
+        axios.get("http://localhost:3001/api/order/myTrackingDetails",{
           headers: {
               Authorization: `Bearer ${token}`
           }

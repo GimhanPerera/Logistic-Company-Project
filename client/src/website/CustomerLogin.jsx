@@ -14,7 +14,7 @@ export const CustomerLogin = () => {
     const checkTrackingNumber = async (e) => {
         e.preventDefault();
         try {
-          const response = await axios.post("http://localhost:3001/order/isvalidtrackingnum", {
+          const response = await axios.post("http://localhost:3001/api/order/isvalidtrackingnum", {
             "tracking_id":trackingNumber
           });
           if(response.data.isValid){
@@ -34,7 +34,7 @@ export const CustomerLogin = () => {
       const loginAsCustomer = async (e) => {
         e.preventDefault();
         try {
-          const response = await axios.post("http://localhost:3001/login/customer", {
+          const response = await axios.post("http://localhost:3001/api/login/customer", {
             "cus_id":customerID,
             "pwd":pwd
         });
