@@ -2,7 +2,8 @@ const { Order, Customer, Shipment,Price_quotation } = require('../models');
 
 
 
-const addOrder = async (req, res) => {//Add a order - NOT TESTED
+const newOrder = async (req, res) => {//Add a order - NOT TESTED
+    
     const order = req.body;
     await Order.create(order);
     res.status(200),json(order)
@@ -105,7 +106,7 @@ const isvalidtrackingnum = async (req, res) => {//When customer enter the tracki
 
 module.exports = {
     getAllOrderDetailsForOrderCard,
-    addOrder,
+    newOrder,
     trackingDetailsOfACustomer,
     trackingDetailsOfAOrder,
     isvalidtrackingnum

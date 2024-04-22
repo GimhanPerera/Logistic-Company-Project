@@ -6,7 +6,7 @@ const NewOrder = () => {
     const navigate = useNavigate();
     const [listOfOrderDetails, setListOfOrder] = useState([]);
     useEffect(() => {
-        axios.get("http://localhost:3001/order").then((response)=>{
+        axios.get("http://localhost:3001/api/order").then((response)=>{
             setListOfOrder(response.data);
         })
     }, [])
@@ -29,23 +29,23 @@ const NewOrder = () => {
                 </tr>
                 <tr>
                     <td><label for="weight">Rough weight(Kg)  :</label></td>
-                    <td><input type="text" id="items" name="items" className="border-solid border-2 border-blue-800"/></td>
+                    <td><input type="text" id="weight" name="items" className="border-solid border-2 border-blue-800"/></td>
                 </tr>
                 <tr>
                     <td><label for="shippingmethod">Shipping method :</label></td>
-                    <td><input type="text" id="items" name="items" className="border-solid border-2 border-blue-800"/></td>
+                    <td><input type="text" id="shippingmethod" name="items" className="border-solid border-2 border-blue-800"/></td>
                 </tr>
                 <tr>
                     <td><label for="quotation">Quotation(LKR per kilo) :</label></td>
-                    <td><input type="text" id="items" name="items" className="border-solid border-2 border-blue-800"/></td>
+                    <td><input type="text" id="quotation" name="items" className="border-solid border-2 border-blue-800"/></td>
                 </tr>
                 <tr>
                     <td><label for="description">Description :</label></td>
-                    <td><input type="text" id="items" name="items" className="border-solid border-2 border-blue-800"/></td>
+                    <td><input type="text" id="description" name="items" className="border-solid border-2 border-blue-800"/></td>
                 </tr>
                 <tr>
                     <td><label for="image">Image :</label></td>
-                    <td><input type="text" id="items" name="items" className="border-solid border-2 border-blue-800"/></td>
+                    <td><input type="file" id="file" name="items" className="border-solid border-2 border-blue-800"/></td>
                 </tr>
                 <tr>
                     <td><label for="invoice">Performa invoice :</label></td>

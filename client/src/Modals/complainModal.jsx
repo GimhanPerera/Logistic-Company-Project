@@ -21,7 +21,7 @@ export default function ComplainModel({ open, onClose, ordId }) {
         
         //VALIDATION SHOULD DONE HERE
 
-        axios.post("http://localhost:3001/complain", {
+        axios.post("http://localhost:3001/api/complain", {
             "order_id": ordId,
             "complain": complainText
         }, {

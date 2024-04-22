@@ -13,7 +13,7 @@ export const OrderTrackingDetails = () => {
         navigate('../');
     }
     useEffect(() => {
-        axios.post("http://localhost:3001/order/trackorder", {
+        axios.post("http://localhost:3001/api/order/trackorder", {
             "tracking_id": trackingNumber
         })
         .then((response) => {

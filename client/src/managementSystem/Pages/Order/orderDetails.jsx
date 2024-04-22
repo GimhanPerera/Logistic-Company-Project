@@ -8,7 +8,7 @@ const OrderDetails = () => {
   const navigate = useNavigate();
   const [listOfOrderDetails, setListOfOrder] = useState([]);
     useEffect(() => {
-        axios.get("http://localhost:3001/order").then((response)=>{
+        axios.get("http://localhost:3001/api/order").then((response)=>{
             setListOfOrder(response.data);
         })
     }, [])

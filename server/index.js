@@ -8,27 +8,27 @@ app.use(cors());
 
 //Routers: for apply routes
 
-// http://localhost:3001/customers Ekata ena ewa okkoma mekata yanne
+// http://localhost:3001/api/customers Ekata ena ewa okkoma mekata yanne
 const customerRouter = require('./routes/customersRouter');
-app.use("/customers",customerRouter);
+app.use("/api/customers",customerRouter);
 
 const courierRouter = require('./routes/courierRouter');
-app.use("/courier",courierRouter);
+app.use("/api/courier",courierRouter);
 
 const orderRouter = require('./routes/orderRouter');
-app.use("/order",orderRouter);
+app.use("/api/order",orderRouter);
 
 const loginRouter = require('./routes/loginRouter');
-app.use("/login",loginRouter);
+app.use("/api/login",loginRouter);
 
 const shipmentRouter = require('./routes/shipmentRouter');
-app.use("/shipment",shipmentRouter);
+app.use("/api/shipment",shipmentRouter);
 
 const complainsRouter = require('./routes/complainsRouter');
-app.use("/complain",complainsRouter);
+app.use("/api/complain",complainsRouter);
 
 const feedbackRouter = require('./routes/feedbackRouter');
-app.use("/feedback",feedbackRouter);
+app.use("/api/feedback",feedbackRouter);
 
 db.sequelize.sync().then(() => {
     app.listen(3001, () => {

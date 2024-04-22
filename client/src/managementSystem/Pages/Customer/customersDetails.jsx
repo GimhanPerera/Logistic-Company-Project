@@ -8,7 +8,7 @@ const CustomersDetails = () => {
   
   const [listOfCustomers, setListOfCustomers] = useState([]);
     useEffect(() => {
-        axios.get("http://localhost:3001/customers").then((response)=>{
+        axios.get("http://localhost:3001/api/customers").then((response)=>{
           setListOfCustomers(response.data);
         })
     }, [])
