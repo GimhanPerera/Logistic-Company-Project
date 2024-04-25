@@ -3,10 +3,26 @@ const router = express.Router();
 const orderController = require('../controller/orderController') //import contraller
 const loginController = require('../controller/loginContraller') //import contraller
 
+//---------------------------------
+const multer = require('multer');
+const path = require('path')
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, './images')
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname))
+    }
+})
+
+const upload = multer({storage: storage})
+//-------------------------------------
+
 //Customer Url and Controllor
 router.get("/", orderController.getAllOrderDetailsForOrderCard)
 
-router.post("/", orderController.addOrder)//DIDN'T USED OR CHECKED YET
+router.post("/",upload.single("image"), orderController.newOrder)//DIDN'T USED OR CHECKED YET
 
 //In the website, After custoemr login
 router.get("/myTrackingDetails",loginController.authenticateToken, orderController.trackingDetailsOfACustomer)//

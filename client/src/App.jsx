@@ -8,6 +8,7 @@ import OrderDetails from './managementSystem/Pages/Order/orderDetails';
 import Reports from './managementSystem/Pages/Reports/Reports';
 import { ShipmentDetails } from './managementSystem/Pages/Shipment/shipmentDetails';
 import ManagmentSystem from './managementSystem/managmentSystem';
+import { TestFile } from './testfile';
 import { StaffLogin } from './website/StaffLogin';
 import { AllMyOrders } from './website/allMyOrders';
 import { CustomerLogin } from './website/customerLogin';
@@ -20,6 +21,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/">
+        <Route path="test" element={<TestFile />} />
           <Route index element={<Website />} />
           <Route path="stafflogin" element={<StaffLogin />} />
           <Route path="checkmyorder">
