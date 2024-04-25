@@ -1,12 +1,119 @@
 const { Order, Customer, Shipment,Price_quotation } = require('../models');
-
+const Sequelize = require('sequelize');
 
 
 const newOrder = async (req, res) => {//Add a order - NOT TESTED
-    
-    const order = req.body;
-    await Order.create(order);
-    res.status(200),json(order)
+    const { filename } = req.file; // Extract the filename
+    console.log(filename)
+    console.log(req.body)
+
+    //----------------------Update Order table----------------------------------
+    // Get the last order ID of the given customer
+    const lastOrder = await Order.findOne({
+        where: {
+            customer_id: req.body.cusID
+        },
+        order: [['order_id', 'DESC']]
+    });
+
+    // Extract the numeric portion from the last order ID and increment by one
+    let newNumericPortion = 1001;
+    if (lastOrder) {
+        const lastOrderId = lastOrder.order_id;
+        const lastNumericPortion = parseInt(lastOrderId.substring(8), 10);
+                                 //parseInt(lastOrderId.substring(orderId.length - 4), 10);
+        newNumericPortion = lastNumericPortion + 1;
+        //console.log("lastNumericPortion: "+lastNumericPortion)
+    }
+
+    let shippingmethod='A'
+    if(req.body.shippingmethod=="Ship")shippingmethod='S'
+
+    // Combine customer ID, shipping method, and the new numeric portion to create the new order ID
+    const newOrderId = `${req.body.cusID}${shippingmethod}-${newNumericPortion}`;
+    //console.log(req.body.cusID+" LAST OID: "+lastOrder)
+    console.log("NEW OID: "+newOrderId)
+
+
+    const existingTrackingNumbers = await Order.findAll({
+        attributes: ['main_tracking_number']
+    });
+    const newTnumbers = generateUniqueTrackingNumber(existingTrackingNumbers.map(order => order.main_tracking_number));
+
+    const newOrder = await Order.create({
+        "order_id": newOrderId,
+        "order_open_date": getCurrentDateTime(),
+        "supplier_loc": req.body.supplierLoc,
+        "main_tracking_number": newTnumbers, //NEED TO CREATE A NEW TRACKING NUMBER
+        "status": req.body.packages,
+        "customer_id": req.body.cusID
+    });
+    console.log("Order table updated")
+
+    //----------------------Update Price_quotation table----------------------------------
+    // Get the last Price_quotation_id
+    const last_price_quotation_id = await Price_quotation.findOne({
+        order: [['quotation_id', 'DESC']]
+    });
+    console.log("Last PQ_ID: "+last_price_quotation_id.quotation_id)
+    // Calculate the new complain_id
+    const new_price_quotation_id = last_price_quotation_id.quotation_id ? last_price_quotation_id.quotation_id + 1 : 1001;
+    // Insert the new record
+    console.log("New PQ_ID: "+new_price_quotation_id)
+    const newPriceQuotation = await Price_quotation.create({
+        "quotation_id": new_price_quotation_id,
+        "items": req.body.item,
+        "raugh_weight": req.body.weight,
+        "shipping_method": req.body.shippingmethod,
+        "no_of_packages": req.body.packages,
+        "description": req.body.items,
+        "image": filename,
+        "performa_invoice": req.body.items,
+        "quotation": req.body.quotation,
+        "order_id": newOrderId,
+    });
+    console.log("Price quotation table updated")
+    console.log("NEW ORDER OPENED: "+newOrderId)
+    //const order = req.body;
+    //await Order.create(order);
+    res.status(200).json("SUCCESS")
+}
+
+// Function to generate a random alphanumeric string of a specified length
+const generateRandomString = (length) => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
+};
+
+// Function to generate a unique tracking number
+const generateUniqueTrackingNumber = (existingTrackingNumbers) => {
+    let trackingNumber;
+    do {
+        trackingNumber = generateRandomString(11);
+    } while (existingTrackingNumbers.includes(trackingNumber));
+    return trackingNumber;
+};
+
+const getCurrentDateTime = () => {
+    const currentDate = new Date();
+
+const year = currentDate.getFullYear();
+const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Adding 1 because January is 0
+const day = String(currentDate.getDate()).padStart(2, '0');
+
+const hours = String(currentDate.getHours()).padStart(2, '0');
+const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+
+const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+console.log(formattedDateTime); // Output: 2024-04-25 14:32:30 (for example)
+return formattedDateTime;
+
 }
 
 const getAllOrderDetailsForOrderCard = async (req, res) => { //Get all Order
@@ -27,6 +134,7 @@ const getAllOrderDetailsForOrderCard = async (req, res) => { //Get all Order
     }
     
 }
+
 
 // 2. Get all Courier
 const getCourierAndOrder = async (req, res) => {
@@ -104,10 +212,13 @@ const isvalidtrackingnum = async (req, res) => {//When customer enter the tracki
 };
 
 
+
+
 module.exports = {
     getAllOrderDetailsForOrderCard,
     newOrder,
     trackingDetailsOfACustomer,
     trackingDetailsOfAOrder,
-    isvalidtrackingnum
+    isvalidtrackingnum,
+    
 }

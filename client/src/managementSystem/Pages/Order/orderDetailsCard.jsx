@@ -12,7 +12,7 @@ const OrderDetailsCard = ({ order }) => {
         <div className="title">Order number: {order.order_id}</div>
         <div className="body">Customer ID: {order.Customer.customer_id}</div>
         <div className="footer">Custoemr name: {order.Customer.f_name} {order.Customer.l_name}</div>
-        <div className="footer">Status name: {order.status}</div>
+        <div className="footer">Status: {order.status}</div>
         </div>
         <div className='text-blue-500 flex flex-col justify-end underline'>
             Complete order

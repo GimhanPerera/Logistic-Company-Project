@@ -42,7 +42,26 @@ const getCustomerAndOrder = async (req, res) => {
     res.status(200).json(customer)
 }
 
+const searchCustomerByID = async (req, res) => { //Search customer (Order creation part)
+    try{
+        console.log(req.params.customerID)
+        const customer = await Customer.findByPk(req.params.customerID);
+        res.status(200).json({
+            "order_id": customer.customer_id,
+            "name": customer.f_name+" "+customer.l_name ,
+            "tel_number": customer.tel_number
+        });
+
+    }catch (error) {
+        // Handle error
+        console.error("Error fetching customer details:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+    
+}
+
 module.exports = {
     addCustomer,
-    getAllCustomers
+    getAllCustomers,
+    searchCustomerByID
 }

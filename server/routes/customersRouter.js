@@ -5,5 +5,6 @@ const customerController = require('../controller/customerController') //import 
 //Customer Url and Controllor
 router.get("/", customerController.getAllCustomers)
 router.post("/", customerController.addCustomer)
+router.get("/search/:customerID", customerController.searchCustomerByID) //Search customer by ID - Order creation part
 
 module.exports = router;

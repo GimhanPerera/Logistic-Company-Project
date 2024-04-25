@@ -1,7 +1,7 @@
 module.exports = (sequelize, DataTypes) => {
     const Price_quotation = sequelize.define("Price_quotation", {
-        qoutation_id: {
-            type: DataTypes.STRING(10),
+        quotation_id: {
+            type: DataTypes.INTEGER,
             primaryKey: true
         },
         items: {
@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         },
         image: {
-            type: DataTypes.INTEGER, //NEED TO UPDATE
+            type: DataTypes.STRING(20), //NEED TO UPDATE
             allowNull: true
         },
         performa_invoice: {
