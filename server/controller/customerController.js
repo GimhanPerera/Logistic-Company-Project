@@ -16,11 +16,65 @@ const addCustomer = async (req, res) => {
     //     wrong_attempts: req.body.wrong_attempts,
     //     first_attempt_date_time: req.body.first_attempt_date_time
     // }
-    // const customer = await Customer.create(data)
+    console.log("Hello")
+    console.table(req.body)
+    //const a = await generateNextPKforCustomer()
+    //console.log(typeof a)
+    
+    const customer = await Customer.create({
+        "customer_id": await generateNextPKforCustomer(),
+        "passcode": await generatePassword(),
+        "f_name": req.body.customerData.f_name,
+        "l_name": req.body.customerData.l_name,
+        "tel_number": req.body.customerData.tel_number,
+        "address": req.body.customerData.address,
+        "nic": req.body.customerData.nic,
+        "status": "New",
+        "wrong_attempts":0,
+        "last_attempt_date_time": '2024-03-02 03:03:44'
+    })
 
-    const customer = req.body;
-    await Customer.create(customer);
-    res.status(200),json(customer)
+    //const customer = req.body;
+    //await Customer.create(customer);
+    res.status(200).json("OK")
+}
+
+const generateNextPKforCustomer = async () => {//create new PK for customer
+    try {
+        // Find the last record in the Customer table
+        const lastCustomer = await Customer.findOne({
+            order: [['customer_id', 'DESC']]
+        });
+
+        if (!lastCustomer) {
+            // If no records found, return the initial PK
+            return 'CFL001'; // Assuming the initial PK starts with 1
+        }
+
+        // Extract the numeric part of the last PK and increment it
+        const lastNumericPart = parseInt(lastCustomer.customer_id.substring(3));
+        const nextNumericPart = lastNumericPart + 1;
+console.log("Checkpoint 1"+lastCustomer.customer_id)
+        // Format the next PK
+        const nextPK = `CFL${nextNumericPart}`;
+
+        return nextPK;
+    } catch (error) {
+        throw new Error('Error generating next PK');
+    }
+};
+
+function generatePassword() {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*';
+    const passwordLength = 8;
+    let password = '';
+
+    for (let i = 0; i < passwordLength; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        password += characters[randomIndex];
+    }
+
+    return password;
 }
 
 // 2. Get all Customers

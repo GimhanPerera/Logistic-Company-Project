@@ -1,82 +1,92 @@
-const { Order, Customer, Shipment,Price_quotation } = require('../models');
+const { Order, Customer, Shipment, Price_quotation } = require('../models');
 const Sequelize = require('sequelize');
 
 
 const newOrder = async (req, res) => {//Add a order - NOT TESTED
-    const { filename } = req.file; // Extract the filename
-    console.log(filename)
-    console.log(req.body)
+    try {
+        // Extract the filename
+        const { filename: productImage } = req.files['image'][0];
+        const { filename: invoice } = req.files['invoice'][0];
 
-    //----------------------Update Order table----------------------------------
-    // Get the last order ID of the given customer
-    const lastOrder = await Order.findOne({
-        where: {
-            customer_id: req.body.cusID
-        },
-        order: [['order_id', 'DESC']]
-    });
 
-    // Extract the numeric portion from the last order ID and increment by one
-    let newNumericPortion = 1001;
-    if (lastOrder) {
-        const lastOrderId = lastOrder.order_id;
-        const lastNumericPortion = parseInt(lastOrderId.substring(8), 10);
-                                 //parseInt(lastOrderId.substring(orderId.length - 4), 10);
-        newNumericPortion = lastNumericPortion + 1;
-        //console.log("lastNumericPortion: "+lastNumericPortion)
+        //----------------------Update Order table----------------------------------
+        // Get the last order ID of the given customer
+        const lastOrder = await Order.findOne({
+            where: {
+                customer_id: req.body.cusID
+            },
+            order: [['order_id', 'DESC']]
+        });
+
+        // Extract the numeric portion from the last order ID and increment by one
+        let newNumericPortion = 1001;
+        if (lastOrder) {
+            const lastOrderId = lastOrder.order_id;
+            const lastNumericPortion = parseInt(lastOrderId.substring(8), 10);
+            //parseInt(lastOrderId.substring(orderId.length - 4), 10);
+            newNumericPortion = lastNumericPortion + 1;
+            //console.log("lastNumericPortion: "+lastNumericPortion)
+        }
+
+        let shippingmethod = 'A'
+        if (req.body.shippingmethod == "Ship cargo") shippingmethod = 'S'
+
+        // Combine customer ID, shipping method, and the new numeric portion to create the new order ID
+        const newOrderId = `${req.body.cusID}${shippingmethod}-${newNumericPortion}`;
+        //console.log(req.body.cusID+" LAST OID: "+lastOrder)
+        console.log("NEW OID: " + newOrderId)
+
+
+        const existingTrackingNumbers = await Order.findAll({
+            attributes: ['main_tracking_number']
+        });
+        const newTnumbers = generateUniqueTrackingNumber(existingTrackingNumbers.map(order => order.main_tracking_number));
+
+        const newOrder = await Order.create({
+            "order_id": newOrderId,
+            "order_open_date": getCurrentSriLankanDateTime(),
+            "supplier_loc": req.body.supplierLoc,
+            "main_tracking_number": newTnumbers, //NEED TO CREATE A NEW TRACKING NUMBER
+            "status": "Just opened",
+            "customer_id": req.body.cusID
+        });
+        console.log("Order table updated")
+
+        //----------------------Update Price_quotation table----------------------------------
+        // Get the last Price_quotation_id
+        const last_price_quotation_id = await Price_quotation.findOne({
+            order: [['quotation_id', 'DESC']]
+        });
+        console.log("Last PQ_ID: " + last_price_quotation_id.quotation_id)
+        // Calculate the new complain_id
+        const new_price_quotation_id = last_price_quotation_id.quotation_id ? last_price_quotation_id.quotation_id + 1 : 1001;
+        // Insert the new record
+        console.log("New PQ_ID: " + new_price_quotation_id)
+        const newPriceQuotation = await Price_quotation.create({
+            "quotation_id": new_price_quotation_id,
+            "items": req.body.item,
+            "raugh_weight": req.body.weight,
+            "shipping_method": req.body.shippingmethod,
+            "no_of_packages": req.body.packages,
+            "description": req.body.items,
+            "image": productImage,
+            "performa_invoice": invoice,
+            "quotation": req.body.quotation,
+            "order_id": newOrderId,
+        });
+        console.log("Price quotation table updated")
+        console.log("PRODUCT IMAGE: " + productImage)
+        console.log("PERFORMA INVOICE: " + invoice)
+        console.log("NEW ORDER OPENED: " + newOrderId)
+        //const order = req.body;
+        //await Order.create(order);
+        res.status(200).json("SUCCESS")
+
+    } catch (error) {
+        // Handle error
+        console.error("Error fetching order details:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
-
-    let shippingmethod='A'
-    if(req.body.shippingmethod=="Ship")shippingmethod='S'
-
-    // Combine customer ID, shipping method, and the new numeric portion to create the new order ID
-    const newOrderId = `${req.body.cusID}${shippingmethod}-${newNumericPortion}`;
-    //console.log(req.body.cusID+" LAST OID: "+lastOrder)
-    console.log("NEW OID: "+newOrderId)
-
-
-    const existingTrackingNumbers = await Order.findAll({
-        attributes: ['main_tracking_number']
-    });
-    const newTnumbers = generateUniqueTrackingNumber(existingTrackingNumbers.map(order => order.main_tracking_number));
-
-    const newOrder = await Order.create({
-        "order_id": newOrderId,
-        "order_open_date": getCurrentDateTime(),
-        "supplier_loc": req.body.supplierLoc,
-        "main_tracking_number": newTnumbers, //NEED TO CREATE A NEW TRACKING NUMBER
-        "status": req.body.packages,
-        "customer_id": req.body.cusID
-    });
-    console.log("Order table updated")
-
-    //----------------------Update Price_quotation table----------------------------------
-    // Get the last Price_quotation_id
-    const last_price_quotation_id = await Price_quotation.findOne({
-        order: [['quotation_id', 'DESC']]
-    });
-    console.log("Last PQ_ID: "+last_price_quotation_id.quotation_id)
-    // Calculate the new complain_id
-    const new_price_quotation_id = last_price_quotation_id.quotation_id ? last_price_quotation_id.quotation_id + 1 : 1001;
-    // Insert the new record
-    console.log("New PQ_ID: "+new_price_quotation_id)
-    const newPriceQuotation = await Price_quotation.create({
-        "quotation_id": new_price_quotation_id,
-        "items": req.body.item,
-        "raugh_weight": req.body.weight,
-        "shipping_method": req.body.shippingmethod,
-        "no_of_packages": req.body.packages,
-        "description": req.body.items,
-        "image": filename,
-        "performa_invoice": req.body.items,
-        "quotation": req.body.quotation,
-        "order_id": newOrderId,
-    });
-    console.log("Price quotation table updated")
-    console.log("NEW ORDER OPENED: "+newOrderId)
-    //const order = req.body;
-    //await Order.create(order);
-    res.status(200).json("SUCCESS")
 }
 
 // Function to generate a random alphanumeric string of a specified length
@@ -98,41 +108,33 @@ const generateUniqueTrackingNumber = (existingTrackingNumbers) => {
     return trackingNumber;
 };
 
-const getCurrentDateTime = () => {
+const getCurrentSriLankanDateTime = () => { //Not working well
+
     const currentDate = new Date();
 
-const year = currentDate.getFullYear();
-const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Adding 1 because January is 0
-const day = String(currentDate.getDate()).padStart(2, '0');
-
-const hours = String(currentDate.getHours()).padStart(2, '0');
-const minutes = String(currentDate.getMinutes()).padStart(2, '0');
-const seconds = String(currentDate.getSeconds()).padStart(2, '0');
-
-const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-
-console.log(formattedDateTime); // Output: 2024-04-25 14:32:30 (for example)
-return formattedDateTime;
-
+    const formattedDateTime = currentDate.toISOString().slice(0, 19).replace('T', ' '); // Format: 'YYYY-MM-DD HH:mm:ss'
+    return formattedDateTime;
 }
 
+
+
 const getAllOrderDetailsForOrderCard = async (req, res) => { //Get all Order
-    try{
+    try {
         const orders = await Order.findAll({
             include: [{
                 model: Customer,
-                attributes: ['customer_id', 'f_name','l_name']
+                attributes: ['customer_id', 'f_name', 'l_name']
             }]
         });
-        
+
         res.status(200).json(orders);
 
-    }catch (error) {
+    } catch (error) {
         // Handle error
         console.error("Error fetching order details:", error);
         res.status(500).json({ error: "Internal server error" });
     }
-    
+
 }
 
 
@@ -143,7 +145,7 @@ const getCourierAndOrder = async (req, res) => {
         include: [{
             model: Customer
         }],
-        where: {order_id: '1000'}
+        where: { order_id: '1000' }
     })
     res.status(200).json(courier)
 }
@@ -173,9 +175,9 @@ const trackingDetailsOfAOrder = async (req, res) => {//Tracking details of indiv
         include: [{
             model: Shipment,
             attributes: ['desplayed_arriveal_date']
-        },{
+        }, {
             model: Price_quotation,
-            attributes: ['no_of_packages','quotation','shipping_method']
+            attributes: ['no_of_packages', 'quotation', 'shipping_method']
         }],
         where: {
             main_tracking_number: tracking_id
@@ -220,5 +222,5 @@ module.exports = {
     trackingDetailsOfACustomer,
     trackingDetailsOfAOrder,
     isvalidtrackingnum,
-    
+
 }

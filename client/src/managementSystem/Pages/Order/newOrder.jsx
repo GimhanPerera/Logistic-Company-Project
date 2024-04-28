@@ -2,6 +2,7 @@ import axios from "axios";
 import { Field, Form, Formik } from 'formik';
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import AddCustomerModel from "../../../Modals/addCustomerModal";
 
 const initialVslues = {
     item: '',
@@ -18,6 +19,13 @@ const initialVslues = {
 
 
 const NewOrder = () => {
+    const [dropDownValue, setDropDownValue] = React.useState("Ship cargo");
+
+    const dropDownChange = (event) => {
+        setDropDownValue(event.target.value);
+        
+    };
+    const [isAddCustomerOpen, setAddCustomerOpen] = useState(false);
     const [customerID, setCustomerID] = useState("");
     const [customerName, setCustomerName] = useState("");
     const [customerTp, setCustomerTp] = useState("");
@@ -35,11 +43,11 @@ const NewOrder = () => {
         description: '',
         supplierLoc: '',
         image: null,
-        invoice: "",
+        invoice: null,
         cusID: "",
         name: "",
         tp: '',
-    }); 
+    });
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -53,14 +61,24 @@ const NewOrder = () => {
             image: e.target.files[0] // Update the image file in the form data
         });
     };
+    const handleInvoiceChange = (e) => {
+        setFormData({
+            ...formData,
+            invoice: e.target.files[0] // Update the image file in the form data
+        });
+    };
 
     const handleSubmit = async (e) => { //Submit the order
         e.preventDefault();
-        
+
         const data = new FormData();
         for (let key in formData) {
             data.append(key, formData[key]);
         }
+        setFormData({
+            ...formData,
+            shippingmethod: dropDownValue
+        });
         try {
             await axios.post("http://localhost:3001/api/order", data, {
                 headers: {
@@ -68,7 +86,7 @@ const NewOrder = () => {
                 }
             });
             // Optionally, redirect the user to another page after successful submission
-            //navigate('../order');
+            navigate('../order');
         } catch (error) {
             console.error('Error creating order:', error);
         }
@@ -95,6 +113,7 @@ const NewOrder = () => {
 
 
     return (
+        <>
         <div className="relative">
             <Formik
                 initialValues={initialVslues}
@@ -103,20 +122,28 @@ const NewOrder = () => {
                     <h3>Price quotation details</h3>
                     <table className="border-solid border-2 border-black m-2">
                         <tr>
-                            <td><label for="item">Items :</label></td>
+                            <td><label>Items :</label></td>
                             <td><Field type='text' name='item' value={formData.item} id="item" onChange={handleChange} className="border-solid border-2 border-blue-800" /></td>
                         </tr>
                         <tr>
-                            <td><label for="packages">No of packages :</label></td>
+                            <td><label>No of packages :</label></td>
                             <td><Field type='text' name='packages' value={formData.packages} onChange={handleChange} className="border-solid border-2 border-blue-800" /></td>
                         </tr>
                         <tr>
-                            <td><label for="weight">Rough weight(Kg)  :</label></td>
+                            <td><label>Rough weight(Kg)  :</label></td>
                             <td><Field type='text' name='weight' value={formData.weight} onChange={handleChange} className="border-solid border-2 border-blue-800" /></td>
                         </tr>
                         <tr>
-                            <td><label for="shippingmethod">Shipping method :</label></td>
-                            <td><Field type='text' name='shippingmethod' value={formData.shippingmethod} onChange={handleChange} className="border-solid border-2 border-blue-800" /></td>
+                            <td><label>Shipping method :</label></td>
+                            <td>
+                                {/* <Field type='text' name='shippingmethod' value={formData.shippingmethod} onChange={handleChange} className="border-solid border-2 border-blue-800" /> */}
+                                <select value={dropDownValue} onChange={dropDownChange}>
+
+                                    <option value="Ship cargo">Ship cargo</option>
+
+                                    <option value="Air cargo">Air cargo</option>
+
+                                </select></td>
                         </tr>
                         <tr>
                             <td><label for="quotation">Quotation(LKR per kilo) :</label></td>
@@ -136,7 +163,7 @@ const NewOrder = () => {
                         </tr>
                         <tr>
                             <td><label for="invoice">Performa invoice :</label></td>
-                            <td><input type="text" id="invoice" name="invoice" value={formData.invoice} onChange={handleChange} className="border-solid border-2 border-blue-800" /></td>
+                            <td><input type="file" id="invoice" name="invoice" onChange={handleInvoiceChange} className="border-solid border-2 border-blue-800" /></td>
                         </tr>
                     </table>
                     <h3>Customer Details</h3>
@@ -147,7 +174,8 @@ const NewOrder = () => {
                                 name="cusID"
                                 id="customerId"
                                 value={customerID}
-                                onChange={(e) => setCustomerID(e.target.value)} className="border-solid border-2 border-blue-800" /></td>
+                                onChange={(e) => setCustomerID(e.target.value)} 
+                                className="border-solid border-2 border-blue-800" /></td>
                             <td><p
                                 className="cursor-pointer"
                                 onClick={searchCustomer}
@@ -174,7 +202,7 @@ const NewOrder = () => {
                         </tr>
                         <tr>
                             <td></td>
-                            <td><p>New customer?</p><p className="cursor-pointer">Yes</p></td>
+                            <td><p>New customer?</p><p className="cursor-pointer" onClick={() => setAddCustomerOpen(true)}>Yes</p></td>
                         </tr>
                     </table>
                     <button onClick={toOrders} className="bg-[#ffffff] hover:bg-blue-600 text-[#68DD62] border-solid border-2 border-[#68DD62] px-4 py-2 rounded-md focus:outline-none ml-2">
@@ -186,14 +214,13 @@ const NewOrder = () => {
                 </Form>
             </Formik>
             <div>
-
+            <AddCustomerModel  open={isAddCustomerOpen} onClose={() => setAddCustomerOpen(false)} ></AddCustomerModel>
             </div>
         </div>
+        
+        </>
     )
 
 }
 
 export default NewOrder
-
-// For identify a customer
-// GET http://localhost:3001/api/customer/searchCustomerByID

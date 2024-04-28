@@ -25,11 +25,11 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         },
         image: {
-            type: DataTypes.STRING(20), //NEED TO UPDATE
+            type: DataTypes.STRING(20), 
             allowNull: true
         },
         performa_invoice: {
-            type: DataTypes.STRING(20), //NEED TO UPDATE
+            type: DataTypes.STRING(20),
             allowNull: true
         },
         quotation: {
