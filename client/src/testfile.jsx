@@ -6,7 +6,7 @@ import { testValication } from './validations';
 
 export const TestFile = () => {
     const onSubmit = async (values, actions) => { //Submition here
-        alert("Submitted")
+        alert("Submitted: "+values.f_name)
         //values.f_name : value of f_name
         actions.resetForm(); //Reset the form
     }

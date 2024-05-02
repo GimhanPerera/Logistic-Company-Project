@@ -55,6 +55,12 @@ const NewOrder = () => {
         });
     };
 
+    const searchNewCustomer = (customerId) => {
+        setCustomerID(customerId);
+
+        searchCustomer();
+    }
+
     const handleImageChange = (e) => {
         setFormData({
             ...formData,
@@ -214,7 +220,7 @@ const NewOrder = () => {
                 </Form>
             </Formik>
             <div>
-            <AddCustomerModel  open={isAddCustomerOpen} onClose={() => setAddCustomerOpen(false)} ></AddCustomerModel>
+            <AddCustomerModel  open={isAddCustomerOpen} onClose={() => setAddCustomerOpen(false)} setCustomerID={setCustomerID} ></AddCustomerModel>
             </div>
         </div>
         

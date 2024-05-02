@@ -6,7 +6,7 @@ const { Order } = require('../models');
 const addAFeedback = async (req, res) => {
     try {
         //NEED TO VALIDATE: order id is actualy this customer's order
-
+console.log("feedOrder ID: "+req.body.order_id)
         const order = await Order.findOne({ where: { order_id: req.body.order_id } });
         if (!order) {
             throw new Error('Order not found');

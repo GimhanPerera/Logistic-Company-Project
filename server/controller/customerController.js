@@ -20,9 +20,9 @@ const addCustomer = async (req, res) => {
     console.table(req.body)
     //const a = await generateNextPKforCustomer()
     //console.log(typeof a)
-    
+    const cus_id = await generateNextPKforCustomer()
     const customer = await Customer.create({
-        "customer_id": await generateNextPKforCustomer(),
+        "customer_id": cus_id,
         "passcode": await generatePassword(),
         "f_name": req.body.customerData.f_name,
         "l_name": req.body.customerData.l_name,
@@ -36,7 +36,8 @@ const addCustomer = async (req, res) => {
 
     //const customer = req.body;
     //await Customer.create(customer);
-    res.status(200).json("OK")
+    console.log("cus_id: "+ cus_id)
+    res.status(200).json({"cus_id": cus_id})
 }
 
 const generateNextPKforCustomer = async () => {//create new PK for customer

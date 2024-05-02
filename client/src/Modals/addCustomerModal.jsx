@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import { addCustomerValidation } from '../validations';
 
 
-export default function AddCustomerModel({ open, onClose }) {
+export default function AddCustomerModel({ open, onClose, setCustomerID }) {
 
     const onSubmit = async (values, actions) => { //Submition here
         const customerData = {
@@ -17,7 +17,8 @@ export default function AddCustomerModel({ open, onClose }) {
         }
         axios.post("http://localhost:3001/api/customers", { customerData },
             ).then((response) => {
-                alert("New customer added")
+                alert("New customer "+response.data.cus_id+" added")
+                setCustomerID(response.data.cus_id)
                 onClose();
                 clearFields()
             }).catch((error) => {

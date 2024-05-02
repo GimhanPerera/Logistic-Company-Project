@@ -54,7 +54,7 @@ export default function FeedbackModel({ open, onClose, ordId }) {
     };
     
     const submitComplain = () => {
-        
+        console.log("Feedback send")
         // VALIDATION SHOULD BE DONE HERE
     
         axios.post("http://localhost:3001/api/feedback", {
