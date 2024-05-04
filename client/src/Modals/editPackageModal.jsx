@@ -69,7 +69,7 @@ export default function EditPackageModal({ open, onClose, tableData, setTableDat
 
                 <form onSubmit={handleSubmit}>
                     <table>
-                    <tr>
+                        <tr>
                             <td><label>S_mark :</label></td>
                             <td><input
                                 type='text'
@@ -80,7 +80,7 @@ export default function EditPackageModal({ open, onClose, tableData, setTableDat
                                 onBlur={handleBlur}
                                 className="border-solid border-2 border-blue-800" /></td>
                             {errors.s_mark && touched.s_mark ? <small className="text-red-700 pl-1">{errors.s_mark}</small> : null}</tr>
-                        
+
                         <tr>
                             <td><label>Items :</label></td>
                             <td><input
@@ -136,7 +136,7 @@ export default function EditPackageModal({ open, onClose, tableData, setTableDat
                                 onBlur={handleBlur}
                                 className="border-solid border-2 border-blue-800" /></td>
                             {errors.weight && touched.weight ? <small className="text-red-700 pl-1">{errors.weight}</small> : null}</tr>
-                            <tr>
+                        <tr>
                             <td><label>VMW :</label></td>
                             <td><input
                                 type='text'
@@ -147,7 +147,7 @@ export default function EditPackageModal({ open, onClose, tableData, setTableDat
                                 onBlur={handleBlur}
                                 className="border-solid border-2 border-blue-800" /></td>
                             {errors.volume_metric_weight && touched.volume_metric_weight ? <small className="text-red-700 pl-1">{errors.volume_metric_weight}</small> : null}</tr>
-                            <tr>
+                        <tr>
                             <td><label>Gross weight :</label></td>
                             <td><input
                                 type='text'

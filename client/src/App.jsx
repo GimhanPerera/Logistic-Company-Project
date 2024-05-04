@@ -22,15 +22,15 @@ function App() {
     <Router>
       <Routes>
         <Route path="/">
-        <Route path="test" element={<TestFile />} />
-          <Route index element={<Website />} />
+          <Route path="test" element={<TestFile />} />
+           <Route index element={<Website />} /> {/* Testing this */}
           <Route path="stafflogin" element={<StaffLogin />} />
           <Route path="checkmyorder">
             <Route index element={<CustomerLogin />} />
-            <Route path=":trackingNumber" element={<OrderTrackingDetails/>}/>
+            <Route path=":trackingNumber" element={<OrderTrackingDetails />} />
             <Route path="myorders">
               <Route index element={<AllMyOrders />} />
-              <Route path=":id" element={<OrderTrackingDetailsValidated/>}/>
+              <Route path=":id" element={<OrderTrackingDetailsValidated />} />
             </Route>
           </Route>
           <Route path="cmsystem" element={<ManagmentSystem />}>

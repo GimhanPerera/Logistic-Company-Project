@@ -1,8 +1,8 @@
+import { Box } from '@mui/material';
 import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import SearchBar from "../../../components/SearchBar";
 import CustomerDetailsCard from "./CustomerDetailsCard";
-
 
 const CustomersDetails = () => {
   
@@ -18,9 +18,15 @@ const CustomersDetails = () => {
         <SearchBar/>
         {/* key kiyanne index in the array */}
         {listOfCustomers.map((customer, index) => (
-        <div key={index} className="post flex flex-col items-center">
+        <Box component="div" key={index}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center'
+        }}
+        >
           <CustomerDetailsCard customer={customer} />
-        </div>
+        </Box>
       ))}
     </div>
   )

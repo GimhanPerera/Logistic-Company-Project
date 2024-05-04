@@ -1,3 +1,4 @@
+import { Box, Button } from '@mui/material';
 import axios from "axios";
 import { Field, Form, Formik } from 'formik';
 import React, { useState } from 'react';
@@ -23,7 +24,7 @@ const NewOrder = () => {
 
     const dropDownChange = (event) => {
         setDropDownValue(event.target.value);
-        
+
     };
     const [isAddCustomerOpen, setAddCustomerOpen] = useState(false);
     const [customerID, setCustomerID] = useState("");
@@ -120,110 +121,128 @@ const NewOrder = () => {
 
     return (
         <>
-        <div className="relative">
-            <Formik
-                initialValues={initialVslues}
-            >
-                <Form onSubmit={handleSubmit}>
-                    <h3>Price quotation details</h3>
-                    <table className="border-solid border-2 border-black m-2">
-                        <tr>
-                            <td><label>Items :</label></td>
-                            <td><Field type='text' name='item' value={formData.item} id="item" onChange={handleChange} className="border-solid border-2 border-blue-800" /></td>
-                        </tr>
-                        <tr>
-                            <td><label>No of packages :</label></td>
-                            <td><Field type='text' name='packages' value={formData.packages} onChange={handleChange} className="border-solid border-2 border-blue-800" /></td>
-                        </tr>
-                        <tr>
-                            <td><label>Rough weight(Kg)  :</label></td>
-                            <td><Field type='text' name='weight' value={formData.weight} onChange={handleChange} className="border-solid border-2 border-blue-800" /></td>
-                        </tr>
-                        <tr>
-                            <td><label>Shipping method :</label></td>
-                            <td>
-                                {/* <Field type='text' name='shippingmethod' value={formData.shippingmethod} onChange={handleChange} className="border-solid border-2 border-blue-800" /> */}
-                                <select value={dropDownValue} onChange={dropDownChange}>
+            <div className="relative">
+                <Formik
+                    initialValues={initialVslues}
+                >
+                    <Form onSubmit={handleSubmit}>
+                    <Box component="div"
+                    sx={{display:'flex', justifyContent:'space-around', mt:'2rem'}}>
+                        <Box component="div">
+                            <h3>Price quotation details</h3>
+                            <table className="border-solid border-2 border-black m-2">
+                                <tr>
+                                    <td><label>Items :</label></td>
+                                    <td><Field type='text' name='item' value={formData.item} id="item" onChange={handleChange} className="border-solid border-2 border-blue-800" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label>No of packages :</label></td>
+                                    <td><Field type='text' name='packages' value={formData.packages} onChange={handleChange} className="border-solid border-2 border-blue-800" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label>Rough weight(Kg)  :</label></td>
+                                    <td><Field type='text' name='weight' value={formData.weight} onChange={handleChange} className="border-solid border-2 border-blue-800" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label>Shipping method :</label></td>
+                                    <td>
+                                        {/* <Field type='text' name='shippingmethod' value={formData.shippingmethod} onChange={handleChange} className="border-solid border-2 border-blue-800" /> */}
+                                        <select value={dropDownValue} onChange={dropDownChange}>
 
-                                    <option value="Ship cargo">Ship cargo</option>
+                                            <option value="Ship cargo">Ship cargo</option>
 
-                                    <option value="Air cargo">Air cargo</option>
+                                            <option value="Air cargo">Air cargo</option>
 
-                                </select></td>
-                        </tr>
-                        <tr>
-                            <td><label for="quotation">Quotation(LKR per kilo) :</label></td>
-                            <td><Field type='text' name='quotation' value={formData.quotation} onChange={handleChange} className="border-solid border-2 border-blue-800" /></td>
-                        </tr>
-                        <tr>
-                            <td><label for="description">Description :</label></td>
-                            <td><Field type='text' name='description' value={formData.description} onChange={handleChange} className="border-solid border-2 border-blue-800" /></td>
-                        </tr>
-                        <tr>
-                            <td><label for="supplierLoc">Supplier Location :</label></td>
-                            <td><Field type='text' name='supplierLoc' value={formData.supplierLoc} onChange={handleChange} className="border-solid border-2 border-blue-800" /></td>
-                        </tr>
-                        <tr>
-                            <td><label for="image">Image :</label></td>
-                            <td><Field type="file" id="image" name="image" onChange={handleImageChange} className="border-solid border-2 border-blue-800" /></td>
-                        </tr>
-                        <tr>
-                            <td><label for="invoice">Performa invoice :</label></td>
-                            <td><input type="file" id="invoice" name="invoice" onChange={handleInvoiceChange} className="border-solid border-2 border-blue-800" /></td>
-                        </tr>
-                    </table>
-                    <h3>Customer Details</h3>
-                    <table className="border-solid border-2 border-black m-2">
-                        <tr>
-                            <td><label for="cus_id">Customer ID :</label></td>
-                            <td><Field type="text"
-                                name="cusID"
-                                id="customerId"
-                                value={customerID}
-                                onChange={(e) => setCustomerID(e.target.value)} 
-                                className="border-solid border-2 border-blue-800" /></td>
-                            <td><p
-                                className="cursor-pointer"
-                                onClick={searchCustomer}
-                            >Search</p></td>
-                        </tr>
-                        <tr>
-                            <td><label for="name">Name :</label></td>
-                            <td><Field type="text"
-                                name="name"
-                                id="name"
-                                value={customerName}
-                                onChange={(e) => setCustomerName(e.target.value)}
-                                className="border-solid border-2 border-blue-800" /></td>
-                        </tr>
-                        <tr>
-                            <td><label for="tel_number">Tel number :</label></td>
-                            <td><Field type="text"
-                                id="tp"
-                                name="tp"
-                                value={customerTp}
-                                onChange={(e) => setCustomerTp(e.target.value)}
-                                className="border-solid border-2 border-blue-800" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td><p>New customer?</p><p className="cursor-pointer" onClick={() => setAddCustomerOpen(true)}>Yes</p></td>
-                        </tr>
-                    </table>
-                    <button onClick={toOrders} className="bg-[#ffffff] hover:bg-blue-600 text-[#68DD62] border-solid border-2 border-[#68DD62] px-4 py-2 rounded-md focus:outline-none ml-2">
-                        Cancel
-                    </button>
-                    <button type="submit" className="bg-[#68DD62] text-white px-4 py-2 rounded-md border-solid border-2 border-[#68DD62] focus:outline-none ml-2">
-                        Create order
-                    </button>
-                </Form>
-            </Formik>
-            <div>
-            <AddCustomerModel  open={isAddCustomerOpen} onClose={() => setAddCustomerOpen(false)} setCustomerID={setCustomerID} ></AddCustomerModel>
+                                        </select></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="quotation">Quotation(LKR per kilo) :</label></td>
+                                    <td><Field type='text' name='quotation' value={formData.quotation} onChange={handleChange} className="border-solid border-2 border-blue-800" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="description">Description :</label></td>
+                                    <td><Field type='text' name='description' value={formData.description} onChange={handleChange} className="border-solid border-2 border-blue-800" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="supplierLoc">Supplier Location :</label></td>
+                                    <td><Field type='text' name='supplierLoc' value={formData.supplierLoc} onChange={handleChange} className="border-solid border-2 border-blue-800" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="image">Image :</label></td>
+                                    <td><Field type="file" id="image" name="image" onChange={handleImageChange} className="border-solid border-2 border-blue-800" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="invoice">Performa invoice :</label></td>
+                                    <td><input type="file" id="invoice" name="invoice" onChange={handleInvoiceChange} className="border-solid border-2 border-blue-800" /></td>
+                                </tr>
+                            </table>
+                        </Box>
+                        <Box component="div">
+                            <h3>Customer Details</h3>
+                            <table className="border-solid border-2 border-black m-2">
+                                <tr>
+                                    <td><label for="cus_id">Customer ID :</label></td>
+                                    <td><Field type="text"
+                                        name="cusID"
+                                        id="customerId"
+                                        value={customerID}
+                                        onChange={(e) => setCustomerID(e.target.value)}
+                                        className="border-solid border-2 border-blue-800" /></td>
+                                    <td><p
+                                        className="cursor-pointer"
+                                        onClick={searchCustomer}
+                                    >Search</p></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="name">Name :</label></td>
+                                    <td><Field type="text"
+                                        name="name"
+                                        id="name"
+                                        value={customerName}
+                                        onChange={(e) => setCustomerName(e.target.value)}
+                                        className="border-solid border-2 border-blue-800" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label for="tel_number">Tel number :</label></td>
+                                    <td><Field type="text"
+                                        id="tp"
+                                        name="tp"
+                                        value={customerTp}
+                                        onChange={(e) => setCustomerTp(e.target.value)}
+                                        className="border-solid border-2 border-blue-800" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td><p>New customer?</p><p className="cursor-pointer" onClick={() => setAddCustomerOpen(true)}>Yes</p></td>
+                                </tr>
+                            </table>
+                        </Box>
+                        </Box>
+                        {/* <button onClick={toOrders} className="bg-[#ffffff] hover:bg-blue-600 text-[#68DD62] border-solid border-2 border-[#68DD62] px-4 py-2 rounded-md focus:outline-none ml-2">
+                            Cancel
+                        </button> */}
+                        <Box component="div" sx={{position:'absolute', right:'8rem'}}>
+                        <Button onClick={toOrders} variant="outlined"
+                            sx={{ ml: '1rem' }}>
+                            Cancel
+                        </Button>
+                        {/* <button type="submit" className="bg-[#68DD62] text-white px-4 py-2 rounded-md border-solid border-2 border-[#68DD62] focus:outline-none ml-2">
+                            Create order
+                        </button> */}
+                        <Button variant="contained"
+                            type="submit"
+                            sx={{ backgroundColor: '#68DD62', ml: '1rem' }}>
+                            Create order
+                        </Button>
+                        </Box>
+                    </Form>
+                </Formik>
+                <div>
+                    <AddCustomerModel open={isAddCustomerOpen} onClose={() => setAddCustomerOpen(false)} setCustomerID={setCustomerID} ></AddCustomerModel>
+                </div>
             </div>
-        </div>
-        
+
         </>
     )
 

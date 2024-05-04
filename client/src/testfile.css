@@ -1,0 +1,38 @@
+#testdev{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 2rem;
+    z-index: 50;
+  }
+
+  #testdev-h4 {
+    font-size: 1.875rem; /* Equivalent to text-3xl in Tailwind CSS */
+    font-weight: 700; /* Equivalent to font-bold in Tailwind CSS */
+}
+#rule {
+    height: 0.25rem; /* Equivalent to h-1 */
+    margin-top: 0.5rem; /* Equivalent to mt-2 */
+    margin-bottom: 0.5rem; /* Equivalent to mb-2 */
+  }
+  input {
+    border-style: solid;
+    border-width: 2px;
+    border-color: #1d4ed8; /* This is the hex value for Tailwind's blue-800 */
+  }
+  .btn {
+    margin-top: 0.5rem; /* equivalent to mt-2 */
+    background-color: #1E90FF; /* equivalent to bg-[#1E90FF] */
+    color: white; /* equivalent to text-white */
+    width: 100%; /* equivalent to w-full */
+    padding: 0.5rem 1rem; /* equivalent to p-2 */
+    border-radius: 1.5rem; /* equivalent to rounded-3xl */
+    border-width: 1px; /* equivalent to border-1 */
+    border-style: solid; /* equivalent to border-solid */
+    border-color: #1E90FF; /* equivalent to border-[#1E90FF] */
+  }
+  
+
+

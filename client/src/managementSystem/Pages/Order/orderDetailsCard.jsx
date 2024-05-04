@@ -1,3 +1,4 @@
+import { Box } from '@mui/material';
 import React from 'react';
 
 const OrderDetailsCard = ({ order }) => {
@@ -7,25 +8,55 @@ const OrderDetailsCard = ({ order }) => {
   }
 
   return (
-    <div className='w-2/4 h-32 border-2 mt-3 p-2 flex justify-between'>
-        <div>
-        <div className="title">Order number: {order.order_id}</div>
-        <div className="body">Customer ID: {order.Customer.customer_id}</div>
-        <div className="footer">Custoemr name: {order.Customer.f_name} {order.Customer.l_name}</div>
-        <div className="footer">Status: {order.status}</div>
-        </div>
-        <div className='text-blue-500 flex flex-col justify-end underline'>
-            Complete order
-        </div>
-        <div>
-            <div className='text-blue-500 flex flex-col justify-between items-end h-full underline'>
-                <p className=''>View</p>
-                <p>Add packages</p>
-                <p className=''>Update tracking</p>
-                <p>Cancel the order</p>
-            </div>
-        </div>
-    </div>
+    <Box component="div"
+      sx={{
+        width: '50%',
+        height: '7rem',
+        border: '2px solid',
+        marginTop: '0.75rem',
+        padding: '0.5rem',
+        display: 'flex',
+        justifyContent: 'space-between'
+      }}>
+      <div>
+        <div>Order number: {order.order_id}</div>
+        <div>Customer ID: {order.Customer.customer_id}</div>
+        <div>Custoemr name: {order.Customer.f_name} {order.Customer.l_name}</div>
+        <div>Status: {order.status}</div>
+      </div>
+      <Box
+        component="div"
+        sx={{
+          color: '#3B82F6',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-end',
+          textDecoration: 'underline'
+        }}
+      >
+        Complete order
+      </Box>
+      <div>
+        <Box
+          component="div"
+          sx={{
+            color: '#3B82F6',
+            flex: '1',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            alignItems: 'flex-end',
+            height: '100%',
+            textDecoration: 'underline'
+          }}
+        >
+          <p className=''>View</p>
+          <p>packages</p>
+          <p className=''>Update tracking</p>
+          <p>Cancel the order</p>
+        </Box>
+      </div>
+    </Box>
   );
 };
 
