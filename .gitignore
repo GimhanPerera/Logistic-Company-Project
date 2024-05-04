@@ -1,3 +1,5 @@
 
 server/.env
-server/images
+server/images/.
+client/src/testfile.jsx
+client/src/testfile2.jsx

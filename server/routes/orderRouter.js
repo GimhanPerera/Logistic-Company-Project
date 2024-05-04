@@ -16,13 +16,14 @@ const storage = multer.diskStorage({
     }
 })
 
+// For handling file uploads
 const upload = multer({storage: storage})
 //-------------------------------------
 
 //Customer Url and Controllor
 router.get("/", orderController.getAllOrderDetailsForOrderCard)
 
-router.post("/",upload.single("image"), orderController.newOrder)//DIDN'T USED OR CHECKED YET
+router.post("/", upload.fields([{ name: 'image', maxCount: 1 }, { name: 'invoice', maxCount: 1 }]), orderController.newOrder);
 
 //In the website, After custoemr login
 router.get("/myTrackingDetails",loginController.authenticateToken, orderController.trackingDetailsOfACustomer)//

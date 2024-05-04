@@ -5,11 +5,19 @@ import Navbar from "./navbar";
 export const Website = () => {
   return (
     <div>
-      <Navbar/>
+      <Navbar />
+
       <img
-          className="w-20 cursor-pointer p-1"
-          src={HeroImage}
-          alt="Logo"
+        src={HeroImage}
+        alt="Logo"
+      />
+      <img
+        src={HeroImage}
+        alt="Logo"
+      />
+      <img
+        src={HeroImage}
+        alt="Logo"
       />
     </div>
   )

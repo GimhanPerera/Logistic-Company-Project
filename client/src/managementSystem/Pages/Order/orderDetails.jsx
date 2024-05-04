@@ -1,3 +1,4 @@
+import { Box, Button } from '@mui/material';
 import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
@@ -7,31 +8,38 @@ import OrderDetailsCard from "./orderDetailsCard";
 const OrderDetails = () => {
   const navigate = useNavigate();
   const [listOfOrderDetails, setListOfOrder] = useState([]);
-    useEffect(() => {
-        axios.get("http://localhost:3001/api/order").then((response)=>{
-            setListOfOrder(response.data);
-        })
-    }, [])
+  useEffect(() => {
+    axios.get("http://localhost:3001/api/order").then((response) => {
+      setListOfOrder(response.data);
+    })
+  }, [])
 
-    const toNewOrder = () => {
-      navigate('../neworder');
-    }
+  const toNewOrder = () => {
+    navigate('../neworder');
+  }
 
   return (
     <div className="relative">
-        <SearchBar/>
-        <button className="bg-[#68DD62] absolute right-10 top-0 hover:bg-blue-600 text-white px-4 py-2 rounded-md focus:outline-none" onClick={toNewOrder}>
-                New Order
-            </button>
-        {/* key kiyanne index in the array */}
-        {listOfOrderDetails.map((order, index) => (
-        <div key={index} className="post flex flex-col items-center">
-            <OrderDetailsCard order={order} />
-        </div>
-        ))}
+      <SearchBar />
+      <Button variant="contained"
+        sx={{ backgroundColor: '#68DD62', position: 'fixed', right: '2em', top: '4.7rem' }}
+        onClick={toNewOrder}>
+        New Order
+      </Button>
+      {/* key kiyanne index in the array */}
+      {listOfOrderDetails.map((order, index) => (
+        <Box component="div" key={index}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
+          }}
+        >
+          <OrderDetailsCard order={order} />
+        </Box>
+      ))}
     </div>
   )
-
 }
 
 export default OrderDetails

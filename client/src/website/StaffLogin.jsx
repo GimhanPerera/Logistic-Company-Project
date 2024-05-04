@@ -1,49 +1,119 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import Navbar from './navbar'
-
+import { Box, Button } from '@mui/material';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import Navbar from './navbar';
 export const StaffLogin = () => {
-  return (
-    <div>
-        <Navbar/>
-        <section className="bg-[#EDFEFF]">
-    <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-        <div className="w-full bg-white shadow dark:border md:mt-0 sm:max-w-md xl:p-0 ">
-            <div className="p-6 space-y-4 md:space-y-6 sm:p-8 h-96">
-                <h1 className="text-xl font-bold leading-tight tracking-tight  md:text-2xl ">
-                    Login
-                </h1>
-                <form className="space-y-4 md:space-y-6" action="#">
-                    <div>
-                    <input
-                        type="text"
-                        name="Email"
-                        id="email"
-                        className="border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="Email"
-                        required
-                    />
-                    </div>
-                    <div>
-                        <input type="password" name="password" id="password" placeholder="Password"
-                        className=" border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5  dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        required/>
-                    </div>
-                    <div className="flex ">
-                        <a href="#" className="text-[#1E90FF] text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">Forgot password?</a>
-                    </div>
-                    <Link to="../cmsystem">
-                        <button type="submit" className="w-full bg-[#1E90FF] text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
-                            Log in
-                        </button>
-                    </Link>
-                </form>
-            </div>
+    return (
+        <div>
+            <Navbar />
+            <Box component="section" sx={{ backgroundColor: '#edfeff' }}>
+                <Box component="div"
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        paddingLeft: '1.5rem',
+                        paddingRight: '1.5rem',
+                        paddingTop: '4rem',
+                        paddingBottom: '2rem',
+                        marginLeft: 'auto',
+                        marginRight: 'auto',
+                    }}>
+                    <Box component="div"
+                        sx={{
+                            width: '30%',
+                            backgroundColor: '#fff',
+                            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                            borderColor: '#374151',
+                            marginTop: 0,
+                            maxWidth: '100%',
+                            padding: 0
+                        }}>
+                        <Box component="div"
+                            sx={{
+                                height: '24rem',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                paddingTop: '2.5rem',
+                                paddingBottom: '2.5rem',
+                                paddingLeft: '3rem',
+                                paddingRight: '3rem',
+                                gap: '1.5rem'
+                            }}>
+                            <Box component="h1"
+                                sx={{
+                                    fontSize: '1.5rem',
+                                    fontWeight: 700,
+                                    lineHeight: 1.25,
+                                    letterSpacing: '-0.025em'
+                                }}>
+                                Login
+                            </Box>
+                            <form action="#">
+                                <div>
+                                    <Box component="input"
+                                        type="text"
+                                        name="Email"
+                                        id="email"
+                                        placeholder="Email"
+                                        sx={{
+                                            border: '1px solid #D1D5DB',
+                                            color: '#1F2937',
+                                            fontSize: '0.875rem',
+                                            borderRadius: '0.375rem',
+                                            outline: 'none',
+                                            transition: 'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out',
+                                            display: 'block',
+                                            width: '100%',
+                                            padding: '0.625rem',
+                                            mb: '1rem',
+                                            '&:focus': {
+                                                borderColor: '#2563EB',
+                                                boxShadow: '0 0 0 0.125rem rgba(66, 153, 225, 0.5)'
+                                            }
+                                        }}
+                                        required />
+                                </div>
+                                <div>
+                                    <Box component="input"
+                                        type="password"
+                                        name="password"
+                                        id="password"
+                                        placeholder="Password"
+                                        sx={{
+                                            border: '1px solid #D1D5DB',
+                                            color: '#1F2937',
+                                            fontSize: '0.875rem',
+                                            borderRadius: '0.375rem',
+                                            outline: 'none',
+                                            transition: 'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out',
+                                            display: 'block',
+                                            width: '100%',
+                                            padding: '0.625rem',
+                                            mb: '1rem',
+                                            '&:focus': {
+                                                borderColor: '#2563EB',
+                                                boxShadow: '0 0 0 0.125rem rgba(66, 153, 225, 0.5)'
+                                            }
+                                        }}
+                                        required />
+                                </div>
+                                <div>
+                                    <Box component="p" sx={{ color: '#1E90FF', fontSize: '0.875rem', fontWeight: 'medium', cursor: 'pointer' }} underline="always">Forgot tracking number?</Box>
+                                </div>
+                                <Link to="../cmsystem">
+                                    <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+                                        Log in
+                                    </Button>
+                                </Link>
+                            </form>
+                        </Box>
 
-            </div>
+                    </Box>
+                </Box>
+            </Box>
         </div>
-        </section>
-    </div>
     )
 }
 

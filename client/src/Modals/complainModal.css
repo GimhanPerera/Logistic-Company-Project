@@ -1,0 +1,68 @@
+#container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7); /* Black with 70% opacity */
+  z-index: 40;
+}
+
+#card {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ffffff; /* bg-white */
+  padding: 2rem; /* p-8 */
+  z-index: 50; /* z-50 */
+}
+#title {
+  font-size: 1.875rem; /* Equivalent to text-3xl in Tailwind (3xl is 1.875rem) */
+  font-weight: 700; /* Equivalent to font-bold in Tailwind */
+  color: black;
+}
+hr {
+  height: 0.25rem; /* Assuming 1 unit in Tailwind is equivalent to 0.25rem */
+  margin-top: 0.5rem; /* Assuming 2 units in Tailwind is equivalent to 0.5rem */
+  margin-bottom: 0.5rem;
+}
+.ord_number {
+  font-weight: 600;
+}
+textarea {
+  border: 1px solid black;
+  width: 24rem;
+  padding: 0.25rem;
+}
+.text {
+  width: 24rem; /* 96 / 4 = 24 */
+  line-height: 1.25rem;
+}
+
+#submit_btn {
+  margin-top: 0.5rem;
+  background-color: #1e90ff;
+  color: white;
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 1.5rem;
+  border: 1px solid #1e90ff;
+  -webkit-border-radius: 1.5rem;
+  -moz-border-radius: 1.5rem;
+  -ms-border-radius: 1.5rem;
+  -o-border-radius: 1.5rem;
+}
+#cancel_btn {
+  margin-top: 0.5rem;
+  background-color: #feffff;
+  color: #1e90ff;
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 1.5rem;
+  border: 1px solid #1e90ff;
+  -webkit-border-radius: 1.5rem;
+  -moz-border-radius: 1.5rem;
+  -ms-border-radius: 1.5rem;
+  -o-border-radius: 1.5rem;
+}

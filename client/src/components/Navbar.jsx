@@ -1,30 +1,57 @@
-import React from 'react'
-import { FaBars, FaUserCircle } from 'react-icons/fa'
-
-const Navbar = ({sidebarToggle, setSidebarToggle, value }) => {
+import { Box } from '@mui/material';
+import React from 'react';
+import { FaBars, FaUserCircle } from 'react-icons/fa';
+import './Navbar.css';
+const Navbar = ({ sidebarToggle, setSidebarToggle, value }) => {
   return (
-    <nav className='bg-[#00084E] px-4 py-3 flex justify-between'>
-      <div className='flex items-center text-xl'>
-        <FaBars className='text-white me-4 cursor-pointer' onClick={() => setSidebarToggle(!sidebarToggle)}/>
-        <span className='text-white font-semibold'>{value}</span>
-      </div>
-      <div className='flex items-center gap-x-5'>
-        
-        <div className='relative flex gap-6 items-center'>
-          <p className='text-white '>Welcome, Gimhan</p>
-            <button className='text-white group'>
-                <FaUserCircle className='w-7 h-7 mt-1'/>
-                <div className='z-10 hidden absolute bg-white rounded-lg shadow w-32 group-focus:block top-full right-0'>
-                    <ul className='py-2 text-sm text-gray-950'>
-                        <li><a href=''>Profile</a></li>
-                        <li><a href=''>Setting</a></li>
-                        <li><a href=''>Log out</a></li>
-                    </ul>
-                </div>
-            </button>
+    <Box component="nav"
+      sx={{
+        backgroundColor: '#00084E',
+        padding: '0.75rem 1rem',
+        position: 'fixed',
+        display: 'flex',
+        justifyContent: 'space-between',
+
+        ...(sidebarToggle ? { width: '100%' } : { width: 'calc(100% - 16rem)' })
+      }}
+    >
+      <Box component="div"
+        sx={{
+          display: 'flex',
+          alignItems: 'center'
+        }}
+      >
+        <FaBars
+          style={{ color: 'white', marginRight: '1rem', cursor: 'pointer' }}
+          onClick={() => setSidebarToggle(!sidebarToggle)} />
+        <Box component="span"
+          sx={{
+            color: 'white',
+            fontWeight: 'bold',
+            fontSize: '1.25rem'
+          }} >{value}</Box>
+      </Box>
+      <Box component="div"
+        sx={{
+          display: 'flex',
+          alignItems: 'center'
+        }}
+      >
+        <div className='user-info'>
+          <p className='user-greeting'>Welcome, Gimhan</p>
+          <button className='user-button'>
+            <FaUserCircle className='user-icon' />
+            <div className='user-dropdown'>
+              <ul className='dropdown-list'>
+                <li><a href=''>Profile</a></li>
+                <li><a href=''>Setting</a></li>
+                <li><a href=''>Log out</a></li>
+              </ul>
+            </div>
+          </button>
         </div>
-      </div>
-    </nav>
+      </Box>
+    </Box>
   )
 }
 

@@ -1,0 +1,38 @@
+/* User info and dropdown */
+.user-info {
+  position: relative;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.user-greeting {
+  color: white;
+}
+
+.user-button {
+  color: white;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.user-icon {
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-top: 0.25rem;
+}
+
+.user-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: none;
+}
+
+.user-button:hover .user-dropdown {
+  display: block;
+}

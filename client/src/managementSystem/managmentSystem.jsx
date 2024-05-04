@@ -10,14 +10,15 @@ function ManagmentSystem() {
     setValue(newValue);
   };
   return (
-    <div className='flex'>
-      
-      <Sidebar sidebarToggle={sidebarToggle} handleChangeValue={handleChangeValue}/>
+    <div style={{ display: 'flex' }}>
+
+      <Sidebar sidebarToggle={sidebarToggle} handleChangeValue={handleChangeValue} />
+      <div ></div>
       <SystemLayout
-      sidebarToggle={sidebarToggle}
-      setSidebarToggle={setSidebarToggle}
-      value={value}/>
-      
+        sidebarToggle={sidebarToggle}
+        setSidebarToggle={setSidebarToggle}
+        value={value} />
+
     </div>
   )
 }

@@ -5,6 +5,7 @@ import CustomersDetails from './managementSystem/Pages/Customer/customersDetails
 import Dashboard from './managementSystem/Pages/Dashboard/Dashboard';
 import NewOrder from './managementSystem/Pages/Order/newOrder';
 import OrderDetails from './managementSystem/Pages/Order/orderDetails';
+import { Packages } from './managementSystem/Pages/Order/packages';
 import Reports from './managementSystem/Pages/Reports/Reports';
 import { ShipmentDetails } from './managementSystem/Pages/Shipment/shipmentDetails';
 import ManagmentSystem from './managementSystem/managmentSystem';
@@ -21,15 +22,15 @@ function App() {
     <Router>
       <Routes>
         <Route path="/">
-        <Route path="test" element={<TestFile />} />
-          <Route index element={<Website />} />
+          <Route path="test" element={<TestFile />} />
+           <Route index element={<Website />} /> {/* Testing this */}
           <Route path="stafflogin" element={<StaffLogin />} />
           <Route path="checkmyorder">
             <Route index element={<CustomerLogin />} />
-            <Route path=":trackingNumber" element={<OrderTrackingDetails/>}/>
+            <Route path=":trackingNumber" element={<OrderTrackingDetails />} />
             <Route path="myorders">
               <Route index element={<AllMyOrders />} />
-              <Route path=":id" element={<OrderTrackingDetailsValidated/>}/>
+              <Route path=":id" element={<OrderTrackingDetailsValidated />} />
             </Route>
           </Route>
           <Route path="cmsystem" element={<ManagmentSystem />}>
@@ -41,6 +42,7 @@ function App() {
             <Route path="reports" element={<Reports />} />
 
             <Route path="neworder" element={<NewOrder />} />
+            <Route path="addpackages" element={<Packages />} />
           </Route>
         </Route>
       </Routes>

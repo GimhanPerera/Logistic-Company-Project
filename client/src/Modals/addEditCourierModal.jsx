@@ -1,3 +1,4 @@
+import { Box, Button } from '@mui/material';
 import axios from 'axios';
 import React, { useState } from 'react';
 
@@ -21,9 +22,9 @@ export default function AddEditCourierModal({ open, onClose, courierID }) {
     }
 
     const addCourier = () => {
-        
-        //VALIDATION SHOULD DONE HERE
 
+        //VALIDATION SHOULD DONE HERE
+        alert(tpFields + " Adding " + nameField)
         axios.post("http://localhost:3001/courier", {
             "name": nameField,
             "tel_number": tpFields
@@ -42,7 +43,7 @@ export default function AddEditCourierModal({ open, onClose, courierID }) {
     }
 
     const editCourier = () => {
-        console.log("TP: "+tpFields)
+        console.log("TP: " + tpFields)
         //VALIDATION SHOULD DONE HERE
 
         axios.post("http://localhost:3001/api/courier/edit", {
@@ -63,67 +64,152 @@ export default function AddEditCourierModal({ open, onClose, courierID }) {
         });
     }
 
-    
-    if (open == 'add')return (
+
+    if (open == 'add') return (
         <>
             {/*Add Card*/}
-                <div className='fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-8 z-50'>
-                    <h4 className='text-3xl font-bold'>Add a Courier</h4><hr className='h-1 mt-2 mb-2'/>
+            <Box component="div"
+                sx={{
+                    position: 'fixed',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    backgroundColor: 'white',
+                    padding: '2rem',
+                    zIndex: 50
+                }}
+            >
+                <Box component="h4"
+                    sx={{
+                        fontSize: '1.875rem',
+                        fontWeight: 'bold',
+                    }}>Add a Courier</Box>
+                <Box
+                    component="hr"
+                    sx={{
+                        height: '0.25rem',
+                        marginTop: '0.5rem',
+                        marginBottom: '0.5rem',
+                        backgroundColor: 'gray'
+                    }}
+                ></Box>
+                <div>
+                    <p>Name: </p>
+                    <Box component="input"
+                        sx={{
+                            border: '1px solid black',
+                            width: '24rem',
+                            padding: '0.25rem'
+                        }}
+                        value={nameField}
+                        onChange={(e) => setNameField(e.target.value)}
+                    ></Box>
+                    <p>Tel number: </p>
+                    <Box component="input"
+                        sx={{
+                            border: '1px solid black',
+                            width: '24rem',
+                            padding: '0.25rem'
+                        }}
+                        value={tpFields}
+                        onChange={(e) => setTpFields(e.target.value)}
+                    ></Box>
                     <div>
-                        <p>Name: </p><input
-                            className='border border-solid border-black w-96 p-1'
-                            value={nameField} // Bind value to state variable
-                            onChange={(e) => setNameField(e.target.value)}/>
-                        <p>Tel number: </p><input
-                            className='border border-solid border-black w-96 p-1'
-                            value={tpFields} // Bind value to state variable
-                            onChange={(e) => setTpFields(e.target.value)}/>
-                        <div>
-                            <button onClick={addCourier} className='mt-2 bg-[#1E90FF] text-white w-full p-2 rounded-3xl border-solid border-1 border-[#1E90FF]'>Add</button><br />
-                            <button onClick={clickCloseBtn} className='mt-2 bg-[#feffff] text-[#1E90FF] w-full p-2 rounded-lg'>Cancel</button>
-                        </div>
+                        <Button onClick={addCourier} fullWidth variant="contained" sx={{ mt: 3, mb: 1, border: '1px solid #1E90FF' }}>Add</Button><br />
+                        <Button onClick={clickCloseBtn} fullWidth variant="contained" sx={{ mt: 0, mb: 2, border: '1px solid #1E90FF', color: '#1E90FF', backgroundColor: 'white' }}>Cancel</Button>
                     </div>
-
                 </div>
-
-            
+            </Box>
 
             {/*Background*/}
-            <div
+            <Box component="div"
                 id='container' onClick={handleClose}
-                className='fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-70 z-40'
+                sx={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)', // black with 70% opacity
+                    zIndex: 40
+                }}
             />
         </>
     )
-    else if(open =='false') return null;
+    else if (open == 'false') return null;
     else return (
         <>
             {/*Edit courier Card*/}
-                <div className='fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-8 z-50'>
-                    <h4 className='text-3xl font-bold'>Edit a Courier</h4><hr className='h-1 mt-2 mb-2'/>
+            <Box component="div"
+                sx={{
+                    position: 'fixed',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    backgroundColor: 'white',
+                    padding: '2rem',
+                    zIndex: 50
+                }}
+            >
+                <Box component="h4"
+                    sx={{
+                        fontSize: '1.875rem',
+                        fontWeight: 'bold',
+                    }}>Edit a Courier</Box>
+                <Box
+                    component="hr"
+                    sx={{
+                        height: '0.25rem', // Equivalent to h-1 in Tailwind
+                        marginTop: '0.5rem', // Equivalent to mt-2 in Tailwind
+                        marginBottom: '0.5rem',
+                        backgroundColor: 'gray'
+                    }}
+                ></Box>
+                <div>
+                    <Box
+                        component="p" sx={{
+                        }}>Courier ID: {open}</Box>
+                    <p>Name: </p>
+                    <Box component="input"
+                        sx={{
+                            border: '1px solid black',
+                            width: '24rem',
+                            padding: '0.25rem'
+                        }}
+                        value={nameField}
+                        onChange={(e) => setNameField(e.target.value)}
+                    ></Box>
+                    <p>Tel number: </p>
+                    <Box component="input"
+                        sx={{
+                            border: '1px solid black',
+                            width: '24rem',
+                            padding: '0.25rem'
+                        }}
+                        value={tpFields}
+                        onChange={(e) => setTpFields(e.target.value)}
+                    ></Box>
                     <div>
-                        <p className='w-96'>Courier ID: {open}</p>
-                        <p>Name: </p><input
-                            className='border border-solid border-black w-96 p-1'
-                            value={nameField} // Bind value to state variable
-                            onChange={(e) => setNameField(e.target.value)}/>
-                        <p>Tel number: </p><input
-                            className='border border-solid border-black w-96 p-1'
-                            value={tpFields} // Bind value to state variable
-                            onChange={(e) => setTpFields(e.target.value)}/>
-                        <div>
-                            <button onClick={editCourier} className='mt-2 bg-[#1E90FF] text-white w-full p-2 rounded-3xl border-solid border-1 border-[#1E90FF]'>Edit</button><br />
-                            <button onClick={clickCloseBtn} className='mt-2 bg-[#feffff] text-[#1E90FF] w-full p-2 rounded-lg'>Cancel</button>
-                        </div>
+                        <Button onClick={editCourier} fullWidth variant="contained" sx={{ mt: 3, mb: 1, border: '1px solid #1E90FF' }}>Edit</Button><br />
+                        <Button onClick={clickCloseBtn} fullWidth variant="contained" sx={{ mt: 0, mb: 2, border: '1px solid #1E90FF', color: '#1E90FF', backgroundColor: 'white' }}>Cancel</Button>
                     </div>
-
                 </div>
+
+            </Box>
             {/*Background*/}
-            <div
+            <Box component="div"
                 id='container' onClick={handleClose}
-                className='fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-70 z-40'
+                sx={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)', // black with 70% opacity
+                    zIndex: 40
+                }}
             />
         </>
     )
-    
+
 }

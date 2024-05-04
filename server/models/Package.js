@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
         },
         status: {
-            type: DataTypes.STRING(10),
+            type: DataTypes.STRING(13),
             allowNull: false,
         },
         local_tracking_number: {
@@ -54,14 +54,14 @@ module.exports = (sequelize, DataTypes) => {
         },
         rate: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            allowNull: true,
         },
         tax: {
-            type: DataTypes.DECIMAL(6, 2),
+            type: DataTypes.DECIMAL(8, 2),
             allowNull: true,
         },
         total: {
-            type: DataTypes.DECIMAL(6, 2),
+            type: DataTypes.DECIMAL(8, 2),
             allowNull: false,
         },
     }, {
