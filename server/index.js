@@ -30,6 +30,12 @@ app.use("/api/complain",complainsRouter);
 const feedbackRouter = require('./routes/feedbackRouter');
 app.use("/api/feedback",feedbackRouter);
 
+const supplierRouter = require('./routes/supplierRouter');
+app.use("/api/supplier",supplierRouter);
+
+const packageRouter = require('./routes/packageRouter');
+app.use("/api/package",packageRouter);
+
 db.sequelize.sync().then(() => {
     app.listen(3001, () => {
         console.log("Server running on port 3001");

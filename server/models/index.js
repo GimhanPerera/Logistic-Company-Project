@@ -63,6 +63,8 @@ db.Order.hasMany(db.Order_sms, { foreignKey: 'order_id' });
 db.Order_sms.belongsTo(db.Order, { foreignKey: 'order_id' });
 db.Sms.hasMany(db.Order_sms, { foreignKey: 'sms_id' });
 db.Order_sms.belongsTo(db.Sms, { foreignKey: 'sms_id' });
+db.Supplier.hasMany(db.Package, { foreignKey: 'supplier_id' });
+db.Package.belongsTo(db.Supplier, { foreignKey: 'supplier_id' });
 
 
 db.sequelize = sequelize;

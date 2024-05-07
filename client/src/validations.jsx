@@ -14,14 +14,14 @@ export const addCustomerValidation = Yup.object({
     nic: Yup.string().min(3).required("Please Enter NIC"),
 })
 export const addPackageValidation = Yup.object({
-    s_mark: Yup.string().min(1).required("Please Enter name"),
-    items: Yup.string().min(3).required("Please Enter name"),
-    length: Yup.string().min(3).required("Please Enter name"),
-    height: Yup.string().min(3).required("Please Enter name"),
-    width: Yup.string().min(3).required("Please Enter name"),
-    weight: Yup.string().min(3).required("Please Enter name"),
-    volume_metric_weight: Yup.string().min(3).required("Please Enter name"),
-    gross_weight: Yup.string().min(3).required("Please Enter name"),
+    package_count: Yup.string().min(1).required("Please Enter name"),
+    items: Yup.string().min(2).required("Please Enter name"),
+    length: Yup.string().min(2).required("Please Enter name"),
+    height: Yup.string().min(2).required("Please Enter name"),
+    width: Yup.string().min(2).required("Please Enter name"),
+    weight: Yup.string().min(2).required("Please Enter name"),
+    volume_metric_weight: Yup.string().min(1).required("Please Enter name"),
+    gross_weight: Yup.string().min(1).required("Please Enter name"),
 })
 
 
