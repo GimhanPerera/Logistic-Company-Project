@@ -1,10 +1,17 @@
 import { Box } from '@mui/material';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const OrderDetailsCard = ({ order }) => {
+  const navigate = useNavigate();
+  
   // Check if courier is defined before trying to access its properties
   if (!order) {
     return null; // or handle the case where courier is undefined/null
+  }
+  const toPackages = () => {
+    const id=order.order_id;
+    navigate(`./${id}`);
   }
 
   return (
@@ -51,7 +58,7 @@ const OrderDetailsCard = ({ order }) => {
           }}
         >
           <p className=''>View</p>
-          <p>packages</p>
+          <Box component="p" onClick={toPackages} sx={{cursor:'pointer'}}>packages</Box>
           <p className=''>Update tracking</p>
           <p>Cancel the order</p>
         </Box>
