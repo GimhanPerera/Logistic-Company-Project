@@ -5,5 +5,6 @@ const supplierController = require('../controller/supplierController') //import 
 
 router.get("/", supplierController.getAllSuppliers);//get all Supplier details
 router.get("/foraddpackages", supplierController.getAllSuppliersForAddPackage);//get Supplier details for add packages
+router.post("/", supplierController.addSupplier);//Add new supplier
 
 module.exports = router;

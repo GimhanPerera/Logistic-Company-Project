@@ -35,7 +35,6 @@ const NewOrder = () => {
         navigate('../order');
     }
     const [formData, setFormData] = useState({
-
         item: '',
         packages: '',
         weight: '',
@@ -55,12 +54,6 @@ const NewOrder = () => {
             [e.target.name]: e.target.value
         });
     };
-
-    const searchNewCustomer = (customerId) => {
-        setCustomerID(customerId);
-
-        searchCustomer();
-    }
 
     const handleImageChange = (e) => {
         setFormData({
