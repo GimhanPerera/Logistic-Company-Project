@@ -2,8 +2,8 @@ import { Box, Button } from '@mui/material';
 import axios from "axios";
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import loginImg from '../assets/customerLoginImg.jpg';
 import Navbar from './navbar';
-
 export const CustomerLogin = () => {
   const [show, setShow] = useState(true);
   const [trackingNumber, setTrackingNumber] = useState("");
@@ -58,20 +58,18 @@ export const CustomerLogin = () => {
     <div>
       <Navbar />
       {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}{" "}
-      <Box component="section" sx={{ backgroundColor: '#edfeff' }}>
+      <Box component="section" sx={{ backgroundColor: '#e0f0f3', height:'86.6vh',marginTop:'0rem' }}>
         <Box component="div"
           sx={{
             display: 'flex',
-            flexDirection: 'column',
+            flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
-            paddingLeft: '1.5rem',
-            paddingRight: '1.5rem',
-            paddingTop: '2rem',
-            paddingBottom: '2rem',
-            marginLeft: 'auto',
-            marginRight: 'auto',
+            paddingTop:'3rem'
           }}>
+            <Box component="div">
+              <img src={loginImg} alt='login image'  style={{width:'26.4rem', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',}}/>
+            </Box>
           <Box component="div"
             sx={{
               width: '30%',
