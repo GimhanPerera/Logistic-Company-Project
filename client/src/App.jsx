@@ -6,6 +6,7 @@ import Dashboard from './managementSystem/Pages/Dashboard/Dashboard';
 import NewOrder from './managementSystem/Pages/Order/newOrder';
 import OrderDetails from './managementSystem/Pages/Order/orderDetails';
 import { Packages } from './managementSystem/Pages/Order/packages';
+import PrintShippingMarks from './managementSystem/Pages/Order/printShippingMarks';
 import Reports from './managementSystem/Pages/Reports/Reports';
 import { ShipmentDetails } from './managementSystem/Pages/Shipment/shipmentDetails';
 import ManagmentSystem from './managementSystem/managmentSystem';
@@ -22,8 +23,9 @@ function App() {
     <Router>
       <Routes>
         <Route path="/">
-          <Route path="test" element={<TestFile />} />
-           <Route index element={<Website />} /> {/* Testing this */}
+          <Route path="test1" element={<TestFile />} /> {/* Testing this */}
+          <Route path="test2" element={<PrintShippingMarks />} /> {/* Testing this */}
+          <Route index element={<Website />} />
           <Route path="stafflogin" element={<StaffLogin />} />
           <Route path="checkmyorder">
             <Route index element={<CustomerLogin />} />
@@ -45,7 +47,7 @@ function App() {
             <Route path="reports" element={<Reports />} />
 
             <Route path="neworder" element={<NewOrder />} />
-            
+
           </Route>
         </Route>
       </Routes>

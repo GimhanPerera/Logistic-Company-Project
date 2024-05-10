@@ -1,8 +1,11 @@
 import AddIcon from '@mui/icons-material/Add';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CancelIcon from '@mui/icons-material/Close';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import EditIcon from '@mui/icons-material/Edit';
+import PrintIcon from '@mui/icons-material/Print';
 import SaveIcon from '@mui/icons-material/Save';
 import { Container } from '@mui/material';
 import Box from '@mui/material/Box';
@@ -17,8 +20,9 @@ import {
 } from '@mui/x-data-grid';
 import axios from "axios";
 import { Field, Form, Formik } from 'formik';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import ReactToPrint from 'react-to-print';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from 'sweetalert2';
@@ -139,6 +143,9 @@ export const Packages = () => {
 
   const [rowModesModel, setRowModesModel] = useState({});
   const [listOfSuppliers, setListOfSuppliers] = useState([]);
+  const [displayMasks, setDisplayMasks] = useState(false);
+  const [printables, setPrintables] = useState([]);
+  const componentRef = useRef();
 
   //supplier form data
   const [name, setName] = useState("");
@@ -376,7 +383,7 @@ export const Packages = () => {
     grouped[supplier].push(row);
     return grouped;
   }, {});
-  
+
   //Add new supplier
   const addSupplier = async (e) => {
     //  validations
@@ -390,7 +397,7 @@ export const Packages = () => {
         des: des
       });
       console.log('Supplier added successfully:', response.data.new_supplier);
-      toast.success("Supplier "+response.data.new_supplier+" added");
+      toast.success("Supplier " + response.data.new_supplier + " added");
       // Create a new array with the added supplier using the spread operator
       const updatedList = [...listOfSuppliers, response.data.new_supplier];
       // Set the state to the updated array
@@ -439,7 +446,6 @@ export const Packages = () => {
       }
 
     });
-
     console.log(SMdetails);
 
     axios.post("http://localhost:3001/api/package/addpackages", SMdetails)
@@ -454,7 +460,8 @@ export const Packages = () => {
             //text: "That thing is still around?",
             icon: "success"
           });
-          toBack()
+          setPrintables(SMdetails);
+          setDisplayMasks(true);
         }
       })
       .catch((error) => {
@@ -464,98 +471,99 @@ export const Packages = () => {
 
   }
   //===========================================
-  return (
-    <>
-      <Box component="h1" sx={{ textAlign: 'center', position: 'relative' }}>Add packages</Box>
+  if (!displayMasks) { //Add packages
+    return (
+      <>
+        <Box component="h1" sx={{ textAlign: 'center', position: 'relative' }}>Add packages</Box>
 
-      {/* SAVE btn */}
-      <Button
-        component="label"
-        role={undefined}
-        variant="contained"
-        tabIndex={-1}
-        startIcon={<CloudUploadIcon />}
-        sx={{ ml: '20px' }}
-      >
-        Upload file
-        <VisuallyHiddenInput type="file" accept=".xlsx, .xls" onChange={handleFileUpload} />
-      </Button>
+        {/* SAVE btn */}
+        <Button
+          component="label"
+          role={undefined}
+          variant="contained"
+          tabIndex={-1}
+          startIcon={<CloudUploadIcon />}
+          sx={{ ml: '20px' }}
+        >
+          Upload file
+          <VisuallyHiddenInput type="file" accept=".xlsx, .xls" onChange={handleFileUpload} />
+        </Button>
 
-      {/* Back btn */}
-      <Button variant="contained"
-        sx={{ ml: '20px' }}
-        onClick={toggleSupplier}
-      >
-        new Supplier
-      </Button>
+        {/* Back btn */}
+        <Button variant="contained"
+          sx={{ ml: '20px' }}
+          onClick={toggleSupplier}
+        >
+          new Supplier
+        </Button>
 
-      {/* Supplier form */}
-      <Formik
-        initialValues={initialVslues}
-      >
-        <Form onSubmit={addSupplier}>
-          <table className="border-solid border-2 border-black m-2" style={{ border: 'solid 1px gray', margin: '1rem', padding: '1rem' }}>
-            <tr>
-              <td><label for="name">Name :</label></td>
-              <td><Field type="text"
-                name="name"
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="border-solid border-2 border-blue-800" /></td>
-            </tr>
-            <tr>
-              <td><label for="country">Country :</label></td>
-              <td><Field type="text"
-                id="country"
-                name="country"
-                value={country}
-                onChange={(e) => setCountry(e.target.value)}
-                className="border-solid border-2 border-blue-800" />
-              </td>
-            </tr>
-            <tr>
-              <td><label for="tp">Tel. Number :</label></td>
-              <td><Field type="text"
-                id="tp"
-                name="tp"
-                value={tel}
-                onChange={(e) => setTel(e.target.value)}
-                className="border-solid border-2 border-blue-800" />
-              </td>
-            </tr>
-            <tr>
-              <td><label for="description">Description :</label></td>
-              <td><Field type="text"
-                id="description"
-                name="description"
-                value={des}
-                onChange={(e) => setDes(e.target.value)}
-                className="border-solid border-2 border-blue-800" />
-              </td>
-            </tr>
-            <tr>
-              <td></td>
-              <td style={{ paddingTop: '0.7rem' }}>
-                <Button variant="text"
-                  sx={{ ml: '20px' }}
-                >
-                  Cancel
-                </Button>
-                <Button variant="contained"
-                  sx={{ ml: '20px' }}
-                  onClick={addSupplier}
-                >
-                  Add
-                </Button>
-              </td>
-            </tr>
-          </table>
-        </Form>
-      </Formik>
+        {/* Supplier form */}
+        <Formik
+          initialValues={initialVslues}
+        >
+          <Form onSubmit={addSupplier}>
+            <table className="border-solid border-2 border-black m-2" style={{ border: 'solid 1px gray', margin: '1rem', padding: '1rem' }}>
+              <tr>
+                <td><label for="name">Name :</label></td>
+                <td><Field type="text"
+                  name="name"
+                  id="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="border-solid border-2 border-blue-800" /></td>
+              </tr>
+              <tr>
+                <td><label for="country">Country :</label></td>
+                <td><Field type="text"
+                  id="country"
+                  name="country"
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value)}
+                  className="border-solid border-2 border-blue-800" />
+                </td>
+              </tr>
+              <tr>
+                <td><label for="tp">Tel. Number :</label></td>
+                <td><Field type="text"
+                  id="tp"
+                  name="tp"
+                  value={tel}
+                  onChange={(e) => setTel(e.target.value)}
+                  className="border-solid border-2 border-blue-800" />
+                </td>
+              </tr>
+              <tr>
+                <td><label for="description">Description :</label></td>
+                <td><Field type="text"
+                  id="description"
+                  name="description"
+                  value={des}
+                  onChange={(e) => setDes(e.target.value)}
+                  className="border-solid border-2 border-blue-800" />
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td style={{ paddingTop: '0.7rem' }}>
+                  <Button variant="text"
+                    sx={{ ml: '20px' }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button variant="contained"
+                    sx={{ ml: '20px' }}
+                    onClick={addSupplier}
+                  >
+                    Add
+                  </Button>
+                </td>
+              </tr>
+            </table>
+          </Form>
+        </Formik>
 
-      {/*OLD TABLE: SAVE TO DELETE*/}
-      {/* <div className='w-full'>
+        {/*OLD TABLE: SAVE TO DELETE*/}
+        {/* <div className='w-full'>
         <div className="relative overflow-x-auto">
           <table className='w-full text-sm text-left rtl:text-right text-gray-900'>
             <thead className='text-xs text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-white'>
@@ -597,31 +605,152 @@ export const Packages = () => {
         </div>
       </div> */}
 
-      <Button variant="contained" onClick={saveAllPackages} startIcon={<SaveIcon />} sx={{ backgroundColor: '#68DD62', position: 'fixed', right: '4rem', top: '5rem' }}>Save</Button>
-      <Button variant="outlined" onClick={toBack} sx={{ position: 'fixed', right: '11rem', top: '5rem' }}>Back</Button>
+        <Button variant="contained" onClick={saveAllPackages} startIcon={<SaveIcon />} sx={{ backgroundColor: '#68DD62', position: 'fixed', right: '4rem', top: '5rem' }}>Save</Button>
+        <Button variant="outlined" onClick={toBack} sx={{ position: 'fixed', right: '11rem', top: '5rem' }}>Back</Button>
 
-      <Container>
-        <Box sx={{ height: 400, width: '90%' }}>
-          <StyledDataGrid sx={{ border: '1px solid gray' }}
-            rows={rows}
-            columns={columns}
-            editMode="row"
-            rowModesModel={rowModesModel}
-            onRowModesModelChange={handleRowModesModelChange}
-            onRowEditStop={handleRowEditStop}
-            processRowUpdate={processRowUpdate}
-            slots={{
-              toolbar: EditToolbar,
-            }}
-            slotProps={{
-              toolbar: { rows, setRows, setRowModesModel },
-            }}
-          />
+        <Container>
+          <Box sx={{ height: 400, width: '90%' }}>
+            <StyledDataGrid sx={{ border: '1px solid gray' }}
+              rows={rows}
+              columns={columns}
+              editMode="row"
+              rowModesModel={rowModesModel}
+              onRowModesModelChange={handleRowModesModelChange}
+              onRowEditStop={handleRowEditStop}
+              processRowUpdate={processRowUpdate}
+              slots={{
+                toolbar: EditToolbar,
+              }}
+              slotProps={{
+                toolbar: { rows, setRows, setRowModesModel },
+              }}
+            />
+          </Box>
+        </Container>
+        <ToastContainer />
+      </>
+    )
+  }
+  else { //Display shipping marks
+    return (
+      <>
+
+        <h2>Shipping marks</h2>
+        {/* Back btn */}
+        <Button variant="contained"
+          sx={{ ml: '20px' }}
+          onClick={toBack}
+        >
+          Back
+        </Button>
+
+        {/*Print btn*/}
+        <ReactToPrint
+          trigger={() => (
+            <Button
+          component="label"
+          variant="contained"
+          startIcon={<PrintIcon />}
+          sx={{ ml: '20px' }}
+        >
+          Print / Download
+        </Button>
+          )}
+          content={() => componentRef.current}
+          fileName="shipping_marks.pdf" // Set the default save name here
+        />
+        <Box component="div" sx={{ m: '10px 100px' }}>
+          <Box component="div" ref={componentRef} className='motech' sx={{ m: '10px 10px' }}> {/*backgroundColor: 'yellow',*/}
+
+            {printables.map((packageMark, index) => (
+              <Box component="div" className='container' key={index}>
+                {/* A shipping mark */}
+
+                <Box component="div"
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    mb: '0.5rem'
+                  }}>
+                  <Box component="div"
+                    sx={{
+                      border: '1px solid black',
+                      padding: '20px',
+                      flexGrow: 4
+                    }}>
+                    <table>
+                      <tbody>
+                        <tr>
+                          <td><Box component="h1" sx={{ fontSize: '2.5rem' }}>MARK</Box></td>
+                          <td><Box component="h1" sx={{ fontSize: '2.5rem' }}>: {packageMark.smark.split(" ")[0]}</Box></td>
+                        </tr>
+                        <tr>
+                          <td><Box component="h1" sx={{ fontSize: '2.5rem' }}>P/No</Box></td>
+                          <td><Box component="h1" sx={{ fontSize: '2.5rem' }}>: {packageMark.smark.split(" ")[1]}</Box></td>
+                        </tr>
+                        {packageMark.smark[6] === "A" ? (
+                          <tr>
+                            <td>
+                              <Box component="h1" sx={{ fontSize: '2.2rem' }}><CheckBoxOutlineBlankIcon sx={{ position: 'relative', top: '0.3rem', fontSize: '3rem', pt: '0.8rem' }} />SEA</Box>
+                            </td>
+                            <td>
+                              <Box component="h1" sx={{ fontSize: '2.2rem' }}><CheckBoxIcon sx={{ position: 'relative', top: '0.3rem', fontSize: '3rem', pt: '0.8rem' }} />AIR</Box>
+                            </td>
+                          </tr>
+                        ) : (
+                          <tr>
+                            <td>
+                              <Box component="h1" sx={{ fontSize: '2.9rem' }}><CheckBoxIcon sx={{ position: 'relative', top: '0.2rem', fontSize: '3.5rem', pt: '1rem' }} />SEA</Box>
+                            </td>
+                            <td>
+                              <Box component="h1" sx={{ fontSize: '2.9rem' }}><CheckBoxOutlineBlankIcon sx={{ position: 'relative', top: '0.2rem', fontSize: '3.5rem', pt: '1rem' }} />AIR</Box>
+                            </td>
+                          </tr>
+                        )}
+
+                      </tbody>
+                    </table>
+                  </Box>
+                  <Box component="div"
+                    sx={{
+                      border: '1px solid black',
+                      padding: '20px',
+                      flexGrow: 1,
+                    }}>
+                    <table style={{ margin: 'auto' }}>
+                      <tbody>
+                        <tr>
+                          <td><Box component="p">Length</Box></td>
+                          <td><Box component="p">: {packageMark.details.length}m</Box></td>
+                        </tr>
+                        <tr>
+                          <td><Box component="p">Height</Box></td>
+                          <td><Box component="p">: {packageMark.details.height}m</Box></td>
+                        </tr>
+                        <tr>
+                          <td><Box component="p">Width</Box></td>
+                          <td><Box component="p">: {packageMark.details.width}m</Box></td>
+                        </tr>
+                        <tr>
+                          <td><Box component="p">Weight</Box></td>
+                          <td><Box component="p">: {packageMark.details.weight}kg</Box></td>
+                        </tr>
+                        <tr>
+                          <td><Box component="p">VMW</Box></td>
+                          <td><Box component="p">: {packageMark.details.volume_metric_weight}kg</Box></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </Box>
+                </Box>
+              </Box>
+            ))}
+          </Box>
         </Box>
-      </Container>
-      <ToastContainer />
-    </>
-  )
+
+      </>
+    )
+  }
 }
 
 
