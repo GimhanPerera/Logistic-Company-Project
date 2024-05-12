@@ -1,4 +1,3 @@
-//Formik but not submit
 import { Box, Button } from '@mui/material';
 import axios from "axios";
 import { useFormik } from 'formik';
@@ -6,21 +5,37 @@ import React, { useState } from 'react';
 import { addCustomerValidation } from '../validations';
 
 export default function AddCustomerModel({ open, onClose, setCustomerID }) {
-
+    const [nicFront, setNicFront] = useState(null);
+    const handleNicFrontChange = (e) => {
+        setNicFront( e.target.files[0]); // Update the image file in the form data
+    };
+    const [nicBack, setNicBack] = useState(null);
+    const handleNicBackChange = (e) => {
+        setNicBack( e.target.files[0]); // Update the image file in the form data
+    };
     const onSubmit = async (values, actions) => { //Submition here
+        //e.preventDefault;
         const customerData = {
             f_name: values.f_name,
             l_name: values.l_name,
             tel_number: values.tel_number,
             address: values.address,
-            nic: values.nic
+            nic: values.nic,
+            nicFront: nicFront,
+            nicBack: nicBack
         }
-        axios.post("http://localhost:3001/api/customers", { customerData },
+        console.log(customerData)
+        axios.post("http://localhost:3001/api/customers", customerData ,{
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }
         ).then((response) => {
-            alert("New customer " + response.data.cus_id + " added")
-            setCustomerID(response.data.cus_id)
+            //alert("New customer " + response.data.cus_id + " added")
+            setCustomerID(response.data.cus_id);
             onClose();
-            clearFields()
+            setErrors({});
+            clearFields();
         }).catch((error) => {
             console.error('Error submitting complain:', error);
         });
@@ -68,23 +83,6 @@ export default function AddCustomerModel({ open, onClose, setCustomerID }) {
         clearFields()
     }
 
-    const addCustomer = (e) => {
-        e.preventDefault();
-
-        console.log("It works")
-        axios.post("http://localhost:3001/api/customers", { customerData },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }).then((response) => {
-                console.log("New customer added")
-                onClose();
-                clearFields()
-            }).catch((error) => {
-                console.error('Error submitting complain:', error);
-            });
-    }
 
     if (!open) return null;
     return (
@@ -118,7 +116,7 @@ export default function AddCustomerModel({ open, onClose, setCustomerID }) {
                                 id="f_name"
                                 onBlur={handleBlur}
                                 className="border-solid border-2 border-blue-800" /></td>
-                            {errors.f_name && touched.f_name ? <small className="text-red-700 pl-1">{errors.f_name}</small> : null}</tr>
+                            {errors.f_name && touched.f_name ? <small style={{ color: 'red' }}>{errors.f_name}</small> : null}</tr>
                         <tr>
                             <td><label>Last name :</label></td>
                             <td><input
@@ -129,7 +127,7 @@ export default function AddCustomerModel({ open, onClose, setCustomerID }) {
                                 id="l_name"
                                 onBlur={handleBlur}
                                 className="border-solid border-2 border-blue-800" /></td>
-                            {errors.l_name && touched.l_name ? <small className="text-red-700 pl-1">{errors.l_name}</small> : null}</tr>
+                            {errors.l_name && touched.l_name ? <small style={{ color: 'red' }}>{errors.l_name}</small> : null}</tr>
                         <tr>
                             <td><label>Tel. Number :</label></td>
                             <td><input
@@ -140,7 +138,7 @@ export default function AddCustomerModel({ open, onClose, setCustomerID }) {
                                 id="tel_number"
                                 onBlur={handleBlur}
                                 className="border-solid border-2 border-blue-800" /></td>
-                            {errors.tel_number && touched.tel_number ? <small className="text-red-700 pl-1">{errors.tel_number}</small> : null}</tr>
+                            {errors.tel_number && touched.tel_number ? <small style={{ color: 'red' }}>{errors.tel_number}</small> : null}</tr>
                         <tr>
                             <td><label>Address :</label></td>
                             <td><input
@@ -151,7 +149,7 @@ export default function AddCustomerModel({ open, onClose, setCustomerID }) {
                                 id="address"
                                 onBlur={handleBlur}
                                 className="border-solid border-2 border-blue-800" /></td>
-                            {errors.address && touched.address ? <small className="text-red-700 pl-1">{errors.address}</small> : null}</tr>
+                            {errors.address && touched.address ? <small style={{ color: 'red' }}>{errors.address}</small> : null}</tr>
                         <tr>
                             <td><label>NIC :</label></td>
                             <td><input
@@ -162,7 +160,34 @@ export default function AddCustomerModel({ open, onClose, setCustomerID }) {
                                 id="nic"
                                 onBlur={handleBlur}
                                 className="border-solid border-2 border-blue-800" /></td>
-                            {errors.nic && touched.nic ? <small className="text-red-700 pl-1">{errors.nic}</small> : null}</tr>
+                            {errors.nic && touched.nic ? <small style={{ color: 'red' }}>{errors.nic}</small> : null}</tr>
+                        <tr>
+                            <td><label for="nicBack">NIC front picture :</label></td>
+                            <td>
+                                <input type="file" name="nicFront" onChange={handleNicFrontChange} accept="image/*"
+                                    style={{
+                                        border: '1px solid #ccc',
+                                        padding: '10px',
+                                        borderRadius: '5px',
+                                        marginTop: '10px',
+                                        width: '200px',
+                                    }} />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="nicBack">NIC back picture :</label></td>
+                            <td>
+                                <input type="file" name="nicBack" onChange={handleNicBackChange} accept="image/*"
+                                    style={{
+                                        border: '1px solid #ccc',
+                                        padding: '10px',
+                                        borderRadius: '5px',
+                                        marginTop: '10px',
+                                        width: '200px',
+                                    }}
+                                />
+                            </td>
+                        </tr>
                     </table>
                     <Button type='submit' fullWidth variant="contained" sx={{ mt: 3, mb: 1, border: '1px solid #1E90FF' }}>Submit</Button><br />
                     <Button onClick={clickCloseBtn} fullWidth variant="contained" sx={{ mt: 0, mb: 2, border: '1px solid #1E90FF', height: '2.0rem', color: '#1E90FF', backgroundColor: 'white' }}>Cancel</Button>

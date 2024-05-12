@@ -1,8 +1,12 @@
 import { Box, Button } from '@mui/material';
 import axios from "axios";
+import { useFormik } from 'formik';
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import loginImg from '../assets/customerLoginImg.jpg';
+import { customerLoginValidation } from '../validations';
 import Navbar from './navbar';
 export const CustomerLogin = () => {
   const [show, setShow] = useState(true);
@@ -32,27 +36,35 @@ export const CustomerLogin = () => {
     }
   };
 
-  const loginAsCustomer = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post("http://localhost:3001/api/login/customer", {
-        "cus_id": customerID,
-        "pwd": pwd
-      });
-      if (response.data.isValid) {
-        localStorage.setItem('token', response.data.accessToken);
-        navigate('./myorders');
-      } else {
-
+  const loginAsCustomer = useFormik({
+    
+    initialValues: {
+      customerID: '',
+      password:''
+    },
+    validationSchema: customerLoginValidation,
+    onSubmit: async (values, actions) => {
+      try {
+        const response = await axios.post("http://localhost:3001/api/login/customer", {
+          "cus_id": values.customerID,
+          "pwd": values.pwd
+        });
+        if (response.data.isValid) {
+          localStorage.setItem('token', response.data.accessToken);
+          navigate('./myorders');
+        } else {
+  
+        }
+      } catch (error) {
+        if (error.response && error.response.data) {
+          setErrorMessage(error.response.data);
+        } else {
+          setErrorMessage("An unexpected error occurred. Please try again.");
+        }
+        toast.error(errorMessage);
       }
-    } catch (error) {
-      if (error.response && error.response.data) {
-        setErrorMessage(error.response.data);
-      } else {
-        setErrorMessage("An unexpected error occurred. Please try again.");
-      }
-    }
-  };
+    },
+});
 
   return (
     <div>
@@ -106,15 +118,16 @@ export const CustomerLogin = () => {
                   }}>
                   Check My Orders
                 </Box>
-                <form className="form" onSubmit={loginAsCustomer}>
+                <form className="form" onSubmit={loginAsCustomer.handleSubmit}>{/*loginAsCustomer*/}
                   <div>
                     <Box component="input"
                       type="text"
                       name="customerID"
                       id="customerId"
                       placeholder="Customer ID"
-                      value={customerID}
-                      onChange={(e) => setCustomerID(e.target.value)}
+                      value={loginAsCustomer.values.customerID}
+                      onChange={loginAsCustomer.handleChange}
+                      onBlur={loginAsCustomer.handleBlur}
                       required
                       sx={{
                         border: '1px solid #D1D5DB',
@@ -126,13 +139,13 @@ export const CustomerLogin = () => {
                         display: 'block',
                         width: '100%',
                         padding: '0.625rem',
-                        mb: '1rem',
                         '&:focus': {
                           borderColor: '#2563EB',
                           boxShadow: '0 0 0 0.125rem rgba(66, 153, 225, 0.5)'
                         }
                       }}
                     />
+                    {loginAsCustomer.errors.customerID && loginAsCustomer.touched.customerID && <small style={{color:'red'}}>{loginAsCustomer.errors.customerID}</small>}
                   </div>
                   <div>
                     <Box component="input"
@@ -140,8 +153,9 @@ export const CustomerLogin = () => {
                       name="password"
                       id="password"
                       placeholder="Passcode"
-                      value={pwd}
-                      onChange={(e) => setPwd(e.target.value)}
+                      value={loginAsCustomer.values.password}
+                      onChange={loginAsCustomer.handleChange}
+                      onBlur={loginAsCustomer.handleBlur}
                       sx={{
                         border: '1px solid #D1D5DB',
                         color: '#1F2937',
@@ -152,7 +166,7 @@ export const CustomerLogin = () => {
                         display: 'block',
                         width: '100%',
                         padding: '0.625rem',
-                        mb: '1rem',
+                        mt: '1rem',
                         '&:focus': {
                           borderColor: '#2563EB',
                           boxShadow: '0 0 0 0.125rem rgba(66, 153, 225, 0.5)'
@@ -160,8 +174,9 @@ export const CustomerLogin = () => {
                       }}
                       required />
                   </div>
+                  {loginAsCustomer.errors.password && loginAsCustomer.touched.password && <small style={{color:'red'}}>{loginAsCustomer.errors.password}</small>}
                   <div>
-                    <Box component="p" sx={{ color: '#1E90FF', fontSize: '0.875rem', fontWeight: 'medium', cursor: 'pointer' }} underline="always">Forgot tracking number?</Box>
+                    <Box component="p" sx={{ color: '#1E90FF', fontSize: '0.875rem', fontWeight: 'medium', cursor: 'pointer', mt:'0.5rem' }} underline="always">Forgot password?</Box>
                   </div>
                   <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>Check my orders</Button>
                 </form>
@@ -229,6 +244,7 @@ export const CustomerLogin = () => {
           </Box>
         </Box>
       </Box>
+      <ToastContainer />
     </div>
 
   )

@@ -1,6 +1,9 @@
 import axios from 'axios';
+import { useFormik } from 'formik';
 import React, { useState } from 'react';
+import { complainValidation } from '../validations';
 import './complainModal.css';
+
 export default function ComplainModel({ open, onClose, ordId }) {
     const [resp, setResp] = useState();
     const [complainText, setComplainText] = useState('');
@@ -8,34 +11,45 @@ export default function ComplainModel({ open, onClose, ordId }) {
 
     const handleClose = (e) => {
         if (e.target.id === 'container') {
-            setComplainText(''); // Clear the text box
+            values.complain='';
+            //actions.setErrors({});
             onClose();
         }
     }
     const clickCloseBtn = () => {
-        setComplainText(''); // Clear the text box
+        values.complain='';
         onClose();
     }
 
-    const submitComplain = () => {
+    const onSubmit = async (values, actions) => {
+        try {
+            axios.post("http://localhost:3001/api/complain", {
+                "order_id": ordId,
+                "complain": values.complain
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }).then((response) => {
+                setResp(response.data);
+                actions.resetForm(); // Clear the text box
+                onClose();
+            }).catch((error) => {
+                console.error('Error submitting complain:', error);
+            });
 
-        //VALIDATION SHOULD DONE HERE
+        } catch (error) {
+            toast.error("Invalid email or password");
+        }
 
-        axios.post("http://localhost:3001/api/complain", {
-            "order_id": ordId,
-            "complain": complainText
-        }, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        }).then((response) => {
-            setResp(response.data);
-            setComplainText(''); // Clear the text box
-            onClose();
-        }).catch((error) => {
-            console.error('Error submitting complain:', error);
-        });
     }
+    const { values, errors, handleBlur, handleChange, handleSubmit, touched } = useFormik({
+        initialValues: {
+            complain: "",
+        },
+        validationSchema: complainValidation,
+        onSubmit
+    });
 
     if (!open) return null;
     return (
@@ -43,21 +57,23 @@ export default function ComplainModel({ open, onClose, ordId }) {
             {/*Card*/}
             <div id='card'>
                 <h4 id='title'>Open a complain</h4><hr />
-                <div>
+                <form onSubmit={handleSubmit}>
                     <p className='ord_number'>Order number: {ordId}</p>
                     <p>Complain</p>
                     <textarea
-                        id="w3review"
-                        name="w3review"
+                        id="complain"
+                        name="complain"
                         rows="4" cols="50"
-                        value={complainText} // Bind value to state variable
-                        onChange={(e) => setComplainText(e.target.value)}
+                        value={values.complain}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
                     >
-                    </textarea>
+                    </textarea><br/>
+                    {errors.complain && touched.complain && <small style={{ color: 'red' }}>{errors.complain}</small>}
                     <p className='text'>(We will respond to your complain within 24hours from a telephone call or a SMS. Stay turn)</p>
-                    <button onClick={submitComplain} id='submit_btn'>Submit</button><br />
+                    <button type='submit' id='submit_btn'>Submit</button><br />
                     <button onClick={clickCloseBtn} id='cancel_btn'>Cancel</button>
-                </div>
+                </form>
 
             </div>
 

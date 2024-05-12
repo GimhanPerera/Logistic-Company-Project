@@ -39,6 +39,12 @@ module.exports = (sequelize, DataTypes) => {
         last_attempt_date_time: {
             type: DataTypes.DATE,
             allowNull: false
+        },nicFront: {
+            type: DataTypes.STRING(20),
+            allowNull: true //For testing. Need to change to false
+        },nicBack: {
+            type: DataTypes.STRING(20),
+            allowNull: true //For testing. Need to change to false
         }
     },{
         timestamps: false

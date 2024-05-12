@@ -4,40 +4,37 @@ const { Customer, Order } = require('../models');
 
 //1. Add a customer
 const addCustomer = async (req, res) => {
-    // let data = {
-    //     customer_id: req.body.customer_id,
-    //     passcode: req.body.passcode,
-    //     f_name: req.body.f_name,
-    //     l_name: req.body.l_name,
-    //     tel_number: req.body.tel_number,
-    //     address: req.body.address,
-    //     nic: req.body.nic,
-    //     status: req.body.status,
-    //     wrong_attempts: req.body.wrong_attempts,
-    //     first_attempt_date_time: req.body.first_attempt_date_time
-    // }
-    console.log("Hello")
-    console.table(req.body)
-    //const a = await generateNextPKforCustomer()
-    //console.log(typeof a)
+    try {
+    // Extract the filename
+    const { filename: nicFrontImg } = req.files['nicFront'][0];
+    const { filename: nicBackImg } = req.files['nicBack'][0];
+
     const cus_id = await generateNextPKforCustomer()
     const customer = await Customer.create({
         "customer_id": cus_id,
         "passcode": await generatePassword(),
-        "f_name": req.body.customerData.f_name,
-        "l_name": req.body.customerData.l_name,
-        "tel_number": req.body.customerData.tel_number,
-        "address": req.body.customerData.address,
-        "nic": req.body.customerData.nic,
+        "f_name": req.body.f_name,
+        "l_name": req.body.l_name,
+        "tel_number": req.body.tel_number,
+        "address": req.body.address,
+        "nic": req.body.nic,
         "status": "New",
         "wrong_attempts":0,
-        "last_attempt_date_time": '2024-03-02 03:03:44'
+        "last_attempt_date_time": '2024-03-02 03:03:44',
+        "nicFront": nicFrontImg,
+        "nicBack": nicBackImg,
     })
-
+console.log("AWA")
     //const customer = req.body;
+    console.log("new cus_id: ", cus_id)
     //await Customer.create(customer);
-    console.log("cus_id: "+ cus_id)
+    
     res.status(200).json({"cus_id": cus_id})
+} catch (error) {
+    // Handle error
+    console.error("Error fetching order details:", error);
+    res.status(500).json({ error: "Internal server error" });
+}
 }
 
 const generateNextPKforCustomer = async () => {//create new PK for customer
@@ -55,7 +52,7 @@ const generateNextPKforCustomer = async () => {//create new PK for customer
         // Extract the numeric part of the last PK and increment it
         const lastNumericPart = parseInt(lastCustomer.customer_id.substring(3));
         const nextNumericPart = lastNumericPart + 1;
-console.log("Checkpoint 1"+lastCustomer.customer_id)
+console.log("Checkpoint 1 "+lastCustomer.customer_id)
         // Format the next PK
         const nextPK = `CFL${nextNumericPart}`;
 

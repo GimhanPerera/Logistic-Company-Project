@@ -1,8 +1,35 @@
 import { Box, Button } from '@mui/material';
+import { useFormik } from 'formik';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { staffLoginValidation } from '../validations';
 import Navbar from './navbar';
+
+
 export const StaffLogin = () => {
+
+    const navigate = useNavigate();
+    const onSubmit = async (values, actions) => {
+        try {
+            // Check the detials
+            navigate('../cmsystem');
+
+        } catch (error) {
+            toast.error("Invalid email or password");
+        }
+
+    }
+    const { values, errors, handleBlur, handleChange, handleSubmit, touched } = useFormik({
+        initialValues: {
+            email: "",
+            password: "",
+        },
+        validationSchema: staffLoginValidation,
+        onSubmit
+    });
+
     return (
         <div>
             <Navbar />
@@ -50,13 +77,15 @@ export const StaffLogin = () => {
                                 }}>
                                 Login
                             </Box>
-                            <form action="#">
+                            <form onSubmit={handleSubmit}>
                                 <div>
                                     <Box component="input"
-                                        type="text"
-                                        name="Email"
+                                        type="email"
+                                        value={values.email}
+                                        onChange={handleChange}
                                         id="email"
                                         placeholder="Email"
+                                        onBlur={handleBlur}
                                         sx={{
                                             border: '1px solid #D1D5DB',
                                             color: '#1F2937',
@@ -67,19 +96,21 @@ export const StaffLogin = () => {
                                             display: 'block',
                                             width: '100%',
                                             padding: '0.625rem',
-                                            mb: '1rem',
                                             '&:focus': {
                                                 borderColor: '#2563EB',
                                                 boxShadow: '0 0 0 0.125rem rgba(66, 153, 225, 0.5)'
                                             }
                                         }}
-                                        required />
+                                    />
+                                    {errors.email && touched.email && <small style={{color:'red'}}>{errors.email}</small>}
                                 </div>
                                 <div>
                                     <Box component="input"
                                         type="password"
-                                        name="password"
+                                        value={values.password}
+                                        onChange={handleChange}
                                         id="password"
+                                        onBlur={handleBlur}
                                         placeholder="Password"
                                         sx={{
                                             border: '1px solid #D1D5DB',
@@ -91,28 +122,31 @@ export const StaffLogin = () => {
                                             display: 'block',
                                             width: '100%',
                                             padding: '0.625rem',
-                                            mb: '1rem',
+                                            mt: '1rem',
                                             '&:focus': {
                                                 borderColor: '#2563EB',
                                                 boxShadow: '0 0 0 0.125rem rgba(66, 153, 225, 0.5)'
                                             }
                                         }}
-                                        required />
+                                    />
+                                    {errors.password && touched.password && <small style={{color:'red'}}>{errors.password}</small>}
                                 </div>
                                 <div>
-                                    <Box component="p" sx={{ color: '#1E90FF', fontSize: '0.875rem', fontWeight: 'medium', cursor: 'pointer' }} underline="always">Forgot tracking number?</Box>
+                                    <Box component="p" sx={{ color: '#1E90FF', fontSize: '0.875rem', fontWeight: 'medium', cursor: 'pointer', m:'1rem 0' }} underline="always">Forgot tracking number?</Box>
                                 </div>
-                                <Link to="../cmsystem">
-                                    <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+                                <div>
+                                </div>
+                                    <Button type="submit" fullWidth variant="contained" sx={{ mt: 1, mb: 2 }}>
                                         Log in
                                     </Button>
-                                </Link>
+                                
                             </form>
                         </Box>
 
                     </Box>
                 </Box>
             </Box>
+            <ToastContainer />
         </div>
     )
 }
