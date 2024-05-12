@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         },
         image: {
-            type: DataTypes.STRING(20), 
+            type: DataTypes.STRING(20),
             allowNull: true
         },
         performa_invoice: {
@@ -35,6 +35,10 @@ module.exports = (sequelize, DataTypes) => {
         quotation: {
             type: DataTypes.DECIMAL(8, 2),
             allowNull: false
+        },status:{
+            type: DataTypes.STRING(20),
+            allowNull: true,
+            defaultValue: 'confirmed'
         }
     }, {
         timestamps: false

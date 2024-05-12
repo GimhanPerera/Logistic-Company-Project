@@ -64,11 +64,11 @@ const newOrder = async (req, res) => {//Add a order - NOT TESTED
         console.log("New PQ_ID: " + new_price_quotation_id)
         const newPriceQuotation = await Price_quotation.create({
             "quotation_id": new_price_quotation_id,
-            "items": req.body.item,
+            "items": req.body.items,
             "raugh_weight": req.body.weight,
             "shipping_method": req.body.shippingmethod,
             "no_of_packages": req.body.packages,
-            "description": req.body.items,
+            "description": req.body.description,
             "image": productImage,
             "performa_invoice": invoice,
             "quotation": req.body.quotation,

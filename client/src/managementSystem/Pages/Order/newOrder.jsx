@@ -1,21 +1,23 @@
-import { Box, Button } from '@mui/material';
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import Autocomplete from '@mui/material/Autocomplete';
 import axios from "axios";
-import { Field, Form, Formik } from 'formik';
+import { Field, Form, Formik, useFormik } from 'formik';
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import AddCustomerModel from "../../../Modals/addCustomerModal";
+import { Countries } from '../../../countryCodes';
+import { priceQuotationValidation } from '../../../validations';
 
-const initialVslues = {
-    item: '',
+const initialValues = {
+    items: '',
     packages: '',
     weight: '',
-    shippingmethod: '',
+    shippingmethod: 'Air cargo',
     quotation: '',
     description: '',
-    supplierLoc: '',
-    cusID: '',
-    name: '',
-    tp: '',
+    supplierLoc: 'China',
 }
 
 
@@ -30,204 +32,290 @@ const NewOrder = () => {
     const [customerID, setCustomerID] = useState("");
     const [customerName, setCustomerName] = useState("");
     const [customerTp, setCustomerTp] = useState("");
+    const [image, setImage] = useState(null);
+    const [invoice, setInvoice] = useState(null);
     const navigate = useNavigate();
     const toOrders = () => {
         navigate('../order');
     }
-    const [formData, setFormData] = useState({
-        item: '',
-        packages: '',
-        weight: '',
-        shippingmethod: '',
-        quotation: '',
-        description: '',
-        supplierLoc: '',
-        image: null,
-        invoice: null,
-        cusID: "",
-        name: "",
-        tp: '',
-    });
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
-    };
 
     const handleImageChange = (e) => {
-        setFormData({
-            ...formData,
-            image: e.target.files[0] // Update the image file in the form data
-        });
+        setImage( e.target.files[0]); // Update the image file in the form data
     };
     const handleInvoiceChange = (e) => {
-        setFormData({
-            ...formData,
-            invoice: e.target.files[0] // Update the image file in the form data
-        });
+        setInvoice( e.target.files[0]); // Update the image file in the form data
+        
     };
 
-    const handleSubmit = async (e) => { //Submit the order
-        e.preventDefault();
-
-        const data = new FormData();
-        for (let key in formData) {
-            data.append(key, formData[key]);
+    const searchCustomer = async (e) => {//search customer
+        // Regular expression to match the pattern
+        const regex = /^CFL\d{3}$/;
+        if (customerID == "") {
+            toast.error("Please enter the Customer ID");
+            return
+        } else if (!regex.test(customerID)) {
+            toast.error("Wrong Customer ID format");
+            return
         }
-        setFormData({
-            ...formData,
-            shippingmethod: dropDownValue
-        });
-        try {
-            await axios.post("http://localhost:3001/api/order", data, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-            // Optionally, redirect the user to another page after successful submission
-            navigate('../order');
-        } catch (error) {
-            console.error('Error creating order:', error);
-        }
-    };
-
-
-    const searchCustomer = async (e) => {//serach customer
-        console.log(customerID);
         axios.get(`http://localhost:3001/api/customers/search/${customerID}`, {
         }).then((response) => {
             setCustomerName(response.data.name)
             setCustomerTp(response.data.tel_number)
-            setFormData({
-                ...formData,
-                'cusID': customerID,
-                'name': response.data.name,
-                'tp': response.data.tel_number,
-            });
 
         }).catch((error) => {
             console.error('Error :', error);
         });
     }
 
+    const onSubmit = async (values, actions) => {
+        //Customer validations
+        const regex = /^CFL\d{3}$/;
+        if (customerID == "") {
+            toast.error("Please enter the Customer ID");
+            return
+        } else if (!regex.test(customerID)) {
+            toast.error("Wrong Customer ID format");
+            return
+        }else if (image == null) {
+            toast.error("Image is required");
+            return
+        }else if (invoice == null) {
+            toast.error("Invoice is required");
+            return
+        }
+
+        try {
+            await axios.post("http://localhost:3001/api/order", {
+                "items": values.items,
+                "packages": values.packages,
+                "weight": values.weight,
+                "shippingmethod": values.shippingmethod,
+                "quotation": values.quotation,
+                "description": values.description,
+                "supplierLoc": "China",//values.supplierLoc,
+                "image": image,
+                "invoice": invoice,
+                "cusID": customerID,
+                "name": customerName,
+                "tp": customerTp,
+            }, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            
+            navigate('../order');
+        } catch (error) {
+            console.error('Error creating order:', error);
+        }
+    }
+
+    const { values, touched, handleBlur, isSubmitting, setErrors, handleChange, handleSubmit, errors } = useFormik({
+        initialValues: initialValues,
+        validationSchema: priceQuotationValidation,
+
+        onSubmit,
+    });
+
 
     return (
         <>
+            <ToastContainer />
             <div className="relative">
-                <Formik
-                    initialValues={initialVslues}
-                >
+                <Formik>
                     <Form onSubmit={handleSubmit}>
-                    <Box component="div"
-                    sx={{display:'flex', justifyContent:'space-around', mt:'2rem'}}>
-                        <Box component="div">
-                            <h3>Price quotation details</h3>
-                            <table className="border-solid border-2 border-black m-2">
-                                <tr>
-                                    <td><label>Items :</label></td>
-                                    <td><Field type='text' name='item' value={formData.item} id="item" onChange={handleChange} className="border-solid border-2 border-blue-800" /></td>
-                                </tr>
-                                <tr>
-                                    <td><label>No of packages :</label></td>
-                                    <td><Field type='text' name='packages' value={formData.packages} onChange={handleChange} className="border-solid border-2 border-blue-800" /></td>
-                                </tr>
-                                <tr>
-                                    <td><label>Rough weight(Kg)  :</label></td>
-                                    <td><Field type='text' name='weight' value={formData.weight} onChange={handleChange} className="border-solid border-2 border-blue-800" /></td>
-                                </tr>
-                                <tr>
-                                    <td><label>Shipping method :</label></td>
-                                    <td>
-                                        {/* <Field type='text' name='shippingmethod' value={formData.shippingmethod} onChange={handleChange} className="border-solid border-2 border-blue-800" /> */}
-                                        <select value={dropDownValue} onChange={dropDownChange}>
+                        <Box component="div"
+                            sx={{ display: 'flex', justifyContent: 'space-around', mt: '1rem' }}>
+                            <Box component="div">
+                                <Box component="h3" sx={{ mb: 2 }}>Price quotation details</Box>
+                                <table style={{ border: '1px solid gray', padding: '1rem' }}>
+                                    <tr>
+                                        <td>
+                                            <TextField label="Items" size="small" type='text' name='items' margin="normal"
+                                                value={values.items}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                error={touched.items && Boolean(errors.items)}
+                                                helperText={touched.items && errors.items}
+                                            />
+                                        </td>
+                                        <td>
+                                            <TextField label="No of packages" size="small" type='number' name='packages' margin="normal"
+                                                value={values.packages}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                error={touched.packages && Boolean(errors.packages)}
+                                                helperText={touched.packages && errors.packages}
+                                            /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <TextField label="Rough weight(Kg)" size="small" type='number' name='weight' margin="normal"
+                                                value={values.weight}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                error={touched.weight && Boolean(errors.weight)}
+                                                helperText={touched.weight && errors.weight}
+                                            /></td>
+                                        <td>
+                                            <FormControl sx={{ m: 1, minWidth: 170 }}>
+                                                <InputLabel id="demo-simple-select-helper-label">Shipping method</InputLabel>
+                                                <Field
+                                                    as={Select}
+                                                    name="shippingmethod"
+                                                    value={values.shippingmethod}
+                                                    onChange={handleChange}
+                                                    onBlur={handleBlur}
+                                                    label="Shipping method"
+                                                    size='small'
+                                                >
+                                                    <MenuItem value={"Air cargo"}>Air Cargo</MenuItem>
+                                                    <MenuItem value={"Ship cargo"}>Ship Cargo</MenuItem>
+                                                </Field>
+                                            </FormControl>
+                                        </td>
 
-                                            <option value="Ship cargo">Ship cargo</option>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <TextField label="Quotation(LKR)" size="small" type='number' name='quotation' margin="normal"
+                                                value={values.quotation}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                error={touched.quotation && Boolean(errors.quotation)}
+                                                helperText={touched.quotation && errors.quotation}
+                                            /></td>
+                                        <td><TextField label="Description" size="small" type='text' name='description' margin="normal"
+                                            value={values.description}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            error={touched.description && Boolean(errors.description)}
+                                            helperText={touched.description && errors.description}
+                                        />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td> <Autocomplete
+                                            id="country-select-demo"
+                                            sx={{ width: 250, mt: 2, mb: 2 }}
+                                            options={Countries}
+                                            autoHighlight
+                                            defaultValue={Countries.find((country) => country.label === 'China')}
+                                            getOptionLabel={(option) => option.label}
+                                            renderOption={(props, option) => (
+                                                <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+                                                    <img
+                                                        loading="lazy"
+                                                        width="20"
+                                                        srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+                                                        src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                                                        alt=""
+                                                    />
+                                                    {option.label} ({option.code})
+                                                </Box>
+                                            )}
+                                            renderInput={(params) => (
+                                                <TextField
+                                                    {...params}
+                                                    label="Choose a country"
+                                                    size="small"
+                                                    name='supplierLoc'
+                                                    inputProps={{
+                                                        ...params.inputProps,
+                                                        autoComplete: 'new-password', // disable autocomplete and autofill
+                                                    }}
+                                                    value={values.supplierLoc}
+                                                    onChange={handleChange}
+                                                    onBlur={handleBlur}
+                                                />
+                                            )}
+                                        /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="invoice">Image :</label></td>
+                                        <td>
+                                            <Field type="file" id="image" name="image" onChange={handleImageChange} accept="image/*"
+                                                style={{
+                                                    border: '1px solid #ccc',
+                                                    padding: '10px',
+                                                    borderRadius: '5px',
+                                                    marginTop: '10px',
+                                                    width: '200px',
+                                                }} />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label for="invoice">Performa invoice :</label></td>
+                                        <td><input type="file" id="invoice" name="invoice" onChange={handleInvoiceChange}
+                                            style={{
+                                                border: '1px solid #ccc',
+                                                padding: '10px',
+                                                borderRadius: '5px',
+                                                marginTop: '10px',
+                                                width: '200px',
+                                            }} />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </Box>
+                            <Box component="div">
+                                <Box component="h3" sx={{ mb: 2 }}>Customer Details</Box>
+                                <table style={{ border: '1px solid gray', padding: '1rem' }}>
+                                    <tr>
+                                        <td>
+                                            <TextField label="Customer ID" size="small" type='text' name='cusID'
+                                                value={customerID}
+                                                onChange={(e) => setCustomerID(e.target.value)}
+                                            />
+                                        </td>
+                                        <td>
+                                            <Button size="medium" onClick={searchCustomer}>Search</Button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <TextField label="Name" size="small" type='text' name='name' margin="normal"
+                                                value={customerName}
+                                                onChange={(e) => setCustomerName(e.target.value)}
+                                                InputProps={{
+                                                    readOnly: true,
+                                                }}
+                                            />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <TextField label="Tel number" size="small" type='text' name='tp'
+                                                value={customerTp}
+                                                onChange={(e) => setCustomerTp(e.target.value)}
+                                                InputProps={{
+                                                    readOnly: true,
+                                                }}
+                                            />
 
-                                            <option value="Air cargo">Air cargo</option>
-
-                                        </select></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="quotation">Quotation(LKR per kilo) :</label></td>
-                                    <td><Field type='text' name='quotation' value={formData.quotation} onChange={handleChange} className="border-solid border-2 border-blue-800" /></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="description">Description :</label></td>
-                                    <td><Field type='text' name='description' value={formData.description} onChange={handleChange} className="border-solid border-2 border-blue-800" /></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="supplierLoc">Supplier Location :</label></td>
-                                    <td><Field type='text' name='supplierLoc' value={formData.supplierLoc} onChange={handleChange} className="border-solid border-2 border-blue-800" /></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="image">Image :</label></td>
-                                    <td><Field type="file" id="image" name="image" onChange={handleImageChange} className="border-solid border-2 border-blue-800" /></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="invoice">Performa invoice :</label></td>
-                                    <td><input type="file" id="invoice" name="invoice" onChange={handleInvoiceChange} className="border-solid border-2 border-blue-800" /></td>
-                                </tr>
-                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ display: 'flex', flexDirection: 'row' }}>
+                                            <Box component="p" sx={{ m: 'auto 0' }}>New customer?</Box>
+                                            <Button size="medium" onClick={() => setAddCustomerOpen(true)}>Yes</Button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </Box>
                         </Box>
-                        <Box component="div">
-                            <h3>Customer Details</h3>
-                            <table className="border-solid border-2 border-black m-2">
-                                <tr>
-                                    <td><label for="cus_id">Customer ID :</label></td>
-                                    <td><Field type="text"
-                                        name="cusID"
-                                        id="customerId"
-                                        value={customerID}
-                                        onChange={(e) => setCustomerID(e.target.value)}
-                                        className="border-solid border-2 border-blue-800" /></td>
-                                    <td><p
-                                        className="cursor-pointer"
-                                        onClick={searchCustomer}
-                                    >Search</p></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="name">Name :</label></td>
-                                    <td><Field type="text"
-                                        name="name"
-                                        id="name"
-                                        value={customerName}
-                                        onChange={(e) => setCustomerName(e.target.value)}
-                                        className="border-solid border-2 border-blue-800" /></td>
-                                </tr>
-                                <tr>
-                                    <td><label for="tel_number">Tel number :</label></td>
-                                    <td><Field type="text"
-                                        id="tp"
-                                        name="tp"
-                                        value={customerTp}
-                                        onChange={(e) => setCustomerTp(e.target.value)}
-                                        className="border-solid border-2 border-blue-800" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td></td>
-                                    <td><p>New customer?</p><p className="cursor-pointer" onClick={() => setAddCustomerOpen(true)}>Yes</p></td>
-                                </tr>
-                            </table>
-                        </Box>
-                        </Box>
-                        {/* <button onClick={toOrders} className="bg-[#ffffff] hover:bg-blue-600 text-[#68DD62] border-solid border-2 border-[#68DD62] px-4 py-2 rounded-md focus:outline-none ml-2">
-                            Cancel
-                        </button> */}
-                        <Box component="div" sx={{position:'absolute', right:'8rem'}}>
-                        <Button onClick={toOrders} variant="outlined"
-                            sx={{ ml: '1rem' }}>
-                            Cancel
-                        </Button>
-                        {/* <button type="submit" className="bg-[#68DD62] text-white px-4 py-2 rounded-md border-solid border-2 border-[#68DD62] focus:outline-none ml-2">
-                            Create order
-                        </button> */}
-                        <Button variant="contained"
-                            type="submit"
-                            sx={{ backgroundColor: '#68DD62', ml: '1rem' }}>
-                            Create order
-                        </Button>
+                        
+                        <Box component="div" sx={{ position: 'absolute', right: '8rem', bottom:'5rem' }}>
+                            <Button onClick={toOrders} variant="outlined"
+                                sx={{ ml: '1rem' }}>
+                                Cancel
+                            </Button>
+                            
+                            <Button variant="contained"
+                                type="submit"
+                                sx={{ backgroundColor: '#68DD62', ml: '1rem' }}>
+                                Create order
+                            </Button>
                         </Box>
                     </Form>
                 </Formik>
