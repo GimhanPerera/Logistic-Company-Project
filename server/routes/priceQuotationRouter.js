@@ -24,5 +24,6 @@ router.post("/", upload.fields([{ name: 'image', maxCount: 1 }, { name: 'invoice
 
 router.get("/", priceQuotationController.allRequests)
 
+router.get("/searchby/id/:id", priceQuotationController.getRequestByID)
 
 module.exports = router;

@@ -114,29 +114,29 @@ export const Packages = () => {
   }
 
   const [rows, setRows] = useState([
-    {
-      "id": "1",
-      "package_count": "1",
-      "items": "Phone covers",
-      "supplier": "C001-Chanli china",
-      "length": "23",
-      "height": "23",
-      "width": "12",
-      "weight": "12.3",
-      "volume_metric_weight": "123.4",
-      "gross_weight": "1233",
-    }, {
-      "id": "2",
-      "package_count": "2",
-      "items": "Toys",
-      "supplier": "C001-Chanli china",
-      "length": "42",
-      "height": "12",
-      "width": "65",
-      "weight": "32.3",
-      "volume_metric_weight": "633.4",
-      "gross_weight": "222",
-    }
+    // {
+    //   "id": "1",
+    //   "package_count": "1",
+    //   "items": "Phone covers",
+    //   "supplier": "C001-Chanli china",
+    //   "length": "23",
+    //   "height": "23",
+    //   "width": "12",
+    //   "weight": "12.3",
+    //   "volume_metric_weight": "123.4",
+    //   "gross_weight": "1233",
+    // }, {
+    //   "id": "2",
+    //   "package_count": "2",
+    //   "items": "Toys",
+    //   "supplier": "C001-Chanli china",
+    //   "length": "42",
+    //   "height": "12",
+    //   "width": "65",
+    //   "weight": "32.3",
+    //   "volume_metric_weight": "633.4",
+    //   "gross_weight": "222",
+    // }
   ]);
 
   const [rowModesModel, setRowModesModel] = useState({});
@@ -226,6 +226,7 @@ export const Packages = () => {
     whiteSpace: 'nowrap',
     width: 1,
   });
+
   const handleFileUpload = (e) => {
     const reader = new FileReader();
     reader.readAsBinaryString(e.target.files[0]);
@@ -276,28 +277,28 @@ export const Packages = () => {
 
     {
       field: 'length',
-      headerName: 'Length',
+      headerName: 'Length(cm)',
       type: 'number',
       width: 95,
       editable: true,
     },
     {
       field: 'height',
-      headerName: 'Height',
+      headerName: 'Height(cm)',
       type: 'number',
       width: 95,
       editable: true,
     },
     {
       field: 'width',
-      headerName: 'Width',
+      headerName: 'Width(cm)',
       type: 'number',
       width: 95,
       editable: true,
     },
     {
       field: 'weight',
-      headerName: 'Weight',
+      headerName: 'Weight(KG)',
       type: 'number',
       width: 95,
       editable: true,
@@ -371,6 +372,7 @@ export const Packages = () => {
       },
     },
   ];
+  
 
   //Grp the rowsbased on supplier, groupedRows is a objesct
   const groupedRows = rows.reduce((grouped, row) => {

@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const Package = sequelize.define("Package",{
+    const Package = sequelize.define("Package", {
         shipping_mark: {
             type: DataTypes.STRING(20),
             primaryKey: true
@@ -8,10 +8,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(50),
             allowNull: false,
         },
-        // package_count: {
-        //     type: DataTypes.INTEGER,
-        //     allowNull: false
-        // },
+        package_count: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
         status: {
             type: DataTypes.STRING(13),
             allowNull: false,
@@ -59,10 +59,10 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true,
             defaultValue: null,
         },
-        // collected_count: {
-        //     type: DataTypes.INTEGER,
-        //     allowNull: true
-        // },
+        collected_count: {
+            type: DataTypes.INTEGER,
+            allowNull: true
+        },
         rate: {
             type: DataTypes.INTEGER,
             allowNull: true,

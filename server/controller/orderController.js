@@ -8,7 +8,7 @@ const newOrder = async (req, res) => {//Add a order - NOT TESTED
         const { filename: productImage } = req.files['image'][0];
         const { filename: invoice } = req.files['invoice'][0];
         let cus_id;
-        console.log("Req: ",req.user);
+        console.log("Req: ");
         if(req.body.status=="Just opened"){
             cus_id = req.body.cusID;
         }else if(req.body.status=="Request"){

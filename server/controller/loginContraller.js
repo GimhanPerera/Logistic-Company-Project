@@ -25,7 +25,7 @@ const stuffLogin = async (req, res) => {
     const username = req.body.username;
     const user = {
         name: username,
-        role: 'user'
+        role: 'staff'
     }
     const accessToken = createToken(user, 120) //Create the access token
     console.log("Access token: "+accessToken)
