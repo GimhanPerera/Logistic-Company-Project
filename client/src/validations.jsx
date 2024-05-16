@@ -44,6 +44,19 @@ export const priceQuotationValidation = Yup.object({
     shippingmethod: Yup.string().required("Please Enter shippingmethod"),
     quotation: Yup.string().min(3).required("Please Enter quotation"),
     description: Yup.string().min(3).required("Please Enter description"),
+});
+export const priceQuotationByCustomerValidation = Yup.object({
+    items: Yup.string()
+        .required("Please enter items")
+        .min(3, "Must be at least 3 characters")
+        .max(40, "Must not exceed 40 characters"),
+    packages: Yup.number()
+        .required("Please enter package count")
+        .typeError("Packages must be a number")
+        .integer("Packages must be an integer")
+        .max(100, "Must not exceed 100"),
+    weight: Yup.string().required("Please enter weight"),
+    shippingmethod: Yup.string().required("Please Enter shippingmethod"),
 })
 export const addPackageValidation = Yup.object({
     package_count: Yup.string().min(1).required("Please Enter name"),

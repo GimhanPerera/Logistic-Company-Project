@@ -36,6 +36,9 @@ app.use("/api/supplier",supplierRouter);
 const packageRouter = require('./routes/packageRouter');
 app.use("/api/package",packageRouter);
 
+const priceQuotationRouter = require('./routes/priceQuotationRouter');
+app.use("/api/priceQuotationRouter",priceQuotationRouter);
+
 db.sequelize.sync().then(() => {
     app.listen(3001, () => {
         console.log("Server running on port 3001");

@@ -48,6 +48,14 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
                         </a>
                     </li>
                 </NavLink>
+                <NavLink to="/cmsystem/requests" onClick={() => handleClick('Price quotation requests')}>
+                    <li className='mb-2 rounded hover:shadow hover:bg-blue-500 py-2'>
+                        <a href='' className='px-3'>
+                            <IoIosPeople className='inline-block w-7 h-7 mr-2 -mt-2'></IoIosPeople >
+                            Quotation Requests
+                        </a>
+                    </li>
+                </NavLink>
                 <NavLink to="/cmsystem/customers" onClick={() => handleClick('Customers')}>
                     <li className='mb-2 rounded hover:shadow hover:bg-blue-500 py-2'>
                         <a href='' className='px-3'>

@@ -1,6 +1,4 @@
 import AddIcon from '@mui/icons-material/Add';
-import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CancelIcon from '@mui/icons-material/Close';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
@@ -28,7 +26,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Swal from 'sweetalert2';
 import * as XLSX from "xlsx";
 import { addPackageValidation } from './../../../validations';
-
+import PrintShippingMarks from './printShippingMarks';
 const initialVslues = {
   item: '',
   packages: '',
@@ -466,7 +464,7 @@ export const Packages = () => {
       })
       .catch((error) => {
         console.error("Error fetching details:", error);
-        setLoading(false);
+        //setLoading(false);
       });
 
   }
@@ -661,90 +659,9 @@ export const Packages = () => {
         />
         <Box component="div" sx={{ m: '10px 100px' }}>
           <Box component="div" ref={componentRef} className='motech' sx={{ m: '10px 10px' }}> {/*backgroundColor: 'yellow',*/}
+            
+            <PrintShippingMarks printables={printables}></PrintShippingMarks>
 
-            {printables.map((packageMark, index) => (
-              <Box component="div" className='container' key={index}>
-                {/* A shipping mark */}
-
-                <Box component="div"
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    mb: '0.5rem'
-                  }}>
-                  <Box component="div"
-                    sx={{
-                      border: '1px solid black',
-                      padding: '20px',
-                      flexGrow: 4
-                    }}>
-                    <table>
-                      <tbody>
-                        <tr>
-                          <td><Box component="h1" sx={{ fontSize: '2.5rem' }}>MARK</Box></td>
-                          <td><Box component="h1" sx={{ fontSize: '2.5rem' }}>: {packageMark.smark.split(" ")[0]}</Box></td>
-                        </tr>
-                        <tr>
-                          <td><Box component="h1" sx={{ fontSize: '2.5rem' }}>P/No</Box></td>
-                          <td><Box component="h1" sx={{ fontSize: '2.5rem' }}>: {packageMark.smark.split(" ")[1]}</Box></td>
-                        </tr>
-                        {packageMark.smark[6] === "A" ? (
-                          <tr>
-                            <td>
-                              <Box component="h1" sx={{ fontSize: '2.2rem' }}><CheckBoxOutlineBlankIcon sx={{ position: 'relative', top: '0.3rem', fontSize: '3rem', pt: '0.8rem' }} />SEA</Box>
-                            </td>
-                            <td>
-                              <Box component="h1" sx={{ fontSize: '2.2rem' }}><CheckBoxIcon sx={{ position: 'relative', top: '0.3rem', fontSize: '3rem', pt: '0.8rem' }} />AIR</Box>
-                            </td>
-                          </tr>
-                        ) : (
-                          <tr>
-                            <td>
-                              <Box component="h1" sx={{ fontSize: '2.9rem' }}><CheckBoxIcon sx={{ position: 'relative', top: '0.2rem', fontSize: '3.5rem', pt: '1rem' }} />SEA</Box>
-                            </td>
-                            <td>
-                              <Box component="h1" sx={{ fontSize: '2.9rem' }}><CheckBoxOutlineBlankIcon sx={{ position: 'relative', top: '0.2rem', fontSize: '3.5rem', pt: '1rem' }} />AIR</Box>
-                            </td>
-                          </tr>
-                        )}
-
-                      </tbody>
-                    </table>
-                  </Box>
-                  <Box component="div"
-                    sx={{
-                      border: '1px solid black',
-                      padding: '20px',
-                      flexGrow: 1,
-                    }}>
-                    <table style={{ margin: 'auto' }}>
-                      <tbody>
-                        <tr>
-                          <td><Box component="p">Length</Box></td>
-                          <td><Box component="p">: {packageMark.details.length}m</Box></td>
-                        </tr>
-                        <tr>
-                          <td><Box component="p">Height</Box></td>
-                          <td><Box component="p">: {packageMark.details.height}m</Box></td>
-                        </tr>
-                        <tr>
-                          <td><Box component="p">Width</Box></td>
-                          <td><Box component="p">: {packageMark.details.width}m</Box></td>
-                        </tr>
-                        <tr>
-                          <td><Box component="p">Weight</Box></td>
-                          <td><Box component="p">: {packageMark.details.weight}kg</Box></td>
-                        </tr>
-                        <tr>
-                          <td><Box component="p">VMW</Box></td>
-                          <td><Box component="p">: {packageMark.details.volume_metric_weight}kg</Box></td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </Box>
-                </Box>
-              </Box>
-            ))}
           </Box>
         </Box>
 

@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         quotation: {
             type: DataTypes.DECIMAL(8, 2),
-            allowNull: false
+            allowNull: true
         },status:{
             type: DataTypes.STRING(20),
             allowNull: true,

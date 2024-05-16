@@ -7,13 +7,20 @@ const newOrder = async (req, res) => {//Add a order - NOT TESTED
         // Extract the filename
         const { filename: productImage } = req.files['image'][0];
         const { filename: invoice } = req.files['invoice'][0];
-
+        let cus_id;
+        console.log("Req: ",req.user);
+        if(req.body.status=="Just opened"){
+            cus_id = req.body.cusID;
+        }else if(req.body.status=="Request"){
+            cus_id = req.user.sub;
+        }
+        console.log("CID: ",cus_id);
 
         //----------------------Update Order table----------------------------------
         // Get the last order ID of the given customer
         const lastOrder = await Order.findOne({
             where: {
-                customer_id: req.body.cusID
+                customer_id: cus_id
             },
             order: [['order_id', 'DESC']]
         });
@@ -32,24 +39,25 @@ const newOrder = async (req, res) => {//Add a order - NOT TESTED
         if (req.body.shippingmethod == "Ship cargo") shippingmethod = 'S'
 
         // Combine customer ID, shipping method, and the new numeric portion to create the new order ID
-        const newOrderId = `${req.body.cusID}${shippingmethod}-${newNumericPortion}`;
-        //console.log(req.body.cusID+" LAST OID: "+lastOrder)
+        const newOrderId = `${cus_id}${shippingmethod}-${newNumericPortion}`;
         console.log("NEW OID: " + newOrderId)
-
 
         const existingTrackingNumbers = await Order.findAll({
             attributes: ['main_tracking_number']
         });
         const newTnumbers = generateUniqueTrackingNumber(existingTrackingNumbers.map(order => order.main_tracking_number));
 
+        
+        
         const newOrder = await Order.create({
             "order_id": newOrderId,
             "order_open_date": getCurrentSriLankanDateTime(),
             "supplier_loc": req.body.supplierLoc,
-            "main_tracking_number": newTnumbers, //NEED TO CREATE A NEW TRACKING NUMBER
-            "status": "Just opened",
-            "customer_id": req.body.cusID
+            "main_tracking_number": newTnumbers, //NEW TRACKING NUMBER
+            "status": req.body.status,
+            "customer_id": cus_id
         });
+        
         console.log("Order table updated")
 
         //----------------------Update Price_quotation table----------------------------------
@@ -73,13 +81,13 @@ const newOrder = async (req, res) => {//Add a order - NOT TESTED
             "performa_invoice": invoice,
             "quotation": req.body.quotation,
             "order_id": newOrderId,
+            "status": req.body.status,
         });
         console.log("Price quotation table updated")
         console.log("PRODUCT IMAGE: " + productImage)
         console.log("PERFORMA INVOICE: " + invoice)
         console.log("NEW ORDER OPENED: " + newOrderId)
-        //const order = req.body;
-        //await Order.create(order);
+        
         res.status(200).json("SUCCESS")
 
     } catch (error) {
