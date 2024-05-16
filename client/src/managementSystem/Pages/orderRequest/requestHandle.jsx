@@ -7,19 +7,10 @@ import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Countries } from '../../../countryCodes';
-import { priceQuotationValidation } from '../../../validations';
 
 
 const RequestHandle = () => {
-    const initialValues = {
-        items: '',
-        packages: '',
-        weight: '',
-        shippingmethod: '',
-        quotation: '',
-        description: '',
-        supplierLoc: '',
-    }
+
 
 
 
@@ -36,6 +27,18 @@ const RequestHandle = () => {
     const [invoice, setInvoice] = useState(null);
     const navigate = useNavigate();
     const [quotationID, setQuotationID] = useState();
+    const [quotationDetails, setQuotationDetails] = useState([]);
+    const [initialValues, setInitialValues] = useState([]);
+    const [formdata, setFormData] = useState([]);
+
+    const [items, setItems] = useState();
+    const [packages, setPackages] = useState();
+    const [weight, setWeight] = useState();
+    const [shippingmethod, setShippingmethod] = useState();
+    const [quotation, setQuotation] = useState('22');
+    const [description, setDescription] = useState();
+    const [supplierLoc, setSupplierLoc] = useState();
+
     useEffect(() => {
         //Get customer data
         // Get the URL path
@@ -49,15 +52,47 @@ const RequestHandle = () => {
         console.log("QID: " + parts[parts.length - 1])
         axios.get(`http://localhost:3001/api/customers/searchby/quotation/${parts[parts.length - 1]}`, {
         }).then((response) => {
-            setCustomerID(response.data.customer_id)
-            setCustomerName(response.data.name)
+            setCustomerID(response.data.customer_id);
+            setCustomerName(response.data.name);
             setCustomerTp(response.data.tel_number);
-            console.log(response.data.name)
-
+            console.log(response.data.name);
+        }).catch((error) => {
+            console.error('Error :', error);
+        });
+        axios.get(`http://localhost:3001/api/priceQuotationRouter/searchby/id/${parts[parts.length - 1]}`, {
+        }).then((response) => {
+            setQuotationDetails(response.data.priceReq[0])
+            //initialValues.weight=response.data.priceReq[0].raugh_weight
+            //console.log(response.data.priceReq[0])
+            setItems(response.data.priceReq[0].items);
+            setPackages(response.data.priceReq[0].no_of_packages);
+            setWeight(response.data.priceReq[0].raugh_weight);
+            setShippingmethod(response.data.priceReq[0].shipping_method);
+            setDescription(response.data.priceReq[0].description);
+            setSupplierLoc(response.data.order[0].supplier_loc);
+            //setPackages(response.data.priceReq[0].no_of_packages);
         }).catch((error) => {
             console.error('Error :', error);
         });
     }, [])
+
+    // useEffect(() => {
+    //     // Check if quotationDetails is set
+    //     if (quotationDetails) {
+    //         console.log("ITM: " + quotationDetails.items)
+    //         // Update initialValues with data from quotationDetails
+    //         setInitialValues({
+    //             items: 'sdsd',
+    //             packages: '4',
+    //             weight: '2',
+    //             shippingmethod: '',
+    //             quotation: '',
+    //             description: '',
+    //             supplierLoc: '',
+    //         });
+    //     }
+    // }, [quotationDetails]);
+
     const toOrders = () => {
         navigate('../order');
     }
@@ -69,19 +104,6 @@ const RequestHandle = () => {
         setInvoice(e.target.files[0]); // Update the image file in the form data
 
     };
-
-    const searchCustomer = async (e) => {//search customer
-        // Regular expression to match the pattern
-        const regex = /^CFL\d{3}$/;
-        if (customerID == "") {
-            toast.error("Please enter the Customer ID");
-            return
-        } else if (!regex.test(customerID)) {
-            toast.error("Wrong Customer ID format");
-            return
-        }
-
-    }
 
     const onSubmit = async (values, actions) => {
         //Customer validations
@@ -128,10 +150,9 @@ const RequestHandle = () => {
             console.error('Error creating order:', error);
         }
     }
-
     const { values, touched, handleBlur, isSubmitting, setErrors, handleChange, handleSubmit, errors } = useFormik({
         initialValues: initialValues,
-        validationSchema: priceQuotationValidation,
+        //validationSchema: priceQuotationValidation,
 
         onSubmit,
     });
@@ -142,7 +163,7 @@ const RequestHandle = () => {
             <ToastContainer />
             <div className="relative">
                 <Formik>
-                    <Form onSubmit={handleSubmit}>
+                    <Form>
                         <Box component="div"
                             sx={{ display: 'flex', justifyContent: 'space-around', mt: '1rem' }}>
                             <Box component="div">
@@ -151,30 +172,32 @@ const RequestHandle = () => {
                                     <tr>
                                         <td>
                                             <TextField label="Items" size="small" type='text' name='items' margin="normal"
-                                                value={values.items}
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                error={touched.items && Boolean(errors.items)}
-                                                helperText={touched.items && errors.items}
+                                                value={items}
+                                                onChange={(e) => setItems(e.target.value)}
+                                            //onBlur={handleBlur}
+                                            //error={touched.items && Boolean(errors.items)}
+                                            //helperText={touched.items && errors.items}
                                             />
                                         </td>
                                         <td>
                                             <TextField label="No of packages" size="small" type='number' name='packages' margin="normal"
-                                                value={values.packages}
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                error={touched.packages && Boolean(errors.packages)}
-                                                helperText={touched.packages && errors.packages}
+                                                //value={values.packages}
+                                                //onChange={handleChange}
+                                                value={packages}
+                                                onChange={(e) => setPackages(e.target.value)}
+                                            // onBlur={handleBlur}
+                                            // error={touched.packages && Boolean(errors.packages)}
+                                            // helperText={touched.packages && errors.packages}
                                             /></td>
                                     </tr>
                                     <tr>
                                         <td>
                                             <TextField label="Rough weight(Kg)" size="small" type='number' name='weight' margin="normal"
-                                                value={values.weight}
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                error={touched.weight && Boolean(errors.weight)}
-                                                helperText={touched.weight && errors.weight}
+                                                value={weight}
+                                                onChange={(e) => setWeight(e.target.value)}
+                                            // onBlur={handleBlur}
+                                            // error={touched.weight && Boolean(errors.weight)}
+                                            // helperText={touched.weight && errors.weight}
                                             /></td>
                                         <td>
                                             <FormControl sx={{ m: 1, minWidth: 170 }}>
@@ -182,9 +205,9 @@ const RequestHandle = () => {
                                                 <Field
                                                     as={Select}
                                                     name="shippingmethod"
-                                                    value={values.shippingmethod}
-                                                    onChange={handleChange}
-                                                    onBlur={handleBlur}
+                                                    onChange={(e) => setShippingmethod(e.target.value)}
+                                                    value={shippingmethod}
+                                                    //onBlur={handleBlur}
                                                     label="Shipping method"
                                                     size='small'
                                                 >
@@ -198,18 +221,20 @@ const RequestHandle = () => {
                                     <tr>
                                         <td>
                                             <TextField label="Quotation(LKR)" size="small" type='number' name='quotation' margin="normal"
-                                                value={values.quotation}
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                error={touched.quotation && Boolean(errors.quotation)}
-                                                helperText={touched.quotation && errors.quotation}
+                                                value={quotation}
+                                                onChange={(e) => setQuotation(e.target.value)}
+                                            // onBlur={handleBlur}
+                                            // error={touched.quotation && Boolean(errors.quotation)}
+                                            // helperText={touched.quotation && errors.quotation}
                                             /></td>
                                         <td><TextField label="Description" size="small" type='text' name='description' margin="normal"
-                                            value={values.description}
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                            error={touched.description && Boolean(errors.description)}
-                                            helperText={touched.description && errors.description}
+                                            //value={values.description}
+                                            //onChange={handleChange}
+                                            value={description}
+                                            onChange={(e) => setDescription(e.target.value)}
+                                        // onBlur={handleBlur}
+                                        // error={touched.description && Boolean(errors.description)}
+                                        // helperText={touched.description && errors.description}
                                         />
                                         </td>
                                     </tr>
@@ -243,9 +268,8 @@ const RequestHandle = () => {
                                                         ...params.inputProps,
                                                         autoComplete: 'new-password', // disable autocomplete and autofill
                                                     }}
-                                                    value={values.supplierLoc}
-                                                    onChange={handleChange}
-                                                    onBlur={handleBlur}
+                                                    value={supplierLoc}
+                                                onChange={(e) => setSupplierLoc(e.target.value)}
                                                 />
                                             )}
                                         /></td>

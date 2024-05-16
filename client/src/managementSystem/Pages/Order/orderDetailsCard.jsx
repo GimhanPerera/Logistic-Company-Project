@@ -10,6 +10,9 @@ const OrderDetailsCard = ({ order }) => {
     return null; // or handle the case where courier is undefined/null
   }
   const toPackages = () => {
+    if(order.status!='Just opened'){
+      retrun
+    }
     const id=order.order_id;
     navigate(`./${id}`);
   }
@@ -58,7 +61,10 @@ const OrderDetailsCard = ({ order }) => {
           }}
         >
           <p className=''>View</p>
-          <Box component="p" onClick={toPackages} sx={{cursor:'pointer'}}>packages</Box>
+          {/* <Box component="p" onClick={toPackages} sx={{cursor:'pointer'}}>add packages</Box> */}
+          {order.status == 'Just opened' && (
+          <Box component="p" onClick={toPackages} sx={{cursor:'pointer'}}>add packages</Box>
+        )}
           <p className=''>Update tracking</p>
           <p>Cancel the order</p>
         </Box>

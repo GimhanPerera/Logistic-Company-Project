@@ -1,4 +1,4 @@
-const { Price_quotation } = require('../models');
+const { Price_quotation,Order } = require('../models');
 
 
 
@@ -57,8 +57,33 @@ const allRequests = async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 }
+const getRequestByID = async (req, res) => {
+    try {
+        const priceReq = await Price_quotation.findAll({
+            where: {
+                quotation_id: req.params.id,
+            },
+        });
+        const order = await Order.findAll({
+            where: {
+                order_id: "CFL610A-4326",
+            },
+        });
+        console.log(order)
+        const responseData = {
+            priceReq: priceReq,
+            order: order // Adding order.supplier_loc to the response
+        };
+console.log("QID: "+req.params.id)
+        res.status(200).json(responseData);
+    } catch (error) {
+        console.error("Error deleting courier:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
 
 module.exports = {
     addAQuotationReq,
-    allRequests
+    allRequests,
+    getRequestByID
 }

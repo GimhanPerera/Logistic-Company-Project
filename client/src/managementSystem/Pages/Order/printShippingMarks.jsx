@@ -66,21 +66,22 @@ const PrintShippingMarks = ({printables}) => {
                                 padding: '20px',
                                 flexGrow: 1,
                             }}>
-                            <QRCodeSVG value={packageMark.smark.split(" ")[0] + " " + packageMark.smark.split(" ")[1]} style={{ marginLeft: '1rem' }} />
+                            <QRCodeSVG size="122" value={packageMark.smark.split(" ")[0] + " " + packageMark.smark.split(" ")[1]} style={{ marginLeft: '1rem' }} />
+
                             <table style={{ margin: 'auto' }}>
                                 <tbody>
 
                                     <tr>
                                         <td><Box component="p">Length</Box></td>
-                                        <td><Box component="p">: {packageMark.details.length}m</Box></td>
+                                        <td><Box component="p">: {packageMark.details.length}cm</Box></td>
                                     </tr>
                                     <tr>
                                         <td><Box component="p">Height</Box></td>
-                                        <td><Box component="p">: {packageMark.details.height}m</Box></td>
+                                        <td><Box component="p">: {packageMark.details.height}cm</Box></td>
                                     </tr>
                                     <tr>
                                         <td><Box component="p">Width</Box></td>
-                                        <td><Box component="p">: {packageMark.details.width}m</Box></td>
+                                        <td><Box component="p">: {packageMark.details.width}cm</Box></td>
                                     </tr>
                                     <tr>
                                         <td><Box component="p">Weight</Box></td>
