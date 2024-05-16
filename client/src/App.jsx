@@ -9,11 +9,14 @@ import { Packages } from './managementSystem/Pages/Order/packages';
 import PrintShippingMarks from './managementSystem/Pages/Order/printShippingMarks';
 import Reports from './managementSystem/Pages/Reports/Reports';
 import { ShipmentDetails } from './managementSystem/Pages/Shipment/shipmentDetails';
+import OrderRequest from './managementSystem/Pages/orderRequest/orderRequest';
+import RequestHandle from './managementSystem/Pages/orderRequest/requestHandle';
 import ManagmentSystem from './managementSystem/managmentSystem';
 import { TestFile } from './testfile';
 import { StaffLogin } from './website/StaffLogin';
 import { AllMyOrders } from './website/allMyOrders';
 import { CustomerLogin } from './website/customerLogin';
+import { NewOrderRequest } from './website/newOrderRequest';
 import { OrderTrackingDetails } from './website/orderTrackingDetails';
 import { OrderTrackingDetailsValidated } from './website/orderTrackingDetailsValidated';
 import { Website } from './website/website';
@@ -33,23 +36,28 @@ function App() {
             <Route path="myorders">
               <Route index element={<AllMyOrders />} />
               <Route path=":id" element={<OrderTrackingDetailsValidated />} />
+              <Route path="request" element={<NewOrderRequest />} />
             </Route>
           </Route>
           <Route path="cmsystem" element={<ManagmentSystem />}>
             <Route index element={<Dashboard />} />
             <Route path="customers" element={<CustomersDetails />} />
-            <Route path="courier" element={<CourierDetails />} />
-            <Route path="order">
-              <Route index element={<OrderDetails />} />
-              <Route path=":id" element={<Packages />} />
+            <Route path="requests">
+              <Route index element={<OrderRequest />} />
+              <Route path=":priceQ" element={<RequestHandle />} />
+              </Route>{/*need to update*/}
+              <Route path="courier" element={<CourierDetails />} />
+              <Route path="order">
+                <Route index element={<OrderDetails />} />
+                <Route path=":id" element={<Packages />} />
+              </Route>
+              <Route path="shipment" element={<ShipmentDetails />} />
+              <Route path="reports" element={<Reports />} />
+
+              <Route path="neworder" element={<NewOrder />} />
+
             </Route>
-            <Route path="shipment" element={<ShipmentDetails />} />
-            <Route path="reports" element={<Reports />} />
-
-            <Route path="neworder" element={<NewOrder />} />
-
           </Route>
-        </Route>
       </Routes>
     </Router>
   );

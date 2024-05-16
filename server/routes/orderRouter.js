@@ -23,7 +23,7 @@ const upload = multer({storage: storage})
 //Customer Url and Controllor
 router.get("/", orderController.getAllOrderDetailsForOrderCard)
 
-router.post("/", upload.fields([{ name: 'image', maxCount: 1 }, { name: 'invoice', maxCount: 1 }]), orderController.newOrder);
+router.post("/",loginController.authenticateToken, upload.fields([{ name: 'image', maxCount: 1 }, { name: 'invoice', maxCount: 1 }]), orderController.newOrder);
 
 //In the website, After custoemr login
 router.get("/myTrackingDetails",loginController.authenticateToken, orderController.trackingDetailsOfACustomer)//

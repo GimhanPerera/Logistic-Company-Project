@@ -1,4 +1,4 @@
-const { Customer, Order } = require('../models');
+const { Customer, Order,Price_quotation } = require('../models');
 
 
 
@@ -112,8 +112,29 @@ const searchCustomerByID = async (req, res) => { //Search customer (Order creati
     
 }
 
+const searchCustomerByQuotationID = async (req, res) => { //Search customer (Order creation part)
+    try{
+        console.log(req.params.quotationID)
+        const price_quotation = await Price_quotation.findByPk(req.params.quotationID);
+        
+        const customer = await Customer.findByPk(price_quotation.order_id.substring(0, 6));
+        res.status(200).json({
+            "customer_id": customer.customer_id,
+            "name": customer.f_name+" "+customer.l_name ,
+            "tel_number": customer.tel_number
+        });
+
+    }catch (error) {
+        // Handle error
+        console.error("Error fetching customer details:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+    
+}
+
 module.exports = {
     addCustomer,
     getAllCustomers,
-    searchCustomerByID
+    searchCustomerByID,
+    searchCustomerByQuotationID
 }

@@ -22,5 +22,6 @@ const upload = multer({storage: storage})
 router.get("/", customerController.getAllCustomers)
 router.post("/", upload.fields([{ name: 'nicFront', maxCount: 1 }, { name: 'nicBack', maxCount: 1 }]), customerController.addCustomer)
 router.get("/search/:customerID", customerController.searchCustomerByID) //Search customer by ID - Order creation part
+router.get("/searchby/quotation/:quotationID", customerController.searchCustomerByQuotationID) //Search customer by quotation ID: for confirm order part
 
 module.exports = router;

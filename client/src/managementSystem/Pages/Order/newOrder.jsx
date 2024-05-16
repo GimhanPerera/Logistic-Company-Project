@@ -85,22 +85,25 @@ const NewOrder = () => {
         }
 
         try {
+            const token = localStorage.getItem('token');
             await axios.post("http://localhost:3001/api/order", {
                 "items": values.items,
                 "packages": values.packages,
                 "weight": values.weight,
                 "shippingmethod": values.shippingmethod,
-                "quotation": values.quotation,
+                "quotation": values.quotation,//
                 "description": values.description,
                 "supplierLoc": "China",//values.supplierLoc,
+                "status": "Just opened",//
                 "image": image,
                 "invoice": invoice,
                 "cusID": customerID,
-                "name": customerName,
-                "tp": customerTp,
+                "name": customerName,//
+                "tp": customerTp,//
             }, {
                 headers: {
-                    'Content-Type': 'multipart/form-data'
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`
                 }
             });
             

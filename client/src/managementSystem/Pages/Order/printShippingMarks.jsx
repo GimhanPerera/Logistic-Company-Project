@@ -1,36 +1,25 @@
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import { Box } from '@mui/material';
+import { QRCodeSVG } from 'qrcode.react';
 import React, { useRef } from 'react';
-import ReactToPrint from 'react-to-print';
 
-const printShippingMarks = () => {//{ order }
+const PrintShippingMarks = ({printables}) => {
 
     const componentRef = useRef();
 
-    // if (!order) {
-    //     return null; // or handle the case where courier is undefined/null
-    // }
 
     return (
-        <Box component="div" className='container'>
-            <h2>Shipping marks</h2>
-            <ReactToPrint
-                trigger={() => (
-                    <button>Print/Download</button>
-                )}
-                content={() => componentRef.current}
-                fileName="shipping_marks.pdf" // Set the default save name here
-            />
-            <Box component="div" sx={{ m: '10px 100px' }}>
-                <Box component="div" ref={componentRef} className='motech' sx={{  m: '10px 10px' }}> {/*backgroundColor: 'yellow',*/}
-
+        <>
+            {printables.map((packageMark, index) => (
+                <Box component="div" className='container' key={index}>
                     {/* A shipping mark */}
+
                     <Box component="div"
                         sx={{
                             display: 'flex',
                             flexDirection: 'row',
-                            mb:'0.5rem'
+                            mb: '0.5rem'
                         }}>
                         <Box component="div"
                             sx={{
@@ -41,21 +30,33 @@ const printShippingMarks = () => {//{ order }
                             <table>
                                 <tbody>
                                     <tr>
-                                        <td><Box component="h1" sx={{ fontSize: '3rem' }}>MARK</Box></td>
-                                        <td><Box component="h1" sx={{ fontSize: '3rem' }}>: CFL397A-C5</Box></td>
+                                        <td><Box component="h1" sx={{ fontSize: '2.5rem' }}>MARK</Box></td>
+                                        <td><Box component="h1" sx={{ fontSize: '2.5rem' }}>: {packageMark.smark.split(" ")[0]}</Box></td>
                                     </tr>
                                     <tr>
-                                        <td><Box component="h1" sx={{ fontSize: '3rem' }}>P/No</Box></td>
-                                        <td><Box component="h1" sx={{ fontSize: '3rem' }}>: 1-2</Box></td>
+                                        <td><Box component="h1" sx={{ fontSize: '2.5rem' }}>P/No</Box></td>
+                                        <td><Box component="h1" sx={{ fontSize: '2.5rem' }}>: {packageMark.smark.split(" ")[1]}</Box></td>
                                     </tr>
-                                    <tr>
-                                        <td>
-                                            <Box component="h1" sx={{ fontSize: '2.9rem' }}><CheckBoxIcon sx={{ position: 'relative', top: '0.2rem', fontSize: '3.5rem', pt: '1rem' }} />SEA</Box>
-                                        </td>
-                                        <td>
-                                            <Box component="h1" sx={{ fontSize: '2.9rem' }}><CheckBoxOutlineBlankIcon sx={{ position: 'relative', top: '0.2rem', fontSize: '3.5rem', pt: '1rem' }} />AIR</Box>
-                                        </td>
-                                    </tr>
+                                    {packageMark.smark[6] === "A" ? (
+                                        <tr>
+                                            <td>
+                                                <Box component="h1" sx={{ fontSize: '2.2rem' }}><CheckBoxOutlineBlankIcon sx={{ position: 'relative', top: '0.4rem', fontSize: '3.3rem', pt: '1rem' }} />SEA</Box>
+                                            </td>
+                                            <td>
+                                                <Box component="h1" sx={{ fontSize: '2.2rem' }}><CheckBoxIcon sx={{ position: 'relative', top: '0.4rem', fontSize: '3.3rem', pt: '1rem' }} />AIR</Box>
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        <tr>
+                                            <td>
+                                                <Box component="h1" sx={{ fontSize: '2.2rem' }}><CheckBoxIcon sx={{ position: 'relative', top: '0.4rem', fontSize: '3.3rem', pt: '1rem' }} />SEA</Box>
+                                            </td>
+                                            <td>
+                                                <Box component="h1" sx={{ fontSize: '2.2rem' }}><CheckBoxOutlineBlankIcon sx={{ position: 'relative', top: '0.4rem', fontSize: '3.3rem', pt: '1rem' }} />AIR</Box>
+                                            </td>
+                                        </tr>
+                                    )}
+
                                 </tbody>
                             </table>
                         </Box>
@@ -65,37 +66,38 @@ const printShippingMarks = () => {//{ order }
                                 padding: '20px',
                                 flexGrow: 1,
                             }}>
+                            <QRCodeSVG value={packageMark.smark.split(" ")[0] + " " + packageMark.smark.split(" ")[1]} style={{ marginLeft: '1rem' }} />
                             <table style={{ margin: 'auto' }}>
                                 <tbody>
+
                                     <tr>
                                         <td><Box component="p">Length</Box></td>
-                                        <td><Box component="p">: 0.3m</Box></td>
+                                        <td><Box component="p">: {packageMark.details.length}m</Box></td>
                                     </tr>
                                     <tr>
                                         <td><Box component="p">Height</Box></td>
-                                        <td><Box component="p">: 0.3m</Box></td>
+                                        <td><Box component="p">: {packageMark.details.height}m</Box></td>
                                     </tr>
                                     <tr>
                                         <td><Box component="p">Width</Box></td>
-                                        <td><Box component="p">: 0.3m</Box></td>
+                                        <td><Box component="p">: {packageMark.details.width}m</Box></td>
                                     </tr>
                                     <tr>
                                         <td><Box component="p">Weight</Box></td>
-                                        <td><Box component="p">: 1.23kg</Box></td>
+                                        <td><Box component="p">: {packageMark.details.weight}kg</Box></td>
                                     </tr>
                                     <tr>
                                         <td><Box component="p">VMW</Box></td>
-                                        <td><Box component="p">: 1.23kg</Box></td>
+                                        <td><Box component="p">: {packageMark.details.volume_metric_weight}kg</Box></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </Box>
                     </Box>
-                    
                 </Box>
-            </Box>
-        </Box>
+            ))}
+        </>
     );
 };
 
-export default printShippingMarks;
+export default PrintShippingMarks;

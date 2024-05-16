@@ -8,8 +8,6 @@ export const TestFile = () => {
     //================SIMPLE MSG======================
     const notify = () => toast.success("Wow so easy !");
 
-    
-
     //=============================================================
     useEffect(() => {
         const myPromise = new Promise((resolve) =>
