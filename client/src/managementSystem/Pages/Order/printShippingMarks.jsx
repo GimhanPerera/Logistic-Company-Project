@@ -67,6 +67,7 @@ const PrintShippingMarks = ({printables}) => {
                                 flexGrow: 1,
                             }}>
                             <QRCodeSVG size="122" value={packageMark.smark.split(" ")[0] + " " + packageMark.smark.split(" ")[1]} style={{ marginLeft: '1rem' }} />
+
                             <table style={{ margin: 'auto' }}>
                                 <tbody>
 
