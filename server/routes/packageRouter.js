@@ -5,4 +5,6 @@ const packageContraller = require('../controller/packageContraller') //import co
 
 router.post("/addpackages", packageContraller.addPackages);//add packages
 
+router.get("/getpackages/:orderId", packageContraller.getPackages);//get packages
+
 module.exports = router;
