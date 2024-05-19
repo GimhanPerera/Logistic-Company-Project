@@ -17,6 +17,12 @@ const OrderDetailsCard = ({ order }) => {
     navigate(`./${id}`);
   }
 
+  const toUpdateTracking = () => {
+    
+    const id=order.order_id;
+    navigate('./updatetracking', { state: { orderId: order.order_id, fullname: order.Customer.f_name+" "+order.Customer.l_name, status: order.status, tel_number: order.Customer.tel_number, main_tracking_number:order.main_tracking_number} });
+  }
+
   return (
     <Box component="div"
       sx={{
@@ -65,7 +71,7 @@ const OrderDetailsCard = ({ order }) => {
           {order.status == 'Just opened' && (
           <Box component="p" onClick={toPackages} sx={{cursor:'pointer'}}>add packages</Box>
         )}
-          <p className=''>Update tracking</p>
+          <p className='' onClick={toUpdateTracking} >Update tracking</p>
           <p>Cancel the order</p>
         </Box>
       </div>

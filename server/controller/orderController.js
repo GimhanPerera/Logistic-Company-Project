@@ -131,7 +131,7 @@ const getAllOrderDetailsForOrderCard = async (req, res) => { //Get all Order
         const orders = await Order.findAll({
             include: [{
                 model: Customer,
-                attributes: ['customer_id', 'f_name', 'l_name']
+                attributes: ['customer_id', 'f_name', 'l_name', 'tel_number']
             }]
         });
 

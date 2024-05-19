@@ -57,6 +57,37 @@ const addPackages = async (req, res) => {
     }
 }
 
+const getPackages = async (req, res) => {
+    try {
+        let i = 1;
+        const package = await Package.findAll({
+            where: {order_id: req.params.orderId}
+        })
+        const order = await Order.findByPk(req.params.orderId, {
+            attributes: ['main_tracking_number']
+        });
+        if (!order) {
+            return res.status(404).json({ error: 'Order not found' });
+        }
+        console.log("SEND")
+        
+        // Add the tracking_number to the response
+        const response = {
+            tracking_number: order.main_tracking_number,
+            packages: package
+        };
+
+        res.status(200).json(response);
+
+    } catch (error) {
+        // Handle errors
+        console.error('Error adding packages:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+
 module.exports = {
-    addPackages
+    addPackages,
+    getPackages
 }

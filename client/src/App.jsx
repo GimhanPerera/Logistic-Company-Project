@@ -7,6 +7,7 @@ import NewOrder from './managementSystem/Pages/Order/newOrder';
 import OrderDetails from './managementSystem/Pages/Order/orderDetails';
 import { Packages } from './managementSystem/Pages/Order/packages';
 import PrintShippingMarks from './managementSystem/Pages/Order/printShippingMarks';
+import UpdateTracking from './managementSystem/Pages/Order/updateTracking';
 import Reports from './managementSystem/Pages/Reports/Reports';
 import { ShipmentDetails } from './managementSystem/Pages/Shipment/shipmentDetails';
 import OrderRequest from './managementSystem/Pages/orderRequest/orderRequest';
@@ -50,6 +51,7 @@ function App() {
               <Route path="order">
                 <Route index element={<OrderDetails />} />
                 <Route path=":id" element={<Packages />} />
+                <Route path="updatetracking" element={<UpdateTracking />} />
               </Route>
               <Route path="shipment" element={<ShipmentDetails />} />
               <Route path="reports" element={<Reports />} />
