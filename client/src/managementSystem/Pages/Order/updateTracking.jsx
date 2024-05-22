@@ -1,5 +1,4 @@
 import CancelIcon from '@mui/icons-material/Close';
-import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import { Container } from '@mui/material';
@@ -23,7 +22,6 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Swal from 'sweetalert2';
 import { addPackageValidation } from './../../../validations';
 
 //Table theme
@@ -72,7 +70,7 @@ const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
 
 const UpdateTracking = () => {
     const location = useLocation();
-    const { orderId, fullname, status,tel_number,main_tracking_number} = location.state || {};
+    const { orderId, fullname, status, tel_number, main_tracking_number } = location.state || {};
     const navigate = useNavigate();
     const { id } = useParams();
 
@@ -81,9 +79,20 @@ const UpdateTracking = () => {
     }
 
     const [rows, setRows] = useState([]);
-
     const [rowModesModel, setRowModesModel] = useState({});
     const [displayMasks, setDisplayMasks] = useState(false);
+    const [readyToShip, setReadyToShip] = useState(false);
+
+    //check all packages are Received
+    useEffect(() => {
+        const allReceived = rows.every(row => row.status === "received");
+        if (allReceived) {
+            setReadyToShip(true);
+        } else {
+            setReadyToShip(false);
+            setTracking("Waiting");
+        }
+    }, [rows]);
 
     //supplier form data
     const [name, setName] = useState("");
@@ -91,6 +100,7 @@ const UpdateTracking = () => {
     const [tel, setTel] = useState("");
     const [des, setDes] = useState("");
     const [mainTracking, setMainTracking] = useState('');
+    const [localTrackingEditable, setlocalTrackingEditable] = useState(false);
 
     //get package data
     useEffect(() => {
@@ -98,12 +108,15 @@ const UpdateTracking = () => {
             .then((response) => {
                 const dataWithIds = response.data.packages.map((item, index) => ({
                     ...item,
-                    id: index+1 // Or use item.id if the data already has a unique identifier
+                    id: index + 1 // Or use item.id if the data already has a unique identifier
                 }));
                 console.log("PKS", dataWithIds);
                 setRows(dataWithIds);
                 setMainTracking(response.data.tracking_number);
                 console.log(mainTracking);
+                if (response.data.status == "Ready" || response.data.status == "Deliverd") {
+                    setlocalTrackingEditable(true)
+                }
             })
             .catch((error) => {
                 console.error("Error fetching courier details:", error);
@@ -160,12 +173,11 @@ const UpdateTracking = () => {
     const handleRowModesModelChange = (newRowModesModel) => {
         setRowModesModel(newRowModesModel);
     };
-    const [tacking, setTacking] = useState(status);
+    const [tracking, setTracking] = useState(status);
 
     const handleTracking = (event) => {
-        setTacking(event.target.value);
+        setTracking(event.target.value);
     };
-
 
     const columns = [
         { field: 'id', headerName: 'ID', width: 40, editable: false },
@@ -182,18 +194,24 @@ const UpdateTracking = () => {
             editable: false,
         },
         {
-            field: 'warehouse_tracking_number',
-            headerName: 'warehouse_tracking_number',
-            width: 200,
-            editable: true,
-        },
-        {
             field: 'status',
             headerName: 'Status',
             width: 140,
             editable: true,
             type: 'singleSelect',
             valueOptions: ['not received', 'received'],
+        },
+        {
+            field: 'warehouse_tracking_number',
+            headerName: 'warehouse_tracking_number',
+            width: 200,
+            editable: true,
+        },
+        {
+            field: 'local_tracking_number',
+            headerName: 'local_tracking_number',
+            width: 200,
+            editable: localTrackingEditable,
         },
         {
             field: 'actions',
@@ -232,12 +250,6 @@ const UpdateTracking = () => {
                         onClick={handleEditClick(id)}
                         color="inherit"
                     />,
-                    <GridActionsCellItem
-                        icon={<DeleteIcon />}
-                        label="Delete"
-                        onClick={handleDeleteClick(id)}
-                        color="inherit"
-                    />,
                 ];
             },
         },
@@ -253,59 +265,53 @@ const UpdateTracking = () => {
         return grouped;
     }, {});
 
-    
-
+    const setAllReceived = () => {
+        const updatedRows = rows.map(row => ({ ...row, status: "received" }));
+        setRows(updatedRows);
+    };
 
     //Save all to database
     const saveAllPackages = async (e) => { //Submit the order
         e.preventDefault();
-        let SMdetails = [];
-        const supplierNames = Object.keys(groupedRows);
-        supplierNames.map((sName, index) => {
-            const match = sName.match(/C0*(\d+)/);
-            const attachableSName = `C${match[1]}`
-            const rows = groupedRows[sName];
-            const totalPackageCount = rows.reduce((total, row) => total + parseInt(row.package_count), 0);
-            let newArray = [];
-
-
-            rows.forEach(obj => {
-                for (let i = 0; i < parseInt(obj.package_count); i++) {
-                    newArray.push(obj);
-                }
-            });
-
-            for (let i = 1; i <= totalPackageCount; i++) {
-                //console.log("SHIPPING MARK: " + id + "-" + attachableSName + " " + i + "-" + totalPackageCount);
-                //console.log(newArray[i - 1]);
-                const mark = id + "-" + attachableSName + " " + i + "-" + totalPackageCount;
-                SMdetails.push({ smark: mark, details: newArray[i - 1] });
-            }
-
+        //let SMdetails = [];
+        //const supplierNames = Object.keys(groupedRows);
+        rows.map((sName, index) => {
+            console.log(sName.shipping_mark)
+            console.log(sName.status)
         });
-        console.log(SMdetails);
-
-        axios.post("http://localhost:3001/api/package/addpackages", SMdetails)
+        const arrayOfObjects = rows.map((sName, index) => {
+            return {
+                shipping_mark: sName.shipping_mark,
+                status: sName.status,
+                warehouse_tracking_number: sName.warehouse_tracking_number,
+                local_tracking_number: sName.local_tracking_number
+            };
+        });
+        const data = {
+            OrderID: orderId,
+            status: tracking,
+            packages: arrayOfObjects
+        };
+        const jsonString = JSON.stringify(data);
+        console.log(jsonString);
+        axios.post(`http://localhost:3001/api/order/updateTracking/${orderId}`,jsonString, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
             .then((response) => {
-                //setTrackingDetails(response.data);
-                //setLoading(false);
-                console.log(response.data);
-                if (response.status == 200) {
-                    //Added successfully
-                    Swal.fire({
-                        title: "Packages added successfully",
-                        //text: "That thing is still around?",
-                        icon: "success"
-                    });
-                    setDisplayMasks(true);
-                }
+                console.log(response);
+                //MASSAGES NEED TO TRIGER
+                navigate('../');
             })
             .catch((error) => {
-                console.error("Error fetching details:", error);
-                //setLoading(false);
+                console.error("Error fetching courier details:", error);
             });
-
     }
+
+    const reloadPage = () => {
+        window.location.reload();
+    };
 
     //===========================================
     return (
@@ -351,18 +357,18 @@ const UpdateTracking = () => {
                                 <FormControl sx={{ m: 1, minWidth: 120 }}>
                                     <InputLabel id="demo-select-small-label">Status</InputLabel>
                                     <Select
-                                        //defaultValue={30}
-                                        value={tacking}
+                                        disabled={!readyToShip}
+                                        value={tracking}
                                         label="Status"
                                         onChange={handleTracking}
                                     >
                                         <MenuItem value="Waiting">Waiting</MenuItem>
                                         <MenuItem value="In Warehouse">In Warehouse</MenuItem>
-                                        <MenuItem value="Ship/airfreight ">Ship/airfreight</MenuItem>
+                                        {/* <MenuItem value="Ship/airfreight ">Ship/airfreight</MenuItem>
                                         <MenuItem value="Customs">Customs</MenuItem>
                                         <MenuItem value="On hand">On hand</MenuItem>
                                         <MenuItem value="Ready">Ready</MenuItem>
-                                        <MenuItem value="Deliverd">Deliverd</MenuItem>
+                                        <MenuItem value="Deliverd">Deliverd</MenuItem> */}
                                     </Select>
                                 </FormControl>
                             </td>
@@ -370,14 +376,16 @@ const UpdateTracking = () => {
                             </td>
                         </tr>
                         <tr>
-                            <td style={{ paddingTop: '0.7rem' }}>
-                                <Button variant="contained"
-                                    sx={{  }}
-                                >
-                                    Save Tracking details
+                            <td>
+                                <Button variant="contained" onClick={reloadPage}>
+                                    Undo all changes
                                 </Button>
                             </td>
-                            <td></td>
+                            <td style={{ paddingTop: '0.7rem' }}>
+                                <Button variant="contained" onClick={setAllReceived}>
+                                    Set all packages as Received
+                                </Button>
+                            </td>
                         </tr>
                     </table>
                 </Form>
@@ -386,6 +394,7 @@ const UpdateTracking = () => {
             <Button variant="contained" onClick={saveAllPackages} startIcon={<SaveIcon />} sx={{ backgroundColor: '#68DD62', position: 'fixed', right: '4rem', top: '5rem' }}>Save</Button>
             <Button variant="outlined" onClick={toBack} sx={{ position: 'fixed', right: '11rem', top: '5rem' }}>Back</Button>
 
+            {/*Table*/}
             <Container>
                 <Box sx={{ height: 400, width: '90%' }}>
                     <StyledDataGrid sx={{ border: '1px solid gray' }}
