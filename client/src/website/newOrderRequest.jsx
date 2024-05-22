@@ -213,7 +213,7 @@ export const NewOrderRequest = () => {
                         <Button variant="contained"
                                 type="submit"
                                 sx={{ backgroundColor: '#68DD62', m:'1rem 0' }}>
-                                Apply price quotation
+                                Request price quotation
                             </Button>
                             <Button onClick={toOrders} variant="outlined"
                                 sx={{ }}>

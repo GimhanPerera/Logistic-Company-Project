@@ -1,24 +1,34 @@
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import axios from "axios";
+import FileSaver from 'file-saver';
 import { Field, Form, Formik, useFormik } from 'formik';
+import FileDownload from "js-file-download";
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Countries } from '../../../countryCodes';
-
+import { priceQuotationValidation } from '../../../validations';
 
 const RequestHandle = () => {
+    const location = useLocation();
+    const { order_id, quotation_id, itemsP, packCountP, weightP, shippingMarkP, desP, countryP } = location.state || {};
 
-
-
+    const initialValues = {
+        items: itemsP,
+        packages: packCountP,
+        weight: weightP,
+        shippingmethod: shippingMarkP,
+        quotation: '',
+        description: desP,
+        supplierLoc: countryP,
+    }
 
     const [dropDownValue, setDropDownValue] = React.useState("Ship cargo");
 
     const dropDownChange = (event) => {
         setDropDownValue(event.target.value);
-
     };
     const [customerID, setCustomerID] = useState("");
     const [customerName, setCustomerName] = useState("");
@@ -27,17 +37,10 @@ const RequestHandle = () => {
     const [invoice, setInvoice] = useState(null);
     const navigate = useNavigate();
     const [quotationID, setQuotationID] = useState();
-    const [quotationDetails, setQuotationDetails] = useState([]);
-    const [initialValues, setInitialValues] = useState([]);
-    const [formdata, setFormData] = useState([]);
-
-    const [items, setItems] = useState();
-    const [packages, setPackages] = useState();
-    const [weight, setWeight] = useState();
-    const [shippingmethod, setShippingmethod] = useState();
-    const [quotation, setQuotation] = useState('22');
-    const [description, setDescription] = useState();
-    const [supplierLoc, setSupplierLoc] = useState();
+    const [addImage, setaddImage] = useState(true);
+    const toggleAddImage = () => {
+        setaddImage(addImage => !addImage);
+    };
 
     useEffect(() => {
         //Get customer data
@@ -59,42 +62,40 @@ const RequestHandle = () => {
         }).catch((error) => {
             console.error('Error :', error);
         });
-        axios.get(`http://localhost:3001/api/priceQuotationRouter/searchby/id/${parts[parts.length - 1]}`, {
-        }).then((response) => {
-            setQuotationDetails(response.data.priceReq[0])
-            //initialValues.weight=response.data.priceReq[0].raugh_weight
-            //console.log(response.data.priceReq[0])
-            setItems(response.data.priceReq[0].items);
-            setPackages(response.data.priceReq[0].no_of_packages);
-            setWeight(response.data.priceReq[0].raugh_weight);
-            setShippingmethod(response.data.priceReq[0].shipping_method);
-            setDescription(response.data.priceReq[0].description);
-            setSupplierLoc(response.data.order[0].supplier_loc);
-            //setPackages(response.data.priceReq[0].no_of_packages);
-        }).catch((error) => {
-            console.error('Error :', error);
-        });
+        try {
+            axios({
+                url: `http://localhost:3001/api/priceQuotationRouter/download/image/${quotation_id}`,
+                method: "GET",
+                responseType: "blob"
+            }).then((res) => {
+                // Get the content type from the response headers
+                const contentType = res.headers['content-type'];
+
+                console.log("TYPE", contentType)
+
+                // Determine the file extension based on the content type
+                let extension = '';
+                if (contentType === 'application/pdf') {
+                    extension = 'pdf';
+                } else if (contentType.startsWith('image/')) {
+                    // Get the image type from the content type
+                    extension = contentType.split('/')[1];
+                } else {
+                    console.error('Unsupported file type');
+                    return;
+                }
+
+                // Optionally, set the image state if needed for further processing
+                setImage(URL.createObjectURL(res.data));
+            })
+        } catch (error) {
+            console.error('Error creating order:', error);
+        }
+
     }, [])
 
-    // useEffect(() => {
-    //     // Check if quotationDetails is set
-    //     if (quotationDetails) {
-    //         console.log("ITM: " + quotationDetails.items)
-    //         // Update initialValues with data from quotationDetails
-    //         setInitialValues({
-    //             items: 'sdsd',
-    //             packages: '4',
-    //             weight: '2',
-    //             shippingmethod: '',
-    //             quotation: '',
-    //             description: '',
-    //             supplierLoc: '',
-    //         });
-    //     }
-    // }, [quotationDetails]);
-
     const toOrders = () => {
-        navigate('../order');
+        navigate('../');
     }
 
     const handleImageChange = (e) => {
@@ -102,7 +103,6 @@ const RequestHandle = () => {
     };
     const handleInvoiceChange = (e) => {
         setInvoice(e.target.files[0]); // Update the image file in the form data
-
     };
 
     const onSubmit = async (values, actions) => {
@@ -114,48 +114,122 @@ const RequestHandle = () => {
         } else if (!regex.test(customerID)) {
             toast.error("Wrong Customer ID format");
             return
-        } else if (image == null) {
+        } if (image == null) {
             toast.error("Image is required");
             return
-        } else if (invoice == null) {
-            toast.error("Invoice is required");
-            return
         }
+        // if (invoice == null) {
+        //     toast.error("Invoice is required");
+        //     return
+        // }
 
         try {
             const token = localStorage.getItem('token');
-            await axios.post("http://localhost:3001/api/order", {
+            await axios.post("http://localhost:3001/api/order/requestconfirm", {
+                "order_id": order_id,
+                "quotation_id": quotation_id,
                 "items": values.items,
                 "packages": values.packages,
                 "weight": values.weight,
                 "shippingmethod": values.shippingmethod,
-                "quotation": values.quotation,//
+                "quotation": values.quotation,
                 "description": values.description,
                 "supplierLoc": "China",//values.supplierLoc,
-                "status": "Just opened",//
-                "image": image,
-                "invoice": invoice,
-                "cusID": customerID,
-                "name": customerName,//
-                "tp": customerTp,//
+                "status": "Just opened",
+                // "cusID": customerID,
+                // "name": customerName,//
+                // "tp": customerTp,//
             }, {
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    //'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${token}`
                 }
             });
 
-            navigate('../order');
+            navigate('../');
         } catch (error) {
             console.error('Error creating order:', error);
         }
     }
     const { values, touched, handleBlur, isSubmitting, setErrors, handleChange, handleSubmit, errors } = useFormik({
         initialValues: initialValues,
-        //validationSchema: priceQuotationValidation,
+        validationSchema: priceQuotationValidation,
 
         onSubmit,
     });
+
+    const downloadImage = async (e) => {
+        e.preventDefault();
+        try {
+            axios({
+                url: `http://localhost:3001/api/priceQuotationRouter/download/image/${quotation_id}`,
+                method: "GET",
+                responseType: "blob"
+            }).then((res) => {
+                // Get the content type from the response headers
+                const contentType = res.headers['content-type'];
+
+                console.log("TYPE", contentType)
+
+                // Determine the file extension based on the content type
+                let extension = '';
+                if (contentType === 'application/pdf') {
+                    extension = 'pdf';
+                } else if (contentType.startsWith('image/')) {
+                    // Get the image type from the content type
+                    extension = contentType.split('/')[1];
+                } else {
+                    console.error('Unsupported file type');
+                    return;
+                }
+
+                // Create a filename with the appropriate extension
+                const filename = `${quotation_id}Image.${extension}`;
+
+                // Save the file using FileSaver
+                FileSaver.saveAs(new Blob([res.data], { type: contentType }), filename);
+
+                // Optionally, set the image state if needed for further processing
+                setImage(URL.createObjectURL(res.data));
+            })
+        } catch (error) {
+            console.error('Error creating order:', error);
+        }
+    }
+
+    const downloadInvoice = async (e) => {
+        e.preventDefault();
+        try {
+            axios({
+                url: `http://localhost:3001/api/priceQuotationRouter/download/invoice/${quotation_id}`,
+                method: "GET",
+                responseType: "blob"
+            }).then((res) => {
+                // Get the content type from the response headers
+                const contentType = res.headers['content-type'];
+
+                console.log("TYPE", contentType)
+
+                // Determine the file extension based on the content type
+                let extension = '';
+                if (contentType === 'application/pdf') {
+                    extension = 'pdf';
+                } else if (contentType.startsWith('image/')) {
+                    // Get the image type from the content type
+                    extension = contentType.split('/')[1];
+                } else {
+                    console.error('Unsupported file type');
+                    return;
+                }
+
+                // Create a filename with the appropriate extension
+                const filename = `${quotation_id}Invoice.${extension}`;
+                FileDownload(res.data, filename)
+            })
+        } catch (error) {
+            console.error('Error creating order:', error);
+        }
+    }
 
 
     return (
@@ -163,7 +237,7 @@ const RequestHandle = () => {
             <ToastContainer />
             <div className="relative">
                 <Formik>
-                    <Form>
+                    <Form onSubmit={handleSubmit}>
                         <Box component="div"
                             sx={{ display: 'flex', justifyContent: 'space-around', mt: '1rem' }}>
                             <Box component="div">
@@ -172,32 +246,33 @@ const RequestHandle = () => {
                                     <tr>
                                         <td>
                                             <TextField label="Items" size="small" type='text' name='items' margin="normal"
-                                                value={items}
-                                                onChange={(e) => setItems(e.target.value)}
-                                            //onBlur={handleBlur}
-                                            //error={touched.items && Boolean(errors.items)}
-                                            //helperText={touched.items && errors.items}
+                                                value={values.items}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                error={touched.items && Boolean(errors.items)}
+                                                helperText={touched.items && errors.items}
+                                                initialValues={values.items}
                                             />
                                         </td>
                                         <td>
                                             <TextField label="No of packages" size="small" type='number' name='packages' margin="normal"
-                                                //value={values.packages}
-                                                //onChange={handleChange}
-                                                value={packages}
-                                                onChange={(e) => setPackages(e.target.value)}
-                                            // onBlur={handleBlur}
-                                            // error={touched.packages && Boolean(errors.packages)}
-                                            // helperText={touched.packages && errors.packages}
+                                                value={values.packages}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                error={touched.packages && Boolean(errors.packages)}
+                                                helperText={touched.packages && errors.packages}
+                                                initialValues={values.packages}
                                             /></td>
                                     </tr>
                                     <tr>
                                         <td>
                                             <TextField label="Rough weight(Kg)" size="small" type='number' name='weight' margin="normal"
-                                                value={weight}
-                                                onChange={(e) => setWeight(e.target.value)}
-                                            // onBlur={handleBlur}
-                                            // error={touched.weight && Boolean(errors.weight)}
-                                            // helperText={touched.weight && errors.weight}
+                                                value={values.weight}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                error={touched.weight && Boolean(errors.weight)}
+                                                helperText={touched.weight && errors.weight}
+                                                initialValues={values.weight}
                                             /></td>
                                         <td>
                                             <FormControl sx={{ m: 1, minWidth: 170 }}>
@@ -205,11 +280,12 @@ const RequestHandle = () => {
                                                 <Field
                                                     as={Select}
                                                     name="shippingmethod"
-                                                    onChange={(e) => setShippingmethod(e.target.value)}
-                                                    value={shippingmethod}
-                                                    //onBlur={handleBlur}
+                                                    value={values.shippingmethod}
+                                                    onChange={handleChange}
+                                                    onBlur={handleBlur}
                                                     label="Shipping method"
                                                     size='small'
+                                                    initialValues={values.shippingmethod}
                                                 >
                                                     <MenuItem value={"Air cargo"}>Air Cargo</MenuItem>
                                                     <MenuItem value={"Ship cargo"}>Ship Cargo</MenuItem>
@@ -221,20 +297,19 @@ const RequestHandle = () => {
                                     <tr>
                                         <td>
                                             <TextField label="Quotation(LKR)" size="small" type='number' name='quotation' margin="normal"
-                                                value={quotation}
-                                                onChange={(e) => setQuotation(e.target.value)}
-                                            // onBlur={handleBlur}
-                                            // error={touched.quotation && Boolean(errors.quotation)}
-                                            // helperText={touched.quotation && errors.quotation}
+                                                value={values.quotation}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                error={touched.quotation && Boolean(errors.quotation)}
+                                                helperText={touched.quotation && errors.quotation}
                                             /></td>
                                         <td><TextField label="Description" size="small" type='text' name='description' margin="normal"
-                                            //value={values.description}
-                                            //onChange={handleChange}
-                                            value={description}
-                                            onChange={(e) => setDescription(e.target.value)}
-                                        // onBlur={handleBlur}
-                                        // error={touched.description && Boolean(errors.description)}
-                                        // helperText={touched.description && errors.description}
+                                            value={values.description}
+                                            onChange={handleChange}
+                                            onBlur={handleBlur}
+                                            error={touched.description && Boolean(errors.description)}
+                                            helperText={touched.description && errors.description}
+                                            initialValues={values.description}
                                         />
                                         </td>
                                     </tr>
@@ -268,8 +343,9 @@ const RequestHandle = () => {
                                                         ...params.inputProps,
                                                         autoComplete: 'new-password', // disable autocomplete and autofill
                                                     }}
-                                                    value={supplierLoc}
-                                                onChange={(e) => setSupplierLoc(e.target.value)}
+                                                    value={values.supplierLoc}
+                                                    onChange={handleChange}
+                                                    onBlur={handleBlur}
                                                 />
                                             )}
                                         /></td>
@@ -277,26 +353,60 @@ const RequestHandle = () => {
                                     <tr>
                                         <td><label for="invoice">Image :</label></td>
                                         <td>
-                                            <Field type="file" id="image" name="image" onChange={handleImageChange} accept="image/*"
-                                                style={{
-                                                    border: '1px solid #ccc',
-                                                    padding: '10px',
-                                                    borderRadius: '5px',
-                                                    marginTop: '10px',
-                                                    width: '200px',
-                                                }} />
+
+                                            {addImage ? (
+                                                <div>
+                                                    {image && (
+                                                        <div style={{ marginTop: '10px' }}>
+                                                            <img
+                                                                src={image}
+                                                                alt="Preview"
+                                                                style={{ width: '200px', borderRadius: '5px' }}
+                                                            />
+                                                        </div>
+                                                    )}
+                                                    <Box component="p" onClick={downloadImage} style={{ cursor: 'pointer', color: 'blue' }}>
+                                                        Download
+                                                    </Box>
+                                                    {/* <Box component="p"onClick={toggleAddImage} style={{ cursor: 'pointer', color: 'blue' }}>
+                                                        add new image
+                                                    </Box> */}
+                                                </div>
+                                            ) : (
+                                                <div>
+                                                    <Field
+                                                        type="file"
+                                                        id="image"
+                                                        name="image"
+                                                        onChange={handleImageChange}
+                                                        accept="image/*"
+                                                        style={{
+                                                            border: '1px solid #ccc',
+                                                            padding: '10px',
+                                                            borderRadius: '5px',
+                                                            marginTop: '10px',
+                                                            width: '200px',
+                                                        }}
+                                                    />
+                                                    <Box component="p" onClick={toggleAddImage} style={{ cursor: 'pointer', color: 'blue' }}>
+                                                        cancel
+                                                    </Box></div>
+                                            )}
+
                                         </td>
                                     </tr>
                                     <tr>
                                         <td><label for="invoice">Performa invoice :</label></td>
-                                        <td><input type="file" id="invoice" name="invoice" onChange={handleInvoiceChange}
+                                        <td>
+                                            {/* <input type="file" id="invoice" name="invoice" onChange={handleInvoiceChange}
                                             style={{
                                                 border: '1px solid #ccc',
                                                 padding: '10px',
                                                 borderRadius: '5px',
                                                 marginTop: '10px',
                                                 width: '200px',
-                                            }} />
+                                            }} /> */}
+                                            <Box component="p" onClick={(e) => downloadInvoice(e)}>Download</Box>
                                         </td>
                                     </tr>
                                 </table>
@@ -332,7 +442,6 @@ const RequestHandle = () => {
                                                     readOnly: true,
                                                 }}
                                             />
-
                                         </td>
                                     </tr>
                                 </table>

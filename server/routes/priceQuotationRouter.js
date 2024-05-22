@@ -26,4 +26,10 @@ router.get("/", priceQuotationController.allRequests)
 
 router.get("/searchby/id/:id", priceQuotationController.getRequestByID)
 
+//req: Quotation id, res: Image
+router.get("/download/image/:quotation_id", priceQuotationController.downloadImage)
+
+//req: Quotation id, res: Performa invoice
+router.get("/download/invoice/:quotation_id", priceQuotationController.downloadInvoice)
+
 module.exports = router;

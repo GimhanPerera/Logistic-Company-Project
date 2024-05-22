@@ -64,6 +64,7 @@ const getRequestByID = async (req, res) => {
                 quotation_id: req.params.id,
             },
         });
+        console.log("priceReq",priceReq.items)
         const order = await Order.findAll({
             where: {
                 order_id: "CFL610A-4326",
@@ -74,8 +75,54 @@ const getRequestByID = async (req, res) => {
             priceReq: priceReq,
             order: order // Adding order.supplier_loc to the response
         };
-console.log("QID: "+req.params.id)
+        console.log("QID: "+req.params.id)
         res.status(200).json(responseData);
+    } catch (error) {
+        console.error("Error deleting courier:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+const downloadImage = async (req, res) => {
+    try {
+        console.log(req.params.quotation_id)
+        const imageOfItem = await Price_quotation.findOne({
+            attributes: ['image'],
+            where: {
+                quotation_id: req.params.quotation_id,
+            },
+        });
+        
+        if (imageOfItem) {
+            console.log("IMAGE ",imageOfItem.image);
+            res.download(`./images/${imageOfItem.image}`);
+        } else {
+            res.status(404).json({ error: "Image not found" });
+        }
+        
+    } catch (error) {
+        console.error("Error deleting courier:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+const downloadInvoice = async (req, res) => {
+    try {
+        console.log(req.params.quotation_id)
+        const invoiceOfItem = await Price_quotation.findOne({
+            attributes: ['performa_invoice'],
+            where: {
+                quotation_id: req.params.quotation_id,
+            },
+        });
+        
+        if (invoiceOfItem) {
+            console.log("IMAGE ",invoiceOfItem.performa_invoice);
+            res.download(`./images/${invoiceOfItem.performa_invoice}`);
+        } else {
+            res.status(404).json({ error: "Image not found" });
+        }
+        
     } catch (error) {
         console.error("Error deleting courier:", error);
         res.status(500).json({ error: "Internal server error" });
@@ -85,5 +132,7 @@ console.log("QID: "+req.params.id)
 module.exports = {
     addAQuotationReq,
     allRequests,
-    getRequestByID
+    getRequestByID,
+    downloadImage,
+    downloadInvoice
 }

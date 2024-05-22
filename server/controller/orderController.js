@@ -9,12 +9,12 @@ const newOrder = async (req, res) => {//Add a order - NOT TESTED
         const { filename: invoice } = req.files['invoice'][0];
         let cus_id;
         console.log("Req: ");
-        if(req.body.status=="Just opened"){
+        if (req.body.status == "Just opened") {
             cus_id = req.body.cusID;
-        }else if(req.body.status=="Request"){
+        } else if (req.body.status == "Request") {
             cus_id = req.user.sub;
         }
-        console.log("CID: ",cus_id);
+        console.log("CID: ", cus_id);
 
         //----------------------Update Order table----------------------------------
         // Get the last order ID of the given customer
@@ -47,8 +47,8 @@ const newOrder = async (req, res) => {//Add a order - NOT TESTED
         });
         const newTnumbers = generateUniqueTrackingNumber(existingTrackingNumbers.map(order => order.main_tracking_number));
 
-        
-        
+
+
         const newOrder = await Order.create({
             "order_id": newOrderId,
             "order_open_date": getCurrentSriLankanDateTime(),
@@ -57,7 +57,7 @@ const newOrder = async (req, res) => {//Add a order - NOT TESTED
             "status": req.body.status,
             "customer_id": cus_id
         });
-        
+
         console.log("Order table updated")
 
         //----------------------Update Price_quotation table----------------------------------
@@ -87,7 +87,7 @@ const newOrder = async (req, res) => {//Add a order - NOT TESTED
         console.log("PRODUCT IMAGE: " + productImage)
         console.log("PERFORMA INVOICE: " + invoice)
         console.log("NEW ORDER OPENED: " + newOrderId)
-        
+
         res.status(200).json("SUCCESS")
 
     } catch (error) {
@@ -95,6 +95,40 @@ const newOrder = async (req, res) => {//Add a order - NOT TESTED
         console.error("Error fetching order details:", error);
         res.status(500).json({ error: "Internal server error" });
     }
+}
+
+const confirmOrder = async (req, res) => {
+    try {
+        console.log("Updateing",req.body.order_id)
+        const resultO = await Order.update({
+            "status": "Just opened",
+        }, {
+            where: {
+                order_id: req.body.order_id // orderID HERE
+            }
+        })
+        const resultQ = await Price_quotation.update(
+            {
+                "items": req.body.items,
+                "packages": req.body.packages,
+                "weight": req.body.weight,
+                "shippingmethod": req.body.shippingmethod,
+                "quotation": req.body.quotation,
+                "description": req.body.description,
+                "supplierLoc": req.body.supplierLoc,//values.supplierLoc,
+                "status": "confirmed",
+            }, {
+            where: {
+                quotation_id: req.body.quotation_id // orderID HERE
+            }
+        })
+        res.status(200).json("Updated");
+    } catch (error) {
+        // Handle error
+        console.error("Error fetching order details:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+
 }
 
 // Function to generate a random alphanumeric string of a specified length
@@ -230,5 +264,6 @@ module.exports = {
     trackingDetailsOfACustomer,
     trackingDetailsOfAOrder,
     isvalidtrackingnum,
+    confirmOrder,
 
 }

@@ -490,12 +490,12 @@ export const Packages = () => {
         </Button>
 
         {/* Back btn */}
-        <Button variant="contained"
+        {/* <Button variant="contained"
           sx={{ ml: '20px' }}
           onClick={toggleSupplier}
         >
           new Supplier
-        </Button>
+        </Button> */}
 
         {/* Supplier form */}
         <Formik
@@ -543,67 +543,24 @@ export const Packages = () => {
                 </td>
               </tr>
               <tr>
-                <td></td>
                 <td style={{ paddingTop: '0.7rem' }}>
                   <Button variant="text"
                     sx={{ ml: '20px' }}
                   >
                     Cancel
                   </Button>
+                  </td><td>
                   <Button variant="contained"
                     sx={{ ml: '20px' }}
                     onClick={addSupplier}
                   >
-                    Add
+                    Add new supplier
                   </Button>
                 </td>
               </tr>
             </table>
           </Form>
         </Formik>
-
-        {/*OLD TABLE: SAVE TO DELETE*/}
-        {/* <div className='w-full'>
-        <div className="relative overflow-x-auto">
-          <table className='w-full text-sm text-left rtl:text-right text-gray-900'>
-            <thead className='text-xs text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-white'>
-              <tr className='w-9/12 border border-opacity-100 '>
-                <td className='px-6 py-3'>package_count</td>
-                <td className='px-6 py-3'>Items</td>
-                <td className='px-6 py-3'>length</td>
-                <td className='px-6 py-3'>height</td>
-                <td className='px-6 py-3'>width</td>
-                <td className='px-6 py-3'>weight</td>
-                <td className='px-6 py-3'>volume_metric_weight</td>
-                <td className='px-6 py-3'>gross_weight</td>
-
-              </tr>
-            </thead>
-            <tbody>
-              {rows &&
-                rows.map(item => (
-                  <tr key={item.id} className='text-center'>
-                    <td>{item.package_count}</td>
-                    <td>{item.items}</td>
-                    <td>{item.length}</td>
-                    <td>{item.height}</td>
-                    <td>{item.width}</td>
-                    <td>{item.weight}</td>
-                    <td>{item.volume_metric_weight}</td>
-                    <td>{item.gross_weight}</td>
-
-                    <td>
-                      <a className='cursor-pointer mr-1' >Edit</a>
-                      <a className='cursor-pointer mr-1' >Remove</a>
-                      <a className='cursor-pointer mr-1'>details</a>
-                    </td>
-                  </tr>
-                ))
-              }
-            </tbody>
-          </table>
-        </div>
-      </div> */}
 
         <Button variant="contained" onClick={saveAllPackages} startIcon={<SaveIcon />} sx={{ backgroundColor: '#68DD62', position: 'fixed', right: '4rem', top: '5rem' }}>Save</Button>
         <Button variant="outlined" onClick={toBack} sx={{ position: 'fixed', right: '11rem', top: '5rem' }}>Back</Button>
