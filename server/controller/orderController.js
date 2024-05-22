@@ -1,4 +1,4 @@
-const { Order, Customer, Shipment, Price_quotation } = require('../models');
+const { Order, Customer, Shipment, Price_quotation, Package } = require('../models');
 const Sequelize = require('sequelize');
 
 
@@ -255,7 +255,39 @@ const isvalidtrackingnum = async (req, res) => {//When customer enter the tracki
     }
 };
 
+const updateTracking = async (req, res) => {
+    try {
+        console.log("BODY",req.body)
+        //const tracking_id = req.body.tracking_id
+        // const package = await Package.findAll({
+        //     where: {order_id: req.params.orderId}
+        // })
+        // const order = await Order.findByPk(req.params.orderId, {
+        //     attributes: ['main_tracking_number']
+        // });
+        Order.update({
+            status: req.body.status
+        },{
+            where: { order_id: req.params.orderId } }
+        );
+        
+        req.body.packages.forEach(packageData => {
+            Package.update({
+                status: packageData.status,
+                warehouse_tracking_number: packageData.warehouse_tracking_number,
+                local_tracking_number: packageData.local_tracking_number,
+            },{
+                where: { shipping_mark: packageData.shipping_mark } }
+            );
+        })
+        res.status(200).json( req.params.orderId);
+    } catch (error) {
+        // Handle error
+        console.error("Error fetching order details:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
 
+}
 
 
 module.exports = {
@@ -265,5 +297,5 @@ module.exports = {
     trackingDetailsOfAOrder,
     isvalidtrackingnum,
     confirmOrder,
-
+    updateTracking
 }

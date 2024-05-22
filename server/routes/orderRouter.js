@@ -36,4 +36,7 @@ router.post("/trackorder", orderController.trackingDetailsOfAOrder)
 //Check the tracking number is correct
 router.post("/isvalidtrackingnum", orderController.isvalidtrackingnum)
 
+//Tracking updates
+router.post("/updateTracking/:orderId", orderController.updateTracking)
+
 module.exports = router;
