@@ -39,4 +39,7 @@ router.post("/isvalidtrackingnum", orderController.isvalidtrackingnum)
 //Tracking updates
 router.post("/updateTracking/:orderId", orderController.updateTracking)
 
+//Get ready to ship order ids
+router.get("/readyToShipOrderIDs", orderController.readyToShipOrderIDs)
+
 module.exports = router;

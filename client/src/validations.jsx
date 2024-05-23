@@ -30,6 +30,15 @@ export const addCustomerValidation = Yup.object({
     address: Yup.string().min(3).required("Please Enter Address"),
     nic: Yup.string().min(3).required("Please Enter NIC"),
 })
+
+export const shipmentDetailsValidation = Yup.object({
+    BLnumber: Yup.string().min(3).required("Please Enter first name"),
+    shippingMethod: Yup.string().min(3).required("Please Enter first name"),
+    loadedDate: Yup.string().min(3).required("Please Enter first name"),
+    arrivalDate: Yup.string().min(3).required("Please Enter first name"),
+    displayDate: Yup.string().min(3).required("Please Enter first name"),
+})
+
 export const priceQuotationValidation = Yup.object({
     items: Yup.string()
         .required("Please enter items")

@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATEONLY,
             allowNull: false,
         },
-        desplayed_arriveal_date: {
+        displayed_arrival_date: {
             type: DataTypes.DATEONLY,
             allowNull: false,
         }

@@ -9,6 +9,7 @@ import { Packages } from './managementSystem/Pages/Order/packages';
 import PrintShippingMarks from './managementSystem/Pages/Order/printShippingMarks';
 import UpdateTracking from './managementSystem/Pages/Order/updateTracking';
 import Reports from './managementSystem/Pages/Reports/Reports';
+import AddEditShipment from './managementSystem/Pages/Shipment/addEditShipment';
 import { ShipmentDetails } from './managementSystem/Pages/Shipment/shipmentDetails';
 import OrderRequest from './managementSystem/Pages/orderRequest/orderRequest';
 import RequestHandle from './managementSystem/Pages/orderRequest/requestHandle';
@@ -53,7 +54,10 @@ function App() {
                 <Route path=":id" element={<Packages />} />
                 <Route path="updatetracking" element={<UpdateTracking />} />
               </Route>
-              <Route path="shipment" element={<ShipmentDetails />} />
+              <Route path="shipment">
+              <Route index element={<ShipmentDetails />} />
+              <Route path="details" element={<AddEditShipment />} />
+              </Route>
               <Route path="reports" element={<Reports />} />
 
               <Route path="neworder" element={<NewOrder />} />

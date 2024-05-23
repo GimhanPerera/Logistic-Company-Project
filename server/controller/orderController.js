@@ -286,9 +286,24 @@ const updateTracking = async (req, res) => {
         console.error("Error fetching order details:", error);
         res.status(500).json({ error: "Internal server error" });
     }
-
 }
 
+const readyToShipOrderIDs = async (req, res) => {
+    try {
+        
+        const orders = await Order.findAll({
+            attributes: ['order_id'],
+            where: { status: 'In Warehouse' }
+        });
+        //const orderIds = orders.map(item => item.order_id);
+        res.status(200).json( orders);
+
+    } catch (error) {
+        // Handle error
+        console.error("Error fetching order details:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
 
 module.exports = {
     getAllOrderDetailsForOrderCard,
@@ -297,5 +312,6 @@ module.exports = {
     trackingDetailsOfAOrder,
     isvalidtrackingnum,
     confirmOrder,
-    updateTracking
+    updateTracking,
+    readyToShipOrderIDs
 }

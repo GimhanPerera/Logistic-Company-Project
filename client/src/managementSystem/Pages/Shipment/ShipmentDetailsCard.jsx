@@ -1,6 +1,15 @@
 import { Box } from '@mui/material';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
 const ShipmentDetailsCard = ({ shipment }) => {
+  const navigate = useNavigate();
+
+  const toDetails = () => {
+    const shippingMethod = shipment.shipping_method == 'air' ? 'Air cargo' : 'Ship cargo';
+    navigate('./details', { state: { shipment: shipment, shippingMethod: shippingMethod, isNew:false }});
+  }
+
   // Check if courier is defined before trying to access its properties
   if (!shipment) {
     return null; // or handle the case where courier is undefined/null
@@ -21,7 +30,7 @@ const ShipmentDetailsCard = ({ shipment }) => {
       <div>
         <div>BL number: {shipment.BL_no}</div>
         <div>Shipping method: {shipment.shipping_method}</div>
-        <div>Displayed arrival date: {shipment.desplayed_arriveal_date}</div>
+        <div>Displayed arrival date: {shipment.displayed_arrival_date}</div>
         <div >Orders: {orderIds.join(', ')}</div>
       </div>
       <div>
@@ -45,7 +54,7 @@ const ShipmentDetailsCard = ({ shipment }) => {
       }}
     >
                 <a style={{cursor:'pointer'}}>Scan</a>
-                <a style={{marginLeft:'0.75rem', cursor:'pointer'}}>Edit</a>
+                <a onClick={toDetails} style={{marginLeft:'0.75rem', cursor:'pointer'}}>Edit</a>
                 <a style={{marginLeft:'0.75rem', cursor:'pointer'}}>Cancel</a>
             </Box>
         </Box>
