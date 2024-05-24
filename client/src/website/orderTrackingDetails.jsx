@@ -55,8 +55,8 @@ export const OrderTrackingDetails = () => {
                             <p>Main Tracking Number: {firstTrackingDetails.main_tracking_number}</p>
                             <p>order_open_date: {firstTrackingDetails.order_open_date}</p>
                             {firstTrackingDetails.Shipment ? (
-                                <p>desplayed_arriveal_date: {firstTrackingDetails.Shipment.desplayed_arriveal_date}</p>
-                            ) : (<p>desplayed_arriveal_date: -</p>)}
+                                <p>displayed_arrival_date: {firstTrackingDetails.Shipment.displayed_arrival_date}</p>
+                            ) : (<p>displayed_arrival_date: -</p>)}
 
                             <p>No of packages: {firstTrackingDetails.Price_quotation.no_of_packages}</p>
                             <p>supplier_loc: {firstTrackingDetails.supplier_loc}</p>

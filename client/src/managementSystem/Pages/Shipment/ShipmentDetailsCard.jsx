@@ -9,6 +9,9 @@ const ShipmentDetailsCard = ({ shipment }) => {
     const shippingMethod = shipment.shipping_method == 'air' ? 'Air cargo' : 'Ship cargo';
     navigate('./details', { state: { shipment: shipment, shippingMethod: shippingMethod, isNew:false }});
   }
+  const toScan = () => {
+    navigate('./scan');
+}
 
   // Check if courier is defined before trying to access its properties
   if (!shipment) {
@@ -53,7 +56,7 @@ const ShipmentDetailsCard = ({ shipment }) => {
         textDecoration: 'underline',
       }}
     >
-                <a style={{cursor:'pointer'}}>Scan</a>
+                <a onClick={toScan} style={{cursor:'pointer'}}>Scan</a>
                 <a onClick={toDetails} style={{marginLeft:'0.75rem', cursor:'pointer'}}>Edit</a>
                 <a style={{marginLeft:'0.75rem', cursor:'pointer'}}>Cancel</a>
             </Box>

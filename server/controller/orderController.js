@@ -200,7 +200,7 @@ const trackingDetailsOfACustomer = async (req, res) => { //After customer login,
         attributes: ['order_id', 'main_tracking_number', 'status', 'supplier_loc', 'order_open_date'],
         include: [{
             model: Shipment,
-            attributes: ['desplayed_arriveal_date']
+            attributes: ['displayed_arrival_date']
         }],
         where: {
             customer_id: cus_id
@@ -216,7 +216,7 @@ const trackingDetailsOfAOrder = async (req, res) => {//Tracking details of indiv
         attributes: ['order_id', 'main_tracking_number', 'status', 'supplier_loc', 'order_open_date'],
         include: [{
             model: Shipment,
-            attributes: ['desplayed_arriveal_date']
+            attributes: ['displayed_arrival_date']
         }, {
             model: Price_quotation,
             attributes: ['no_of_packages', 'quotation', 'shipping_method']

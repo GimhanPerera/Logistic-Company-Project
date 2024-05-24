@@ -37,7 +37,7 @@ const AddEditShipment = () => {
     const initialValues = {
         BLnumber: isNew ? ('') : (shipment.BL_no),
         shippingMethod: shippingMethod,
-        displayDate: isNew ? (getArrivalDate()) : (shipment.displayed_arriveal_date),
+        displayDate: isNew ? (getArrivalDate()) : (shipment.displayed_arrival_date),
         loadedDate: isNew ? (getCurrentDate()) : (shipment.loaded_date),
         arrivalDate: isNew ? (getArrivalDate()) : (shipment.arrival_date),
     }

@@ -7,6 +7,7 @@ import NewOrder from './managementSystem/Pages/Order/newOrder';
 import OrderDetails from './managementSystem/Pages/Order/orderDetails';
 import { Packages } from './managementSystem/Pages/Order/packages';
 import PrintShippingMarks from './managementSystem/Pages/Order/printShippingMarks';
+import ScanAndUpdate from './managementSystem/Pages/Order/scanAndUpdate';
 import UpdateTracking from './managementSystem/Pages/Order/updateTracking';
 import Reports from './managementSystem/Pages/Reports/Reports';
 import AddEditShipment from './managementSystem/Pages/Shipment/addEditShipment';
@@ -57,6 +58,7 @@ function App() {
               <Route path="shipment">
               <Route index element={<ShipmentDetails />} />
               <Route path="details" element={<AddEditShipment />} />
+              <Route path="scan" element={<ScanAndUpdate />} />
               </Route>
               <Route path="reports" element={<Reports />} />
 
