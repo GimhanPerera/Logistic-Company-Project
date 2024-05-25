@@ -8,4 +8,10 @@ router.get("/", shipmentController.getAllShipments);
 //addShipment
 router.post("/", shipmentController.addShipment);
 
+//get all packages of a shipment
+router.get("/getPackagesOf/:BLnumber", shipmentController.getPackagesOfAShipment);
+
+//get all packages of a shipment
+router.post("/saveScanUpdates", shipmentController.saveScanUpdates);
+
 module.exports = router;

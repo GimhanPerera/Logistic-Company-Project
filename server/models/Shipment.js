@@ -19,6 +19,11 @@ module.exports = (sequelize, DataTypes) => {
         displayed_arrival_date: {
             type: DataTypes.DATEONLY,
             allowNull: false,
+        },
+        status:{
+            type: DataTypes.STRING(10),
+            allowNull: false,
+            defaultValue: 'waiting'
         }
     }, {
         timestamps: false

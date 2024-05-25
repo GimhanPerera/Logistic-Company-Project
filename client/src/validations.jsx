@@ -78,6 +78,12 @@ export const addPackageValidation = Yup.object({
     gross_weight: Yup.string().min(1).required("Please Enter name"),
 })
 
+export const scanPackagesValidation = Yup.object({
+    shippingMark: Yup.string().required("Shipping Mark cannot be empty"),
+    count: Yup.string().required("Count cannot be empty"),
+    collectedCount: Yup.string().required("Collected Count cannot be empty"),
+});
+
 export const addSupplier = Yup.object({
     name: Yup.string().min(3).required("Please Enter name"),
     country: Yup.string().min(3).required("Please Enter name"),

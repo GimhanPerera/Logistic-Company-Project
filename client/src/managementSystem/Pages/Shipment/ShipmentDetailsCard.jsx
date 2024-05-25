@@ -1,4 +1,5 @@
 import { Box } from '@mui/material';
+import axios from "axios";
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -10,7 +11,15 @@ const ShipmentDetailsCard = ({ shipment }) => {
     navigate('./details', { state: { shipment: shipment, shippingMethod: shippingMethod, isNew:false }});
   }
   const toScan = () => {
-    navigate('./scan');
+    axios.get(`http://localhost:3001/api/shipment/getPackagesOf/${shipment.BL_no}`, {
+        }).then((response) => {
+          console.log(response.data)
+
+            navigate('./scan', { state: { packages: response.data.packages, totalPackageCount: response.data.totalPackageCount, totalCollectedCount: response.data.totalCollectedCount }});
+        }).catch((error) => {
+            console.error('Error :', error);
+        });
+    
 }
 
   // Check if courier is defined before trying to access its properties
