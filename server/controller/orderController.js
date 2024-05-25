@@ -297,7 +297,6 @@ const readyToShipOrderIDs = async (req, res) => {
         });
         //const orderIds = orders.map(item => item.order_id);
         res.status(200).json( orders);
-
     } catch (error) {
         // Handle error
         console.error("Error fetching order details:", error);
