@@ -57,6 +57,7 @@ const allRequests = async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 }
+
 const getRequestByID = async (req, res) => {
     try {
         const priceReq = await Price_quotation.findAll({

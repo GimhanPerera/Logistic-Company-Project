@@ -195,6 +195,7 @@ export const Packages = () => {
 
   const processRowUpdate = async (newRow) => {
     try {
+      console.log("WADUNA");
       await addPackageValidation.validate(newRow, { abortEarly: false });
       const updatedRow = { ...newRow, isNew: false };
       setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));

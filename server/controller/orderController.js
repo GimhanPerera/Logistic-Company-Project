@@ -200,7 +200,7 @@ const trackingDetailsOfACustomer = async (req, res) => { //After customer login,
         attributes: ['order_id', 'main_tracking_number', 'status', 'supplier_loc', 'order_open_date'],
         include: [{
             model: Shipment,
-            attributes: ['desplayed_arriveal_date']
+            attributes: ['displayed_arrival_date']
         }],
         where: {
             customer_id: cus_id
@@ -216,7 +216,7 @@ const trackingDetailsOfAOrder = async (req, res) => {//Tracking details of indiv
         attributes: ['order_id', 'main_tracking_number', 'status', 'supplier_loc', 'order_open_date'],
         include: [{
             model: Shipment,
-            attributes: ['desplayed_arriveal_date']
+            attributes: ['displayed_arrival_date']
         }, {
             model: Price_quotation,
             attributes: ['no_of_packages', 'quotation', 'shipping_method']
@@ -286,9 +286,23 @@ const updateTracking = async (req, res) => {
         console.error("Error fetching order details:", error);
         res.status(500).json({ error: "Internal server error" });
     }
-
 }
 
+const readyToShipOrderIDs = async (req, res) => {
+    try {
+        
+        const orders = await Order.findAll({
+            attributes: ['order_id'],
+            where: { status: 'In Warehouse' }
+        });
+        //const orderIds = orders.map(item => item.order_id);
+        res.status(200).json( orders);
+    } catch (error) {
+        // Handle error
+        console.error("Error fetching order details:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
 
 module.exports = {
     getAllOrderDetailsForOrderCard,
@@ -297,5 +311,6 @@ module.exports = {
     trackingDetailsOfAOrder,
     isvalidtrackingnum,
     confirmOrder,
-    updateTracking
+    updateTracking,
+    readyToShipOrderIDs
 }

@@ -30,6 +30,15 @@ export const addCustomerValidation = Yup.object({
     address: Yup.string().min(3).required("Please Enter Address"),
     nic: Yup.string().min(3).required("Please Enter NIC"),
 })
+
+export const shipmentDetailsValidation = Yup.object({
+    BLnumber: Yup.string().min(3).required("Please Enter first name"),
+    shippingMethod: Yup.string().min(3).required("Please Enter first name"),
+    loadedDate: Yup.string().min(3).required("Please Enter first name"),
+    arrivalDate: Yup.string().min(3).required("Please Enter first name"),
+    displayDate: Yup.string().min(3).required("Please Enter first name"),
+})
+
 export const priceQuotationValidation = Yup.object({
     items: Yup.string()
         .required("Please enter items")
@@ -68,6 +77,12 @@ export const addPackageValidation = Yup.object({
     volume_metric_weight: Yup.string().min(1).required("Please Enter name"),
     gross_weight: Yup.string().min(1).required("Please Enter name"),
 })
+
+export const scanPackagesValidation = Yup.object({
+    shippingMark: Yup.string().required("Shipping Mark cannot be empty"),
+    count: Yup.string().required("Count cannot be empty"),
+    collectedCount: Yup.string().required("Collected Count cannot be empty"),
+});
 
 export const addSupplier = Yup.object({
     name: Yup.string().min(3).required("Please Enter name"),

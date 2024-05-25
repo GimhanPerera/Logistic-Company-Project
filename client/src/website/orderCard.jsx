@@ -60,7 +60,7 @@ const OrderCard = ({ orders }) => {
         }}>
         <div>Order open date: {formatDate(orders.order_open_date)}</div>
         {orders.Shipment ? (
-          <p>Expecting receiving date: {orders.Shipment.desplayed_arriveal_date}</p>
+          <p>Expecting receiving date: {orders.Shipment.displayed_arrival_date}</p>
         ) : (<p>Expecting receiving date: -</p>)}
         <Box component="div"
           sx={{
