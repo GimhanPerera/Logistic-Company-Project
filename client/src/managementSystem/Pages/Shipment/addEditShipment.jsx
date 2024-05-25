@@ -81,7 +81,7 @@ const AddEditShipment = () => {
             const jsonString = JSON.stringify(data);
             axios.post('http://localhost:3001/api/shipment',jsonString, {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             }
         })
             .then((response) => {

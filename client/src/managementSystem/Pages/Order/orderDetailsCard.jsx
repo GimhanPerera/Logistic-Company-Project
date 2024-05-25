@@ -16,6 +16,10 @@ const OrderDetailsCard = ({ order }) => {
     const id=order.order_id;
     navigate(`./${id}`);
   }
+  const toView = () => {
+    const id=order.order_id;
+    navigate(`./view/${id}`);
+  }
 
   const toUpdateTracking = () => {
     
@@ -66,7 +70,7 @@ const OrderDetailsCard = ({ order }) => {
             textDecoration: 'underline'
           }}
         >
-          <p className=''>View</p>
+          <p className='' onClick={toView}>View</p>
           {/* <Box component="p" onClick={toPackages} sx={{cursor:'pointer'}}>add packages</Box> */}
           {order.status == 'Just opened' && (
           <Box component="p" onClick={toPackages} sx={{cursor:'pointer'}}>add packages</Box>

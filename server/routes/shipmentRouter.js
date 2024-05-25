@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const shipmentController = require('../controller/shipmentController') //import contraller
+const loginController = require('../controller/loginContraller')
 
 //Customer Url and Controllor
 router.get("/", shipmentController.getAllShipments);
@@ -12,6 +13,6 @@ router.post("/", shipmentController.addShipment);
 router.get("/getPackagesOf/:BLnumber", shipmentController.getPackagesOfAShipment);
 
 //get all packages of a shipment
-router.post("/saveScanUpdates", shipmentController.saveScanUpdates);
+router.post("/saveScanUpdates",loginController.authenticateToken, shipmentController.saveScanUpdates);
 
 module.exports = router;

@@ -1,4 +1,5 @@
 import { Box, Button } from '@mui/material';
+import axios from "axios";
 import { useFormik } from 'formik';
 import React from 'react';
 import { useNavigate } from "react-router-dom";
@@ -14,10 +15,21 @@ export const StaffLogin = () => {
     const onSubmit = async (values, actions) => {
         try {
             // Check the detials
-            navigate('../cmsystem');
+            const response = await axios.post("http://localhost:3001/api/login/staff", {
+                "email": values.email,
+                "password": values.password
+            });
+            console.log("Valid: ",response.data.isValid)
+            if (response.data.isValid) {
+                localStorage.setItem('token', response.data.accessToken);
+                navigate('../cmsystem');
+            } else {
+                toast.error("Invalid email or password1");
+            }
+            
 
         } catch (error) {
-            toast.error("Invalid email or password");
+            toast.error("Invalid email or password2");
         }
 
     }
@@ -102,7 +114,7 @@ export const StaffLogin = () => {
                                             }
                                         }}
                                     />
-                                    {errors.email && touched.email && <small style={{color:'red'}}>{errors.email}</small>}
+                                    {errors.email && touched.email && <small style={{ color: 'red' }}>{errors.email}</small>}
                                 </div>
                                 <div>
                                     <Box component="input"
@@ -129,17 +141,17 @@ export const StaffLogin = () => {
                                             }
                                         }}
                                     />
-                                    {errors.password && touched.password && <small style={{color:'red'}}>{errors.password}</small>}
+                                    {errors.password && touched.password && <small style={{ color: 'red' }}>{errors.password}</small>}
                                 </div>
                                 <div>
-                                    <Box component="p" sx={{ color: '#1E90FF', fontSize: '0.875rem', fontWeight: 'medium', cursor: 'pointer', m:'1rem 0' }} underline="always">Forgot tracking number?</Box>
+                                    <Box component="p" sx={{ color: '#1E90FF', fontSize: '0.875rem', fontWeight: 'medium', cursor: 'pointer', m: '1rem 0' }} underline="always">Forgot tracking number?</Box>
                                 </div>
                                 <div>
                                 </div>
-                                    <Button type="submit" fullWidth variant="contained" sx={{ mt: 1, mb: 2 }}>
-                                        Log in
-                                    </Button>
-                                
+                                <Button type="submit" fullWidth variant="contained" sx={{ mt: 1, mb: 2 }}>
+                                    Log in
+                                </Button>
+
                             </form>
                         </Box>
 

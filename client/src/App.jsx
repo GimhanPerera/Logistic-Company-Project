@@ -3,6 +3,7 @@ import './App.css';
 import CourierDetails from './managementSystem/Pages/Courier/courierDetails';
 import CustomersDetails from './managementSystem/Pages/Customer/customersDetails';
 import Dashboard from './managementSystem/Pages/Dashboard/Dashboard';
+import InvoicePage from './managementSystem/Pages/Order/invoicePage';
 import NewOrder from './managementSystem/Pages/Order/newOrder';
 import OrderDetails from './managementSystem/Pages/Order/orderDetails';
 import { Packages } from './managementSystem/Pages/Order/packages';
@@ -54,6 +55,9 @@ function App() {
                 <Route index element={<OrderDetails />} />
                 <Route path=":id" element={<Packages />} />
                 <Route path="updatetracking" element={<UpdateTracking />} />
+                <Route path="view">
+                <Route path=":id" element={<InvoicePage />} />
+                </Route>
               </Route>
               <Route path="shipment">
               <Route index element={<ShipmentDetails />} />

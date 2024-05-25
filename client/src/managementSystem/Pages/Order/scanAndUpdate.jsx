@@ -237,9 +237,13 @@ const ScanAndUpdate = () => {
     //When the save button clicks
     const saveInDatabase = () => {
         //CODE HERE
+        const token = localStorage.getItem('token');
         console.log(rows);
-        axios.post('http://localhost:3001/api/shipment/saveScanUpdates', rows,
-        )
+        axios.post('http://localhost:3001/api/shipment/saveScanUpdates', rows, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
             .then((response) => {
                 console.log(response);
                 //MASSAGES NEED TO TRIGER
