@@ -1,5 +1,5 @@
 require('dotenv').config()
-const { Courier } = require('../models');
+const { Courier, Employee } = require('../models');
 const jwt = require('jsonwebtoken')
 
 
@@ -19,18 +19,46 @@ const customerLogin = async (req, res) => {
 }
 
 const stuffLogin = async (req, res) => {
+    try {
+        // Authentication
+        const userFromDB = await Employee.findOne({
+            attributes: ['emp_id', 'f_name', 'position'],
+            where: { email: req.body.email, password: req.body.password }
+        });
 
-    //Authentication
-
-    const username = req.body.username;
-    const user = {
-        name: username,
-        role: 'staff'
+        if (userFromDB) {
+            // If user is found
+            console.log("User found - emp_id:", userFromDB.emp_id, ", f_name:", userFromDB.f_name);
+            const user = {
+                sub: userFromDB.emp_id,
+                role: userFromDB.position
+            };
+            console.log("User ",user)
+            const accessToken = createToken(user, 3600); // Create the access token
+            console.log("Access token: " + accessToken);
+            res.json({
+                isValid: true,
+                accessToken: accessToken
+            });
+        } else {
+            console.log("User not found");
+            const user = {
+                sub: '0',
+                role: ''
+            };
+            const accessToken = createToken(user, 3600); // Create the access token
+            console.log("Access token: " + accessToken);
+            res.json({
+                isValid: false,
+                accessToken: accessToken
+            });
+        }
+    } catch (error) {
+        console.error("Error in stuffLogin:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
-    const accessToken = createToken(user, 120) //Create the access token
-    console.log("Access token: "+accessToken)
-    res.json({accessToken: accessToken})
-}
+};
+
 
 // Auth link
 const getData = async (req, res) => {

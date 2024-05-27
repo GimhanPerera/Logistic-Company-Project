@@ -41,4 +41,8 @@ router.post("/updateTracking/:orderId", orderController.updateTracking)
 
 //Get ready to ship order ids
 router.get("/readyToShipOrderIDs", orderController.readyToShipOrderIDs)
+
+//Get All details of a order: for view order section
+router.get("/allById/:orderId", orderController.getAllDetailsOfAOrder)
+
 module.exports = router;

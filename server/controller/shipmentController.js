@@ -189,9 +189,10 @@ const getPackagesOfAShipment = async (req, res) => {
 const saveScanUpdates = async (req, res) => {
     try {
         // Get the user id(Employee id) and current date and time
-        const userId = "EMP02";//req.user.id; // Assuming you have middleware to set req.user
+        const userId = req.user.sub;
         const currentDateTime = new Date();
         let allCompleted = true;
+        
 
         const packageUpdatePromises = req.body.map(packageDetails => {
             console.log(packageDetails);
@@ -238,7 +239,7 @@ const saveScanUpdates = async (req, res) => {
             await Order.update({ status: orderStatus }, { where: { order_id: orderId } });
             orderIdsToUpdate.push(orderId);
             console.log("-------------------------------");
-            console.log(orderId,orderStatus);
+            console.log(orderId,orderStatus);console.log("ID: ",req.user)
         }
 
         //Get BL_number

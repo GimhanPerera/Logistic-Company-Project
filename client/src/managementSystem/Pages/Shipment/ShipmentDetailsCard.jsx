@@ -8,19 +8,19 @@ const ShipmentDetailsCard = ({ shipment }) => {
 
   const toDetails = () => {
     const shippingMethod = shipment.shipping_method == 'air' ? 'Air cargo' : 'Ship cargo';
-    navigate('./details', { state: { shipment: shipment, shippingMethod: shippingMethod, isNew:false }});
+    navigate('./details', { state: { shipment: shipment, shippingMethod: shippingMethod, isNew: false } });
   }
   const toScan = () => {
     axios.get(`http://localhost:3001/api/shipment/getPackagesOf/${shipment.BL_no}`, {
-        }).then((response) => {
-          console.log(response.data)
+    }).then((response) => {
+      console.log(response.data)
 
-            navigate('./scan', { state: { packages: response.data.packages, totalPackageCount: response.data.totalPackageCount, totalCollectedCount: response.data.totalCollectedCount }});
-        }).catch((error) => {
-            console.error('Error :', error);
-        });
-    
-}
+      navigate('./scan', { state: { packages: response.data.packages, totalPackageCount: response.data.totalPackageCount, totalCollectedCount: response.data.totalCollectedCount } });
+    }).catch((error) => {
+      console.error('Error :', error);
+    });
+
+  }
 
   // Check if courier is defined before trying to access its properties
   if (!shipment) {
@@ -34,7 +34,7 @@ const ShipmentDetailsCard = ({ shipment }) => {
         width: '50%',
         height: '7rem',
         border: '2px solid',
-        marginTop: '0.75rem', 
+        marginTop: '0.75rem',
         padding: '0.5rem',
         display: 'flex',
         justifyContent: 'space-between'
@@ -43,32 +43,37 @@ const ShipmentDetailsCard = ({ shipment }) => {
         <div>BL number: {shipment.BL_no}</div>
         <div>Shipping method: {shipment.shipping_method}</div>
         <div>Displayed arrival date: {shipment.displayed_arrival_date}</div>
+        <div>
+          Status: <span style={{ color: shipment.status === 'waiting' ? 'red' : 'green' }}>
+            {shipment.status}
+          </span>
+        </div>
         <div >Orders: {orderIds.join(', ')}</div>
       </div>
       <div>
-      <Box
-      component="div"
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        alignItems: 'flex-end',
-        height: '100%'
-      }}
-    >
-            <div>Loaded date: {shipment.loaded_date}</div>
-            <div>Arrival date: {shipment.arrival_date}</div>
-            <Box
-      component="div"
-      sx={{
-        color: '#3B82F6',
-        textDecoration: 'underline',
-      }}
-    >
-                <a onClick={toScan} style={{cursor:'pointer'}}>Scan</a>
-                <a onClick={toDetails} style={{marginLeft:'0.75rem', cursor:'pointer'}}>Edit</a>
-                <a style={{marginLeft:'0.75rem', cursor:'pointer'}}>Cancel</a>
-            </Box>
+        <Box
+          component="div"
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            alignItems: 'flex-end',
+            height: '100%'
+          }}
+        >
+          <div>Loaded date: {shipment.loaded_date}</div>
+          <div>Arrival date: {shipment.arrival_date}</div>
+          <Box
+            component="div"
+            sx={{
+              color: '#3B82F6',
+              textDecoration: 'underline',
+            }}
+          >
+            <a onClick={toScan} style={{ cursor: 'pointer' }}>Scan</a>
+            <a onClick={toDetails} style={{ marginLeft: '0.75rem', cursor: 'pointer' }}>Edit</a>
+            <a style={{ marginLeft: '0.75rem', cursor: 'pointer' }}>Cancel</a>
+          </Box>
         </Box>
       </div>
     </Box>

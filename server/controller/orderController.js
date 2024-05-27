@@ -1,4 +1,4 @@
-const { Order, Customer, Shipment, Price_quotation, Package } = require('../models');
+const { Order, Customer, Shipment, Price_quotation, Package,Invoice, Payment } = require('../models');
 const Sequelize = require('sequelize');
 
 
@@ -158,8 +158,6 @@ const getCurrentSriLankanDateTime = () => { //Not working well
     return formattedDateTime;
 }
 
-
-
 const getAllOrderDetailsForOrderCard = async (req, res) => { //Get all Order
     try {
         const orders = await Order.findAll({
@@ -178,7 +176,6 @@ const getAllOrderDetailsForOrderCard = async (req, res) => { //Get all Order
     }
 
 }
-
 
 // 2. Get all Courier
 const getCourierAndOrder = async (req, res) => {
@@ -304,6 +301,91 @@ const readyToShipOrderIDs = async (req, res) => {
     }
 }
 
+const getAllDetailsOfAOrder = async (req, res) => {
+    try {
+        const orderId = req.params.orderId;
+        // /const customer = await Customer.findByPk(req.params.customerID);
+
+        const order = await Order.findOne({
+            where: { order_id: orderId }
+        });
+        const customer = await Customer.findByPk(order.customer_id, {
+            attributes: ['customer_id', 'f_name', 'l_name', 'tel_number', 'address']
+        });
+        const packages = await Package.findAll({
+            where: { order_id: orderId }
+        });
+        const invoice = await Invoice.findOne({
+            where: { order_id: orderId }
+        });
+        if (!invoice) {
+            // Get the last invoice ID
+            const lastInvoice = await Invoice.findOne({
+                attributes: ['invoice_id'],
+                order: [['invoice_id', 'DESC']]
+            });
+
+            // Determine the new invoice ID
+            const newInvoiceId = lastInvoice ? lastInvoice.invoice_id + 1 : 10000;
+
+            // Create a new invoice
+            invoice = await Invoice.create({
+                invoice_id: newInvoiceId,
+                discount: 0.00, // Or any default value
+                total: 0.00, // Or any default value
+                order_id: orderId,
+            });
+
+        }
+        const payment = await Payment.findAll({
+            where: { order_id: orderId }
+        });
+        // if (!payment) {
+        //     // Get the last invoice ID
+        //     const lastPayment = await Payment.findOne({
+        //         attributes: ['payment_id'],
+        //         order: [['payment_id', 'DESC']]
+        //     });
+
+        //     // Determine the new invoice ID
+        //     const newPaymentId = lastPayment ? lastPayment.invoice_id + 1 : 10000;
+
+        //     // Create a new invoice
+        //     invoice = await Invoice.create({
+        //         payment_id: newPaymentId,
+        //         payment_method: '', // Or any default value
+        //         payment: 0.00, // Or any default value
+        //         date_time: '',
+        //         order_id: orderId,
+        //     });
+
+        // }
+
+        //---------------------------------------------
+        const priceReq = await Price_quotation.findAll({
+            where: {
+                order_id: orderId,
+            },
+        });
+        //res.status(200).json(responseData);
+        //--------------------------------------------
+
+        const respond = {
+            order: order,
+            customer: customer,
+            packages: packages,
+            invoice: invoice,
+            priceReq: priceReq,
+            payment: payment,
+        }
+        res.status(200).json(respond)
+    }catch (error) {
+        // Handle error
+        console.error("Error fetching order details:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
 module.exports = {
     getAllOrderDetailsForOrderCard,
     newOrder,
@@ -312,5 +394,6 @@ module.exports = {
     isvalidtrackingnum,
     confirmOrder,
     updateTracking,
-    readyToShipOrderIDs
+    readyToShipOrderIDs,
+    getAllDetailsOfAOrder
 }

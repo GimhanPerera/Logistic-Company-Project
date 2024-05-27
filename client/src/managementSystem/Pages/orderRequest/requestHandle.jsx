@@ -276,7 +276,7 @@ const RequestHandle = () => {
                                             /></td>
                                         <td>
                                             <FormControl sx={{ m: 1, minWidth: 170 }}>
-                                                <InputLabel id="demo-simple-select-helper-label">Shipping method</InputLabel>
+                                                <InputLabel>Shipping method</InputLabel>
                                                 <Field
                                                     as={Select}
                                                     name="shippingmethod"
@@ -398,14 +398,6 @@ const RequestHandle = () => {
                                     <tr>
                                         <td><label for="invoice">Performa invoice :</label></td>
                                         <td>
-                                            {/* <input type="file" id="invoice" name="invoice" onChange={handleInvoiceChange}
-                                            style={{
-                                                border: '1px solid #ccc',
-                                                padding: '10px',
-                                                borderRadius: '5px',
-                                                marginTop: '10px',
-                                                width: '200px',
-                                            }} /> */}
                                             <Box component="p" onClick={(e) => downloadInvoice(e)}>Download</Box>
                                         </td>
                                     </tr>
