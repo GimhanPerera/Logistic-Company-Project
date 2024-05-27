@@ -7,7 +7,7 @@ import ReactToPrint from 'react-to-print';
 
 const InvoicePage = () => {
     const location = useLocation();
-    const { orderId, fullname, status, tel_number, main_tracking_number } = location.state || {};
+    //const { orderId, fullname, status, tel_number, main_tracking_number } = location.state || {};
     const { id } = useParams();
     const navigate = useNavigate();
     const [orderDetails, setOrderDetails] = useState(null); // Set initial state to null
@@ -21,9 +21,17 @@ const InvoicePage = () => {
         axios.get(`http://localhost:3001/api/invoice/${id}`)
             .then((response) => {
                 setOrderDetails(response.data);
-                console.log(response.data)
-                setLoading(false); // Set loading to false after data is fetched
+                console.log(response.data);
+
+                // Calculate initial subTotal and set discount
+                let initialSubTotal = 0;
+                response.data.packages.forEach((pkg) => {
+                    initialSubTotal += parseFloat(pkg.total) || 0;
+                });
+                setSubTotal(initialSubTotal);
+
                 setDiscount(orderDetails.invoice.discount);
+                setLoading(false); // Set loading to false after data is fetched
             })
             .catch((error) => {
                 console.error("Error fetching order details:", error);
@@ -58,9 +66,19 @@ const InvoicePage = () => {
         padding: '8px'
     }
 
+    const toBack = () => {
+        navigate('./..', { state: { id: id} });
+    }
+    
+
     return (
         <>
             <div>
+            <Button variant="contained"
+                    sx={{ }}
+                    onClick={toBack}>
+                    Back
+                </Button>
                 <Button variant="contained"
                     sx={{ backgroundColor: '#68DD62', position: 'fixed', right: '2em', top: '4.7rem' }}
                     onClick={saveDetails}>
@@ -251,6 +269,7 @@ const InvoicePage = () => {
                                         variant="outlined"
                                         size="small"
                                         value={discount}
+                                        defaultValue={orderDetails.invoice.discount}
                                         sx={{ ml: '2rem' }}
                                         onChange={(e) => {
                                             const newDiscount = parseFloat(e.target.value) || 0;

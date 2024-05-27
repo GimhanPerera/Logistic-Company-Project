@@ -35,71 +35,120 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
             <hr />
             <Box component="ul"
                 sx={{
-                    marginTop: '0.75rem',
+                    mt: '0.75rem',
                     color: 'white',
                     fontWeight: 'bold'
                 }}
             >
                 <NavLink to="" onClick={() => handleClick('Dashboard')}>
-                    <li className='mb-2 rounded hover:shadow hover:bg-blue-500 py-2'>
-                        <a href='' className='px-3'>
-                            <FaHome className='inline-block w-6 h-6 mr-2 -mt-2'></FaHome>
+                    <li
+                        style={{
+                            marginBottom: '0.6rem',
+                            color: 'white',
+                            listStyleType: 'none',
+                            marginTop:'2rem' // Remove bullet points
+                        }}
+                    >
+                        <a href='' className='px-3' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
+                            <FaHome style={{ marginRight: '0.6rem' }}></FaHome>
                             Dashboard
                         </a>
                     </li>
                 </NavLink>
                 <NavLink to="/cmsystem/requests" onClick={() => handleClick('Price quotation requests')}>
-                    <li className='mb-2 rounded hover:shadow hover:bg-blue-500 py-2'>
-                        <a href='' className='px-3'>
-                            <IoIosPeople className='inline-block w-7 h-7 mr-2 -mt-2'></IoIosPeople >
+                    <li
+                        style={{
+                            marginBottom: '0.6rem',
+                            color: 'white',
+                            listStyleType: 'none' // Remove bullet points
+                        }}
+                    >
+                        <a href=''  style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
+                            <IoIosPeople style={{ marginRight: '0.6rem' }}></IoIosPeople >
                             Quotation Requests
                         </a>
                     </li>
                 </NavLink>
                 <NavLink to="/cmsystem/customers" onClick={() => handleClick('Customers')}>
-                    <li className='mb-2 rounded hover:shadow hover:bg-blue-500 py-2'>
-                        <a href='' className='px-3'>
-                            <IoIosPeople className='inline-block w-7 h-7 mr-2 -mt-2'></IoIosPeople >
+                    <li
+                        style={{
+                            marginBottom: '0.6rem',
+                            color: 'white',
+                            listStyleType: 'none' // Remove bullet points
+                        }}
+                    >
+                        <a href=''  style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
+                            <IoIosPeople style={{ marginRight: '0.6rem' }}></IoIosPeople >
                             Customers
                         </a>
                     </li>
                 </NavLink>
                 <NavLink to="/cmsystem/courier" onClick={() => handleClick('Courier services')}>
-                    <li className='mb-2 rounded hover:shadow hover:bg-blue-500 py-2'>
-                        <a href='' className='px-3'>
-                            <GrDeliver className='inline-block w-6 h-6 mr-2 -mt-2'></GrDeliver>
+                    <li
+                        style={{
+                            marginBottom: '0.6rem',
+                            color: 'white',
+                            listStyleType: 'none' // Remove bullet points
+                        }}
+                    >
+                        <a href='' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
+                            <GrDeliver style={{ marginRight: '0.6rem' }}></GrDeliver>
                             Courier services
                         </a>
                     </li>
                 </NavLink>
                 <NavLink to="/cmsystem/order" onClick={() => handleClick('Orders')}>
-                    <li className='mb-2 rounded hover:shadow hover:bg-blue-500 py-2'>
-                        <a href='' className='px-3'>
-                            <GoListOrdered className='inline-block w-6 h-6 mr-2 -mt-2'></GoListOrdered>
+                    <li
+                        style={{
+                            marginBottom: '0.6rem',
+                            color: 'white',
+                            listStyleType: 'none' // Remove bullet points
+                        }}
+                    >
+                        <a href='' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
+                            <GoListOrdered style={{ marginRight: '0.6rem' }}></GoListOrdered>
                             Orders
                         </a>
                     </li>
                 </NavLink>
                 <NavLink to="/cmsystem/shipment" onClick={() => handleClick('Shipments')}>
-                    <li className='mb-2 rounded hover:shadow hover:bg-blue-500 py-2'>
-                        <a href='' className='px-3'>
-                            <FaCog className='inline-block w-6 h-6 mr-2 -mt-2'></FaCog>
+                    <li
+                        style={{
+                            marginBottom: '0.6rem',
+                            color: 'white',
+                            listStyleType: 'none' // Remove bullet points
+                        }}
+                    >
+                        <a href='' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
+                            <FaCog style={{ marginRight: '0.6rem' }}></FaCog>
                             Shipments
                         </a>
                     </li>
                 </NavLink>
                 <NavLink to="/cmsystem/reports" onClick={() => handleClick('Reports')}>
-                    <li className='mb-2 rounded hover:shadow hover:bg-blue-500 py-2'>
-                        <a href='' className='px-3'>
-                            <FaCog className='inline-block w-6 h-6 mr-2 -mt-2'></FaCog>
+                    <li
+                        style={{
+                            marginBottom: '0.6rem',
+                            color: 'white',
+                            listStyleType: 'none' // Remove bullet points
+                        }}
+                    >
+                        <a href='' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
+                            <FaCog style={{ marginRight: '0.6rem' }}></FaCog>
                             Reports
                         </a>
                     </li>
                 </NavLink>
                 <NavLink to="/">
-                    <li className='mb-2 rounded hover:shadow hover:bg-blue-500 py-2'>
-                        <a href='' className='px-3'>
-                            <RiLogoutBoxFill className='inline-block w-6 h-6 mr-2 -mt-2'></RiLogoutBoxFill>
+                    <li
+                        style={{
+                            marginBottom: '0.6rem',
+                            color: 'white',
+                            listStyleType: 'none' // Remove bullet points
+                        }}
+                    >
+                        <a href='' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
+                            <RiLogoutBoxFill style={{ marginRight: '0.6rem' }}></RiLogoutBoxFill>
                             Log out
                         </a>
                     </li>

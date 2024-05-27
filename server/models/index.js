@@ -39,7 +39,7 @@ Object.keys(db).forEach(modelName => {
 
 db.Customer.hasMany(db.Order, { foreignKey: 'customer_id' });//customer
 db.Order.belongsTo(db.Customer, { foreignKey: 'customer_id' });
-db.Order.hasOne(db.Payment, { foreignKey: 'order_id' });
+db.Order.hasMany(db.Payment, { foreignKey: 'order_id' });
 db.Payment.belongsTo(db.Order, { foreignKey: 'order_id' });
 db.Order.hasOne(db.Price_quotation, { foreignKey: 'order_id' });
 db.Price_quotation.belongsTo(db.Order, { foreignKey: 'order_id' });

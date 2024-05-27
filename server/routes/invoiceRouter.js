@@ -7,4 +7,8 @@ router.get("/:orderId", invoiceController.getInvoiceDetails);//get invoice detai
 
 router.post("/", invoiceController.setInvoiceDetails);//update invoice details
 
+router.post("/addPayment", invoiceController.addPayment);//add payment
+
+router.delete("/removePayment/:paymentId", invoiceController.deletePayment);//remove a payment
+
 module.exports = router;

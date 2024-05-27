@@ -7,9 +7,11 @@ import InvoicePage from './managementSystem/Pages/Order/invoicePage';
 import NewOrder from './managementSystem/Pages/Order/newOrder';
 import OrderDetails from './managementSystem/Pages/Order/orderDetails';
 import { Packages } from './managementSystem/Pages/Order/packages';
+import Payment from './managementSystem/Pages/Order/payment';
 import PrintShippingMarks from './managementSystem/Pages/Order/printShippingMarks';
 import ScanAndUpdate from './managementSystem/Pages/Order/scanAndUpdate';
 import UpdateTracking from './managementSystem/Pages/Order/updateTracking';
+import ViewOrder from './managementSystem/Pages/Order/viewOrder';
 import Reports from './managementSystem/Pages/Reports/Reports';
 import AddEditShipment from './managementSystem/Pages/Shipment/addEditShipment';
 import { ShipmentDetails } from './managementSystem/Pages/Shipment/shipmentDetails';
@@ -49,27 +51,29 @@ function App() {
             <Route path="requests">
               <Route index element={<OrderRequest />} />
               <Route path=":priceQ" element={<RequestHandle />} />
-              </Route>{/*need to update*/}
-              <Route path="courier" element={<CourierDetails />} />
-              <Route path="order">
-                <Route index element={<OrderDetails />} />
-                <Route path=":id" element={<Packages />} />
-                <Route path="updatetracking" element={<UpdateTracking />} />
-                <Route path="view">
+            </Route>{/*need to update*/}
+            <Route path="courier" element={<CourierDetails />} />
+            <Route path="order">
+              <Route index element={<OrderDetails />} />
+              <Route path=":id" element={<Packages />} />
+              <Route path="updatetracking" element={<UpdateTracking />} />
+              <Route path="view">
+                <Route index element={<ViewOrder />} />
                 <Route path=":id" element={<InvoicePage />} />
-                </Route>
+                <Route path="payments" element={<Payment />} />
               </Route>
-              <Route path="shipment">
+            </Route>
+            <Route path="shipment">
               <Route index element={<ShipmentDetails />} />
               <Route path="details" element={<AddEditShipment />} />
               <Route path="scan" element={<ScanAndUpdate />} />
-              </Route>
-              <Route path="reports" element={<Reports />} />
-
-              <Route path="neworder" element={<NewOrder />} />
-
             </Route>
+            <Route path="reports" element={<Reports />} />
+
+            <Route path="neworder" element={<NewOrder />} />
+
           </Route>
+        </Route>
       </Routes>
     </Router>
   );

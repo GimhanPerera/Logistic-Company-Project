@@ -17,8 +17,7 @@ const OrderDetailsCard = ({ order }) => {
     navigate(`./${id}`);
   }
   const toView = () => {
-    const id=order.order_id;
-    navigate(`./view/${id}`);
+    navigate('./view', { state: { id: order.order_id} });
   }
 
   const toUpdateTracking = () => {

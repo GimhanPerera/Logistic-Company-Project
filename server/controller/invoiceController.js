@@ -1,4 +1,4 @@
-const { Invoice, Order, Package, Customer } = require('../models');
+const { Invoice, Order, Package, Customer,Payment } = require('../models');
 
 
 
@@ -99,7 +99,55 @@ const setInvoiceDetails = async (req, res) => {
     }
 }
 
+//add a payment
+const addPayment = async (req, res) => {
+    try {
+            // Get the last invoice ID
+            const lastPayment = await Payment.findOne({
+                attributes: ['payment_id'],
+                order: [['payment_id', 'DESC']]
+            });
+
+            // Determine the new invoice ID
+            const newPaymentId = lastPayment ? parseInt(lastPayment.payment_id, 10) + 1 : 10000;
+
+        
+        const payment = await Payment.create({
+            payment_id: newPaymentId,
+            payment_method: req.body.payment_method,
+            payment: req.body.payment,
+            date_time: req.body.date_time,
+            order_id: req.body.order_id,
+        });
+        
+        res.status(200).json(payment);
+    } catch (error) {
+        // Handle error
+        console.error("Error fetching customer details:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+//delete a payment
+const deletePayment = async (req, res) => {
+    try {//paymentId
+        const payment = await Payment.destroy({
+            where: {
+                payment_id: req.params.paymentId,
+            },
+        });
+        
+        res.status(200).json(payment);
+    } catch (error) {
+        // Handle error
+        console.error("Error fetching customer details:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
 module.exports = {
     getInvoiceDetails,
-    setInvoiceDetails
+    setInvoiceDetails,
+    addPayment,
+    deletePayment
 }
