@@ -30,6 +30,47 @@ const ViewOrder = () => {
     const toPayment = () => {
         navigate('./payments', { state: { orderId: orderDetails.order.order_id, payments: orderDetails.payment} });
     }
+    const toggleReadyStatus = () => {
+        const oid = orderDetails.order.order_id;
+        console.log("oid ",oid)
+        axios.post('http://localhost:3001/api/order/toggleReadyStatus',{
+            oid:oid
+        })
+            .then((response) => {
+                setOrderDetails(prevDetails => ({
+                    ...prevDetails,
+                    order: {
+                        ...prevDetails.order,
+                        status: response.data.status
+                    }
+                }));
+            })
+            .catch((error) => {
+                console.error("Error toggling order status:", error);
+            });
+    }
+    const toggleCompleteStatus = () => {
+        const oid = orderDetails.order.order_id;
+        console.log("oid ",oid)
+        axios.post('http://localhost:3001/api/order/completeOrder',{
+            oid:oid
+        })
+            .then((response) => {
+                setOrderDetails(prevDetails => ({
+                    ...prevDetails,
+                    order: {
+                        ...prevDetails.order,
+                        status: response.data.status
+                    }
+                }));
+            })
+            .catch((error) => {
+                console.error("Error toggling order status:", error);
+            });
+    }
+    const addCourier = () => {
+        navigate('./couriers', { state: { orderId: orderDetails.order.order_id, courierId: orderDetails.order.courier_id } });
+    }
 
     useEffect(() => {
         console.log("ID: ", id);
@@ -45,7 +86,7 @@ const ViewOrder = () => {
                 });
                 setSubTotal(initialSubTotal);
                 setDiscount(orderDetails.invoice.discount);
-                console.log("ID 2 ", orderDetails.priceReq[0].quotation_id);
+                //console.log("ID 2 ", orderDetails.priceReq[0].quotation_id);
                 //setLoading(false); // Set loading to false after data is fetched
             })
             .catch((error) => {
@@ -53,6 +94,7 @@ const ViewOrder = () => {
                 setLoading(false); // Set loading to false if there's an error
             });
         try {
+            console.log("HERE ",orderDetails.priceReq[0].quotation_id)
             axios({
                 url: `http://localhost:3001/api/priceQuotationRouter/download/image/${orderDetails.priceReq[0].quotation_id}`,
                 method: "GET",
@@ -77,7 +119,7 @@ const ViewOrder = () => {
 
                 // Optionally, set the image state if needed for further processing
                 setImage(URL.createObjectURL(res.data));
-                console.log("orderDetails.payment ", orderDetails.payment)
+                //console.log("orderDetails.payment ", orderDetails.payment)
                 setLoading(false);
             })
         } catch (error) {
@@ -207,14 +249,25 @@ const ViewOrder = () => {
                 <Button onClick={toInvoice}>
                     Invoice
                 </Button>
-                <Button onClick={toInvoice}>
-                    Change as Ready
+                <Button onClick={addCourier}>
+                    Add courier
                 </Button>
+                {orderDetails.order.status == 'onhand' || orderDetails.order.status == 'Ready'?
+                <Button onClick={toggleReadyStatus}>
+                    {orderDetails.order.status == 'Ready'? 'Change as not Ready' : 'Change as Ready'}
+                </Button>
+                 : ''}
                 <Button onClick={toPayment}>
                     Payments
                 </Button>
+                {orderDetails.order.status == 'Ready'?
+                <Button variant="contained" onClick={toggleCompleteStatus}>
+                    Complete Order
+                </Button>
+                : ''}
                 <Box component="h1">Order ID: {orderDetails.order.order_id}</Box>
                 <Box component="h2">Status: {orderDetails.order.status}</Box>
+
                 {/* INVOICE */}
                 <Box component="div" sx={{ width: '1000px', p: '2rem', border: '1px black solid' }}>
                     {/* <Box component="p">Invoice ID: {orderDetails.invoice.invoice_id}</Box> */}
@@ -223,6 +276,7 @@ const ViewOrder = () => {
                     <Box component="p">Name: {orderDetails.customer.f_name} {orderDetails.customer.l_name}</Box>
                     <Box component="p">Tel. number: {orderDetails.customer.tel_number}</Box>
                     <Box component="p">Address: {orderDetails.customer.address}</Box>
+                    <Box component="p">Assign To: {orderDetails.courier!=null? orderDetails.courier.courier_id:''} - {orderDetails.courier!=null? orderDetails.courier.name:''}</Box>
                     <Box component="p">Open date: {orderDetails.order.order_open_date}</Box>
                     <Box component="p">Shipment: {orderDetails.order.BL_no}</Box>
                     <table style={{ borderCollapse: 'collapse' }}>
@@ -283,6 +337,8 @@ const ViewOrder = () => {
                     </Box>
                 </Box>
             </div>
+
+            
 
             {/*Payments*/}
             <Box component="h3" sx={{}}>Total Payments: {orderDetails.payment.reduce((sum, payment) => sum + parseFloat(payment.payment) || 0, 0)}</Box>

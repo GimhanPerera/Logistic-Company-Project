@@ -3,6 +3,7 @@ import './App.css';
 import CourierDetails from './managementSystem/Pages/Courier/courierDetails';
 import CustomersDetails from './managementSystem/Pages/Customer/customersDetails';
 import Dashboard from './managementSystem/Pages/Dashboard/Dashboard';
+import AddCourierToOrder from './managementSystem/Pages/Order/addCourierToOrder';
 import InvoicePage from './managementSystem/Pages/Order/invoicePage';
 import NewOrder from './managementSystem/Pages/Order/newOrder';
 import OrderDetails from './managementSystem/Pages/Order/orderDetails';
@@ -61,6 +62,7 @@ function App() {
                 <Route index element={<ViewOrder />} />
                 <Route path=":id" element={<InvoicePage />} />
                 <Route path="payments" element={<Payment />} />
+                <Route path="couriers" element={<AddCourierToOrder />} />
               </Route>
             </Route>
             <Route path="shipment">
