@@ -45,4 +45,11 @@ router.get("/readyToShipOrderIDs", orderController.readyToShipOrderIDs)
 //Get All details of a order: for view order section
 router.get("/allById/:orderId", orderController.getAllDetailsOfAOrder)
 
+//Toggle onHand/Ready Status
+router.post("/toggleReadyStatus", orderController.toggleReadyStatus)
+
+//Completed Status
+router.post("/completeOrder", orderController.toggleCompleteStatus)
+
+
 module.exports = router;

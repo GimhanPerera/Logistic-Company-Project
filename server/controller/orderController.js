@@ -1,4 +1,4 @@
-const { Order, Customer, Shipment, Price_quotation, Package,Invoice, Payment } = require('../models');
+const { Order, Customer, Shipment, Price_quotation, Package,Invoice, Payment,Courier } = require('../models');
 const Sequelize = require('sequelize');
 
 
@@ -367,6 +367,9 @@ const getAllDetailsOfAOrder = async (req, res) => {
                 order_id: orderId,
             },
         });
+        const courier = await Courier.findOne({
+            where: { courier_id: order.courier_id }
+        });
         //res.status(200).json(responseData);
         //--------------------------------------------
 
@@ -377,8 +380,61 @@ const getAllDetailsOfAOrder = async (req, res) => {
             invoice: invoice,
             priceReq: priceReq,
             payment: payment,
+            courier: courier
         }
         res.status(200).json(respond)
+    }catch (error) {
+        // Handle error
+        console.error("Error fetching order details:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+const toggleReadyStatus = async (req, res) => {
+    try {
+        console.log("OID ",req.body)
+        const order = await Order.findByPk(req.body.oid);
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        // Toggle the status
+        if (order.status === 'onhand') {
+            order.status = 'Ready';
+        } else if (order.status === 'Ready') {
+            order.status = 'onhand';
+        }
+
+        await order.save();
+        res.json(order);
+
+    }catch (error) {
+        // Handle error
+        console.error("Error fetching order details:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+const toggleCompleteStatus = async (req, res) => {
+    try {
+        console.log("OID ",req.body)
+        const order = await Order.findByPk(req.body.oid);
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        // Toggle the status
+        // if (order.status === 'onhand') {
+        //     order.status = 'Ready';
+        // } else if (order.status === 'Ready') {
+        //     order.status = 'onhand';
+        // }
+
+        order.status = 'FINISH';
+
+        await order.save();
+        res.json(order);
+
     }catch (error) {
         // Handle error
         console.error("Error fetching order details:", error);
@@ -395,5 +451,7 @@ module.exports = {
     confirmOrder,
     updateTracking,
     readyToShipOrderIDs,
-    getAllDetailsOfAOrder
+    getAllDetailsOfAOrder,
+    toggleReadyStatus,
+    toggleCompleteStatus
 }

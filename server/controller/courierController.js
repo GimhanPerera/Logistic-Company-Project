@@ -1,4 +1,4 @@
-const { Courier } = require('../models');
+const { Courier,Order } = require('../models');
 
 
 
@@ -46,7 +46,7 @@ const getCourierAndOrder = async (req, res) => {
         include: [{
             model: Courier
         }],
-        where: {courier_id: '1000'}
+        where: { courier_id: '1000' }
     })
     res.status(200).json(customer)
 }
@@ -68,23 +68,55 @@ const deleteCourier = async (req, res) => {
 
 
 const test = async (req, res) => {
-    
+
     const getCurrentDateTime = () => {
         const currentDate = new Date();
-    
-    const year = currentDate.getFullYear();
-    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Adding 1 because January is 0
-    const day = String(currentDate.getDate()).padStart(2, '0');
-    
-    const hours = String(currentDate.getHours()).padStart(2, '0');
-    const minutes = String(currentDate.getMinutes()).padStart(2, '0');
-    const seconds = String(currentDate.getSeconds()).padStart(2, '0');
-    
-    const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-    
-    console.log(formattedDateTime); // Output: 2024-04-25 14:32:30 (for example)
-    res.status(200).json(formattedDateTime)
-    
+
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Adding 1 because January is 0
+        const day = String(currentDate.getDate()).padStart(2, '0');
+
+        const hours = String(currentDate.getHours()).padStart(2, '0');
+        const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+        const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+
+        const formattedDateTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+        console.log(formattedDateTime); // Output: 2024-04-25 14:32:30 (for example)
+        res.status(200).json(formattedDateTime)
+
+    }
+}
+
+const assignCourier = async (req, res) => {
+    try {
+        const order = await Order.update({
+            courier_id: req.body.selectCourier
+        }, {
+            where: { order_id: req.body.orderId }
+        }
+        );
+        res.status(200).json(order);
+
+    } catch (error) {
+        console.error("Error deleting courier:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+const clearCourier = async (req, res) => {
+    try {
+        const order = await Order.update({
+            courier_id: null
+        }, {
+            where: { order_id: req.body.orderId }
+        }
+        );
+        res.status(200).json(order);
+
+    } catch (error) {
+        console.error("Error deleting courier:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
 }
 
@@ -94,5 +126,7 @@ module.exports = {
     getCourierAndOrder,
     deleteCourier,
     editCourier,
-    test
+    test,
+    assignCourier,
+    clearCourier
 }

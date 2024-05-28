@@ -5,9 +5,11 @@ const courierController = require('../controller/courierController') //import co
 //Customer Url and Controllor
 router.get("/", courierController.getAllCourier)
 router.post("/", courierController.addCourier) //Add a courier service
+router.post("/assign", courierController.assignCourier) //assgin courier
 router.post("/edit", courierController.editCourier) //not tested
 router.get("/test", courierController.test) //For testing
 router.delete("/:courier_id", courierController.deleteCourier); //Delete a courier
+router.post("/clear", courierController.clearCourier); //clear courier assign
 
 
 module.exports = router;
