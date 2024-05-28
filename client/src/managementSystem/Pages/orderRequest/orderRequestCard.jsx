@@ -12,10 +12,10 @@ const OrderRequestCard = ({ priceQ }) => {
     const shipping_method = priceQ.shipping_method;
     axios.get(`http://localhost:3001/api/priceQuotationRouter/searchby/id/${priceQ.quotation_id}`, {
     }).then((response) => {
-      const raugh_weight = response.data.priceReq[0].raugh_weight;
-      const description = response.data.priceReq[0].description;
-      const supplierLoc = response.data.order[0].supplier_loc;
-
+      const raugh_weight = response.data.priceReq.raugh_weight;
+      const description = response.data.priceReq.description;
+      const supplierLoc = response.data.order.supplier_loc;
+      //console.log("LOG ",response.data.priceReq)
       navigate(`./${priceQ.quotation_id}`, { state: { order_id: priceQ.order_id, quotation_id: priceQ.quotation_id,itemsP: items, packCountP: packCount, weightP: raugh_weight, shippingMarkP: shipping_method, desP: description, countryP: supplierLoc, imageP: "", performaInvoiceP: "" } });
 
     }).catch((error) => {
@@ -57,7 +57,7 @@ const OrderRequestCard = ({ priceQ }) => {
             }}
           >
             <Button sx={{ fontSize: '0.8rem', padding: '0.1rem' }} onClick={viewOrEdit}>View/edit</Button>
-            <Button sx={{ fontSize: '0.8rem', padding: '0.1rem' }}>Delete</Button>
+            {/* <Button sx={{ fontSize: '0.8rem', padding: '0.1rem' }}>Delete</Button> */}
           </Box>
         </div>
       </Box>

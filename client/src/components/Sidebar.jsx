@@ -1,10 +1,13 @@
 import { Box } from '@mui/material';
 import React from 'react';
-import { FaCog, FaHome } from 'react-icons/fa';
+import { FaHome } from 'react-icons/fa';
 import { GoListOrdered } from "react-icons/go";
 import { GrDeliver } from "react-icons/gr";
 import { IoIosPeople } from "react-icons/io";
+import { MdRequestQuote } from "react-icons/md";
+import { PiShippingContainerFill } from "react-icons/pi";
 import { RiLogoutBoxFill } from "react-icons/ri";
+import { TbReportAnalytics } from "react-icons/tb";
 import { NavLink } from 'react-router-dom';
 
 const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
@@ -43,13 +46,13 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
                 <NavLink to="" onClick={() => handleClick('Dashboard')}>
                     <li
                         style={{
-                            marginBottom: '0.6rem',
+                            marginBottom: '1rem',
                             color: 'white',
                             listStyleType: 'none',
                             marginTop:'2rem' // Remove bullet points
                         }}
                     >
-                        <a href='' className='px-3' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
+                        <a href='' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
                             <FaHome style={{ marginRight: '0.6rem' }}></FaHome>
                             Dashboard
                         </a>
@@ -58,49 +61,21 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
                 <NavLink to="/cmsystem/requests" onClick={() => handleClick('Price quotation requests')}>
                     <li
                         style={{
-                            marginBottom: '0.6rem',
+                            marginBottom: '1rem',
                             color: 'white',
                             listStyleType: 'none' // Remove bullet points
                         }}
                     >
                         <a href=''  style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
-                            <IoIosPeople style={{ marginRight: '0.6rem' }}></IoIosPeople >
+                            <MdRequestQuote style={{ marginRight: '0.6rem' }}></MdRequestQuote >
                             Quotation Requests
-                        </a>
-                    </li>
-                </NavLink>
-                <NavLink to="/cmsystem/customers" onClick={() => handleClick('Customers')}>
-                    <li
-                        style={{
-                            marginBottom: '0.6rem',
-                            color: 'white',
-                            listStyleType: 'none' // Remove bullet points
-                        }}
-                    >
-                        <a href=''  style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
-                            <IoIosPeople style={{ marginRight: '0.6rem' }}></IoIosPeople >
-                            Customers
-                        </a>
-                    </li>
-                </NavLink>
-                <NavLink to="/cmsystem/courier" onClick={() => handleClick('Courier services')}>
-                    <li
-                        style={{
-                            marginBottom: '0.6rem',
-                            color: 'white',
-                            listStyleType: 'none' // Remove bullet points
-                        }}
-                    >
-                        <a href='' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
-                            <GrDeliver style={{ marginRight: '0.6rem' }}></GrDeliver>
-                            Courier services
                         </a>
                     </li>
                 </NavLink>
                 <NavLink to="/cmsystem/order" onClick={() => handleClick('Orders')}>
                     <li
                         style={{
-                            marginBottom: '0.6rem',
+                            marginBottom: '1rem',
                             color: 'white',
                             listStyleType: 'none' // Remove bullet points
                         }}
@@ -114,27 +89,55 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
                 <NavLink to="/cmsystem/shipment" onClick={() => handleClick('Shipments')}>
                     <li
                         style={{
-                            marginBottom: '0.6rem',
+                            marginBottom: '1rem',
                             color: 'white',
                             listStyleType: 'none' // Remove bullet points
                         }}
                     >
                         <a href='' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
-                            <FaCog style={{ marginRight: '0.6rem' }}></FaCog>
+                            <PiShippingContainerFill style={{ marginRight: '0.6rem' }}></PiShippingContainerFill>
                             Shipments
+                        </a>
+                    </li>
+                </NavLink>
+                <NavLink to="/cmsystem/customers" onClick={() => handleClick('Customers')}>
+                    <li
+                        style={{
+                            marginBottom: '1rem',
+                            color: 'white',
+                            listStyleType: 'none' // Remove bullet points
+                        }}
+                    >
+                        <a href=''  style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
+                            <IoIosPeople style={{ marginRight: '0.6rem' }}></IoIosPeople >
+                            Customers
+                        </a>
+                    </li>
+                </NavLink>
+                <NavLink to="/cmsystem/courier" onClick={() => handleClick('Courier services')}>
+                    <li
+                        style={{
+                            marginBottom: '1rem',
+                            color: 'white',
+                            listStyleType: 'none' // Remove bullet points
+                        }}
+                    >
+                        <a href='' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
+                            <GrDeliver style={{ marginRight: '0.6rem' }}></GrDeliver>
+                            Courier services
                         </a>
                     </li>
                 </NavLink>
                 <NavLink to="/cmsystem/reports" onClick={() => handleClick('Reports')}>
                     <li
                         style={{
-                            marginBottom: '0.6rem',
+                            marginBottom: '1rem',
                             color: 'white',
                             listStyleType: 'none' // Remove bullet points
                         }}
                     >
                         <a href='' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
-                            <FaCog style={{ marginRight: '0.6rem' }}></FaCog>
+                            <TbReportAnalytics style={{ marginRight: '0.6rem' }}></TbReportAnalytics>
                             Reports
                         </a>
                     </li>

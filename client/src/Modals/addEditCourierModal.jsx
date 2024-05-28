@@ -24,10 +24,10 @@ export default function AddEditCourierModal({ open, onClose, courierID }) {
     const addCourier = () => {
 
         //VALIDATION SHOULD DONE HERE
-        alert(tpFields + " Adding " + nameField)
-        axios.post("http://localhost:3001/courier", {
-            "name": nameField,
-            "tel_number": tpFields
+        //alert(tpFields + " Adding " + nameField)
+        axios.post("http://localhost:3001/api/courier", {
+            name: nameField,
+            tel_number: tpFields
         }, {
             headers: {
                 Authorization: `Bearer ${token}`

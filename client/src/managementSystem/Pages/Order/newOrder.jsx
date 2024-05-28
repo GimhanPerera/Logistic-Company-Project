@@ -35,6 +35,8 @@ const NewOrder = () => {
     const [image, setImage] = useState(null);
     const [invoice, setInvoice] = useState(null);
     const navigate = useNavigate();
+    const [selectedCountry, setSelectedCountry] = useState(Countries.find((country) => country.label === 'China'));
+
     const toOrders = () => {
         navigate('../order');
     }
@@ -93,7 +95,7 @@ const NewOrder = () => {
                 "shippingmethod": values.shippingmethod,
                 "quotation": values.quotation,//
                 "description": values.description,
-                "supplierLoc": "China",//values.supplierLoc,
+                "supplierLoc": selectedCountry.label,
                 "status": "Just opened",//
                 "image": image,
                 "invoice": invoice,
@@ -203,7 +205,7 @@ const NewOrder = () => {
                                             sx={{ width: 250, mt: 2, mb: 2 }}
                                             options={Countries}
                                             autoHighlight
-                                            defaultValue={Countries.find((country) => country.label === 'China')}
+                                            defaultValue={selectedCountry}
                                             getOptionLabel={(option) => option.label}
                                             renderOption={(props, option) => (
                                                 <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
@@ -222,16 +224,15 @@ const NewOrder = () => {
                                                     {...params}
                                                     label="Choose a country"
                                                     size="small"
-                                                    name='supplierLoc'
                                                     inputProps={{
                                                         ...params.inputProps,
                                                         autoComplete: 'new-password', // disable autocomplete and autofill
                                                     }}
-                                                    value={values.supplierLoc}
-                                                    onChange={handleChange}
-                                                    onBlur={handleBlur}
                                                 />
                                             )}
+                                            onChange={(event, newValue) => {
+                                                setSelectedCountry(newValue);
+                                            }}
                                         /></td>
                                     </tr>
                                     <tr>

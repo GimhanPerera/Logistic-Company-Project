@@ -28,13 +28,13 @@ const ViewOrder = () => {
         navigate('./..');
     }
     const toPayment = () => {
-        navigate('./payments', { state: { orderId: orderDetails.order.order_id, payments: orderDetails.payment} });
+        navigate('./payments', { state: { orderId: orderDetails.order.order_id, payments: orderDetails.payment } });
     }
     const toggleReadyStatus = () => {
         const oid = orderDetails.order.order_id;
-        console.log("oid ",oid)
-        axios.post('http://localhost:3001/api/order/toggleReadyStatus',{
-            oid:oid
+        console.log("oid ", oid)
+        axios.post('http://localhost:3001/api/order/toggleReadyStatus', {
+            oid: oid
         })
             .then((response) => {
                 setOrderDetails(prevDetails => ({
@@ -51,9 +51,9 @@ const ViewOrder = () => {
     }
     const toggleCompleteStatus = () => {
         const oid = orderDetails.order.order_id;
-        console.log("oid ",oid)
-        axios.post('http://localhost:3001/api/order/completeOrder',{
-            oid:oid
+        console.log("oid ", oid)
+        axios.post('http://localhost:3001/api/order/completeOrder', {
+            oid: oid
         })
             .then((response) => {
                 setOrderDetails(prevDetails => ({
@@ -94,7 +94,7 @@ const ViewOrder = () => {
                 setLoading(false); // Set loading to false if there's an error
             });
         try {
-            console.log("HERE ",orderDetails.priceReq[0].quotation_id)
+            console.log("HERE ", orderDetails.priceReq[0].quotation_id)
             axios({
                 url: `http://localhost:3001/api/priceQuotationRouter/download/image/${orderDetails.priceReq[0].quotation_id}`,
                 method: "GET",
@@ -252,19 +252,19 @@ const ViewOrder = () => {
                 <Button onClick={addCourier}>
                     Add courier
                 </Button>
-                {orderDetails.order.status == 'onhand' || orderDetails.order.status == 'Ready'?
-                <Button onClick={toggleReadyStatus}>
-                    {orderDetails.order.status == 'Ready'? 'Change as not Ready' : 'Change as Ready'}
-                </Button>
-                 : ''}
+                {orderDetails.order.status == 'onhand' || orderDetails.order.status == 'Ready' ?
+                    <Button onClick={toggleReadyStatus}>
+                        {orderDetails.order.status == 'Ready' ? 'Change as not Ready' : 'Change as Ready'}
+                    </Button>
+                    : ''}
                 <Button onClick={toPayment}>
                     Payments
                 </Button>
-                {orderDetails.order.status == 'Ready'?
-                <Button variant="contained" onClick={toggleCompleteStatus}>
-                    Complete Order
-                </Button>
-                : ''}
+                {orderDetails.order.status == 'Ready' ?
+                    <Button variant="contained" onClick={toggleCompleteStatus}>
+                        Complete Order
+                    </Button>
+                    : ''}
                 <Box component="h1">Order ID: {orderDetails.order.order_id}</Box>
                 <Box component="h2">Status: {orderDetails.order.status}</Box>
 
@@ -276,9 +276,10 @@ const ViewOrder = () => {
                     <Box component="p">Name: {orderDetails.customer.f_name} {orderDetails.customer.l_name}</Box>
                     <Box component="p">Tel. number: {orderDetails.customer.tel_number}</Box>
                     <Box component="p">Address: {orderDetails.customer.address}</Box>
-                    <Box component="p">Assign To: {orderDetails.courier!=null? orderDetails.courier.courier_id:''} - {orderDetails.courier!=null? orderDetails.courier.name:''}</Box>
+                    <Box component="p">Assign To: {orderDetails.courier != null ? orderDetails.courier.courier_id : ''} - {orderDetails.courier != null ? orderDetails.courier.name : ''}</Box>
                     <Box component="p">Open date: {orderDetails.order.order_open_date}</Box>
                     <Box component="p">Shipment: {orderDetails.order.BL_no}</Box>
+                    <Box component="p">From: {orderDetails.order.supplier_loc}</Box>
                     <table style={{ borderCollapse: 'collapse' }}>
                         <thead>
                             <tr>
@@ -338,7 +339,7 @@ const ViewOrder = () => {
                 </Box>
             </div>
 
-            
+
 
             {/*Payments*/}
             <Box component="h3" sx={{}}>Total Payments: {orderDetails.payment.reduce((sum, payment) => sum + parseFloat(payment.payment) || 0, 0)}</Box>

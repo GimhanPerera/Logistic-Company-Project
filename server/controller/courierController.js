@@ -4,9 +4,15 @@ const { Courier,Order } = require('../models');
 
 //1. Add a customer
 const addCourier = async (req, res) => {
+    try {
+        console.log("GOOD")
     const courier = req.body;
     await Courier.create(courier);
     res.status(200).json(courier)
+} catch (error) {
+    console.error('Error updating courier:', error);
+    res.status(500).json({ error: 'Internal server error' });
+}
 }
 
 const editCourier = async (req, res) => {

@@ -1,6 +1,6 @@
 const { Order, Customer, Shipment, Price_quotation, Package,Invoice, Payment,Courier } = require('../models');
 const Sequelize = require('sequelize');
-
+const { Op } = require('sequelize');
 
 const newOrder = async (req, res) => {//Add a order - NOT TESTED
     try {
@@ -161,6 +161,11 @@ const getCurrentSriLankanDateTime = () => { //Not working well
 const getAllOrderDetailsForOrderCard = async (req, res) => { //Get all Order
     try {
         const orders = await Order.findAll({
+            where: {
+                status: {
+                    [Op.ne]: 'Request'
+                }
+            },
             include: [{
                 model: Customer,
                 attributes: ['customer_id', 'f_name', 'l_name', 'tel_number']

@@ -355,7 +355,7 @@ const UpdateTracking = () => {
                             </td>
                             <td>
                                 <FormControl sx={{ m: 1, minWidth: 120 }}>
-                                    <InputLabel id="demo-select-small-label">Status</InputLabel>
+                                    <InputLabel id="demo-select-small-label">Received status</InputLabel>
                                     <Select
                                         disabled={!readyToShip}
                                         value={tracking}
