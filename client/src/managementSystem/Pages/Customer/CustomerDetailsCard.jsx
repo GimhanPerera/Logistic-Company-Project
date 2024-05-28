@@ -29,7 +29,7 @@ const CustomerDetailsCard = ({ customer }) => {
           cursor: 'pointer'
         }}
       >
-        1 active order
+        {customer.order_count} active order
       </Box>
       <div>
         <Box component="div"
@@ -43,9 +43,9 @@ const CustomerDetailsCard = ({ customer }) => {
             textDecoration: 'underline'
           }}
         >
-          <Button sx={{ fontSize: '0.8rem', padding: '0.1rem' }}>New order</Button>
+          {/* <Button sx={{ fontSize: '0.8rem', padding: '0.1rem' }}>New order</Button> */}
           <Button sx={{ fontSize: '0.8rem', padding: '0.1rem' }}>Edit</Button>
-          <Button sx={{ fontSize: '0.8rem', padding: '0.1rem' }}>Delete</Button>
+          {/* <Button sx={{ fontSize: '0.8rem', padding: '0.1rem' }}>Delete</Button> */}
           <Button sx={{ fontSize: '0.8rem', padding: '0.1rem' }}>History</Button>
         </Box>
       </div>

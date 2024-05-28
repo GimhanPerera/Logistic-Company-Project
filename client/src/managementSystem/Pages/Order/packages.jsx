@@ -5,9 +5,8 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import EditIcon from '@mui/icons-material/Edit';
 import PrintIcon from '@mui/icons-material/Print';
 import SaveIcon from '@mui/icons-material/Save';
-import { Container } from '@mui/material';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+import { Box, Button, Container, TextField } from '@mui/material';
+import Autocomplete from '@mui/material/Autocomplete';
 import { styled } from '@mui/material/styles';
 import {
   DataGrid,
@@ -25,6 +24,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from 'sweetalert2';
 import * as XLSX from "xlsx";
+import { Countries } from '../../../countryCodes';
 import { addPackageValidation } from './../../../validations';
 import PrintShippingMarks from './printShippingMarks';
 const initialVslues = {
@@ -144,10 +144,11 @@ export const Packages = () => {
   const [displayMasks, setDisplayMasks] = useState(false);
   const [printables, setPrintables] = useState([]);
   const componentRef = useRef();
+  const [selectedCountry, setSelectedCountry] = useState(Countries.find((country) => country.label === 'China'));
 
   //supplier form data
   const [name, setName] = useState("");
-  const [country, setCountry] = useState("");
+  //const [country, setCountry] = useState("");
   const [tel, setTel] = useState("");
   const [des, setDes] = useState("");
 
@@ -373,7 +374,7 @@ export const Packages = () => {
       },
     },
   ];
-  
+
 
   //Grp the rowsbased on supplier, groupedRows is a objesct
   const groupedRows = rows.reduce((grouped, row) => {
@@ -393,7 +394,7 @@ export const Packages = () => {
     try {
       const response = await axios.post("http://localhost:3001/api/supplier", {
         name: name,
-        country: country,
+        country: selectedCountry.label,
         tel: tel,
         des: des
       });
@@ -406,7 +407,7 @@ export const Packages = () => {
 
       //clear the input fields
       setName('');
-      setCountry('');
+      setSelectedCountry(Countries.find((country) => country.label === 'China'));
       setTel('');
       setDes('');
 
@@ -515,12 +516,38 @@ export const Packages = () => {
               </tr>
               <tr>
                 <td><label for="country">Country :</label></td>
-                <td><Field type="text"
-                  id="country"
-                  name="country"
-                  value={country}
-                  onChange={(e) => setCountry(e.target.value)}
-                  className="border-solid border-2 border-blue-800" />
+                <td><Autocomplete
+                sx={{ width: 250, mt: 2, mb: 2 }}
+                options={Countries}
+                autoHighlight
+                defaultValue={selectedCountry}
+                getOptionLabel={(option) => option.label}
+                renderOption={(props, option) => (
+                  <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+                    <img
+                      loading="lazy"
+                      width="20"
+                      srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+                      src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                      alt=""
+                    />
+                    {option.label} ({option.code})
+                  </Box>
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    size="small"
+                    inputProps={{
+                      ...params.inputProps,
+                      autoComplete: 'new-password', // disable autocomplete and autofill
+                    }}
+                  />
+                )}
+                onChange={(event, newValue) => {
+                  setSelectedCountry(newValue);
+                }}
+              />
                 </td>
               </tr>
               <tr>
@@ -550,7 +577,7 @@ export const Packages = () => {
                   >
                     Cancel
                   </Button>
-                  </td><td>
+                </td><td>
                   <Button variant="contained"
                     sx={{ ml: '20px' }}
                     onClick={addSupplier}
@@ -606,20 +633,20 @@ export const Packages = () => {
         <ReactToPrint
           trigger={() => (
             <Button
-          component="label"
-          variant="contained"
-          startIcon={<PrintIcon />}
-          sx={{ ml: '20px' }}
-        >
-          Print / Download
-        </Button>
+              component="label"
+              variant="contained"
+              startIcon={<PrintIcon />}
+              sx={{ ml: '20px' }}
+            >
+              Print / Download
+            </Button>
           )}
           content={() => componentRef.current}
           fileName="shipping_marks.pdf" // Set the default save name here
         />
         <Box component="div" sx={{ m: '10px 100px' }}>
           <Box component="div" ref={componentRef} className='motech' sx={{ m: '10px 10px' }}> {/*backgroundColor: 'yellow',*/}
-            
+
             <PrintShippingMarks printables={printables}></PrintShippingMarks>
 
           </Box>

@@ -74,7 +74,7 @@ const CourierDetails = () => {
                 ))
 
             )}
-            <AddEditCourierModal open={isModalOpen} onClose={() => setModalIsOpen('false')} courierID="sss" />
+            <AddEditCourierModal open={isModalOpen} onClose={() => setModalIsOpen('false')}/>
         </div>
     );
 };

@@ -32,7 +32,7 @@ export const AllMyOrders = () => {
     }).then((response) => {
       setListOfOrders(response.data);
       setReqCount(listOfOrders.filter(order => order.status === 'Request').length);
-
+      console.log("COUNT ",listOfOrders.filter(order => order.status === 'Request').length)
     })
   }, [])
 

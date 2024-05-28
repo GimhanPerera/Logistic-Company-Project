@@ -1,4 +1,12 @@
-import * as Yup from 'yup'
+import * as Yup from 'yup';
+
+const descriptionValidation = Yup.string()
+    .test('is-valid-description', 'Description cannot be only numbers or special characters', (value) => {
+        if (!value) return true; // Allow blank value
+        return /[a-zA-Z]/.test(value); // Check for at least one alphabetic character
+    })
+    .min(3, 'Description must be at least 3 characters long');
+
 
 export const testValication = Yup.object({
     f_name: Yup.string().min(3).required("Please Enter name"),
@@ -52,7 +60,7 @@ export const priceQuotationValidation = Yup.object({
     weight: Yup.string().required("Please enter weight"),
     shippingmethod: Yup.string().required("Please Enter shippingmethod"),
     quotation: Yup.string().min(3).required("Please Enter quotation"),
-    description: Yup.string().min(3).required("Please Enter description"),
+    description: descriptionValidation
 });
 export const priceQuotationByCustomerValidation = Yup.object({
     items: Yup.string()

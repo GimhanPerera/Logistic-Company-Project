@@ -25,22 +25,25 @@ export const NewOrderRequest = () => {
     const [image, setImage] = useState(null);
     const [invoice, setInvoice] = useState(null);
     const navigate = useNavigate();
+    const [selectedCountry, setSelectedCountry] = useState(Countries.find((country) => country.label === 'China'));
     const toOrders = () => {
         navigate('../');
     }
     const handleImageChange = (e) => {
-        setImage( e.target.files[0]); // Update the image file in the form data
+        setImage(e.target.files[0]); // Update the image file in the form data
     };
     const handleInvoiceChange = (e) => {
-        setInvoice( e.target.files[0]); // Update the image file in the form data
-        
+        setInvoice(e.target.files[0]); // Update the image file in the form data
+
     };
 
     const onSubmit = async (values, actions) => {
+        console.log("LOG: ", selectedCountry);
+        //return;
         if (image == null) {
             toast.error("Image is required");
             return
-        }else if (invoice == null) {
+        } else if (invoice == null) {
             toast.error("Invoice is required");
             return
         }
@@ -53,7 +56,7 @@ export const NewOrderRequest = () => {
                 "shippingmethod": values.shippingmethod,
                 "quotation": 0,
                 "description": values.description,
-                "supplierLoc": "China",//values.supplierLoc,
+                "supplierLoc": selectedCountry.label,
                 "status": "Request",
                 "image": image,
                 "invoice": invoice,
@@ -79,16 +82,16 @@ export const NewOrderRequest = () => {
 
     return (
         <>
-        <Navbar />
+            <Navbar />
             <ToastContainer />
             <div className="relative">
                 <Formik>
                     <Form onSubmit={handleSubmit}>
                         <Box component="div"
                             sx={{ display: 'flex', justifyContent: 'space-around', mt: '1rem' }}>
-                            <Box component="div" sx={{border: '1px solid gray', p: '1rem', mb:'1rem' }}>
+                            <Box component="div" sx={{ border: '1px solid gray', p: '1rem', mb: '1rem' }}>
                                 <Box component="h3" sx={{ mb: 2 }}>Enter your package details</Box>
-                                <table style={{ }}>
+                                <table style={{}}>
                                     <tr>
                                         <td>
                                             <TextField label="Items" size="small" type='text' name='items' margin="normal"
@@ -137,51 +140,56 @@ export const NewOrderRequest = () => {
 
                                     </tr>
                                     <tr>
-                                        <td><TextField label="Description" size="small" type='text' name='description' margin="normal"
+                                        <Box component='td' sx={{
+                                            '& .MuiTextField-root': { m: 1, width: '25ch' },
+                                        }}><TextField label="Description" size="small" type='text' name='description' margin="normal"
                                             value={values.description}
                                             onChange={handleChange}
                                             onBlur={handleBlur}
                                             error={touched.description && Boolean(errors.description)}
                                             helperText={touched.description && errors.description}
-                                        />
-                                        </td>
+                                            multiline
+                                            maxRows={4}
+                                            />
+                                        </Box>
                                     </tr>
                                     <tr>
-                                        <td> <Autocomplete
-                                            id="country-select-demo"
-                                            sx={{ width: 250, mt: 2, mb: 2 }}
-                                            options={Countries}
-                                            autoHighlight
-                                            defaultValue={Countries.find((country) => country.label === 'China')}
-                                            getOptionLabel={(option) => option.label}
-                                            renderOption={(props, option) => (
-                                                <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-                                                    <img
-                                                        loading="lazy"
-                                                        width="20"
-                                                        srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
-                                                        src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-                                                        alt=""
+                                        <td>
+                                            <Autocomplete
+                                                id="country-select-demo"
+                                                sx={{ width: 250, mt: 2, mb: 2 }}
+                                                options={Countries}
+                                                autoHighlight
+                                                defaultValue={selectedCountry}
+                                                getOptionLabel={(option) => option.label}
+                                                renderOption={(props, option) => (
+                                                    <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+                                                        <img
+                                                            loading="lazy"
+                                                            width="20"
+                                                            srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+                                                            src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                                                            alt=""
+                                                        />
+                                                        {option.label} ({option.code})
+                                                    </Box>
+                                                )}
+                                                renderInput={(params) => (
+                                                    <TextField
+                                                        {...params}
+                                                        label="Choose a country"
+                                                        size="small"
+                                                        inputProps={{
+                                                            ...params.inputProps,
+                                                            autoComplete: 'new-password', // disable autocomplete and autofill
+                                                        }}
                                                     />
-                                                    {option.label} ({option.code})
-                                                </Box>
-                                            )}
-                                            renderInput={(params) => (
-                                                <TextField
-                                                    {...params}
-                                                    label="Choose a country"
-                                                    size="small"
-                                                    name='supplierLoc'
-                                                    inputProps={{
-                                                        ...params.inputProps,
-                                                        autoComplete: 'new-password', // disable autocomplete and autofill
-                                                    }}
-                                                    value={values.supplierLoc}
-                                                    onChange={handleChange}
-                                                    onBlur={handleBlur}
-                                                />
-                                            )}
-                                        /></td>
+                                                )}
+                                                onChange={(event, newValue) => {
+                                                    setSelectedCountry(newValue);
+                                                }}
+                                            />
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td><label for="invoice">Image :</label></td>
@@ -209,17 +217,17 @@ export const NewOrderRequest = () => {
                                         </td>
                                     </tr>
                                 </table>
-                                <Box component="div" sx={{ display:'flex', flexDirection:'column' }}>
-                        <Button variant="contained"
-                                type="submit"
-                                sx={{ backgroundColor: '#68DD62', m:'1rem 0' }}>
-                                Request price quotation
-                            </Button>
-                            <Button onClick={toOrders} variant="outlined"
-                                sx={{ }}>
-                                Cancel
-                            </Button>
-                        </Box>
+                                <Box component="div" sx={{ display: 'flex', flexDirection: 'column' }}>
+                                    <Button variant="contained"
+                                        type="submit"
+                                        sx={{ backgroundColor: '#68DD62', m: '1rem 0' }}>
+                                        Request price quotation
+                                    </Button>
+                                    <Button onClick={toOrders} variant="outlined"
+                                        sx={{}}>
+                                        Cancel
+                                    </Button>
+                                </Box>
                             </Box>
                         </Box>
                     </Form>

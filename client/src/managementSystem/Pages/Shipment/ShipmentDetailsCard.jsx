@@ -72,7 +72,8 @@ const ShipmentDetailsCard = ({ shipment }) => {
           >
             <a onClick={toScan} style={{ cursor: 'pointer' }}>Scan</a>
             <a onClick={toDetails} style={{ marginLeft: '0.75rem', cursor: 'pointer' }}>Edit</a>
-            <a style={{ marginLeft: '0.75rem', cursor: 'pointer' }}>Cancel</a>
+            {shipment.status=='waiting'? <a style={{ marginLeft: '0.75rem', cursor: 'pointer' }}>Cancel</a> : ''}
+            
           </Box>
         </Box>
       </div>

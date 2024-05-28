@@ -60,23 +60,23 @@ const allRequests = async (req, res) => {
 
 const getRequestByID = async (req, res) => {
     try {
-        const priceReq = await Price_quotation.findAll({
+        const priceReq = await Price_quotation.findOne({
             where: {
                 quotation_id: req.params.id,
             },
         });
         console.log("priceReq",priceReq.items)
-        const order = await Order.findAll({
+        const order = await Order.findOne({
             where: {
-                order_id: "CFL610A-4326",
+                order_id: priceReq.order_id,
             },
         });
-        console.log(order)
         const responseData = {
             priceReq: priceReq,
             order: order // Adding order.supplier_loc to the response
         };
-        console.log("QID: "+req.params.id)
+        //console.table(responseData.order)
+        //console.log("QID: "+req.params.id)
         res.status(200).json(responseData);
     } catch (error) {
         console.error("Error deleting courier:", error);
@@ -130,10 +130,44 @@ const downloadInvoice = async (req, res) => {
     }
 }
 
+const deleteRequest = async (req, res) => {
+    try {
+        // const a = await Courier.destroy({
+        //     where: {
+        //         courier_id: req.params.courier_id,
+        //     },
+        // });
+        const oid = await Price_quotation.findOne({
+            attributes:['order_id']
+        },{
+            where: {
+                quotation_id: req.params.quotation_id,
+            },
+        });
+        await Price_quotation.destroy({
+            where: {
+                quotation_id: req.params.quotation_id,
+            },
+        });
+        await Order.destroy({
+            where: {
+                order_id: oid.order_id,
+            },
+        });
+        console.log("Quotation deleted: ",req.params.quotation_id);
+        console.log("order_id deleted: ",oid.order_id);
+        res.status(200).json("success");
+    } catch (error) {
+        console.error("Error deleting courier:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
 module.exports = {
     addAQuotationReq,
     allRequests,
     getRequestByID,
     downloadImage,
-    downloadInvoice
+    downloadInvoice,
+    deleteRequest
 }

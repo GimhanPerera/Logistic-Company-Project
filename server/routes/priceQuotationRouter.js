@@ -32,4 +32,8 @@ router.get("/download/image/:quotation_id", priceQuotationController.downloadIma
 //req: Quotation id, res: Performa invoice
 router.get("/download/invoice/:quotation_id", priceQuotationController.downloadInvoice)
 
+//Delete request
+router.delete("/:quotation_id", priceQuotationController.deleteRequest)
+
+
 module.exports = router;

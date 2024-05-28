@@ -78,8 +78,18 @@ function generatePassword() {
 // 2. Get all Customers
 const getAllCustomers = async (req, res) => {
     //const customer = await Customer.findByPk(id) //ID eken one nan
-    const customer = await Customer.findAll({}) //{} : pass empty obj
-    res.status(200).json(customer)
+    const customers = await Customer.findAll({}) //{} : pass empty obj
+
+    // For each customer, get the order count
+    const customersWithOrderCount = await Promise.all(customers.map(async (customer) => {
+        const orderCount = await Order.count({ where: { customer_id: customer.customer_id } });
+        return {
+            ...customer.dataValues, // Spread the customer's data values
+            order_count: orderCount, // Add the order_count attribute
+        };
+    }));
+
+    res.status(200).json(customersWithOrderCount)
 }
 
 // 2. Get all Customers

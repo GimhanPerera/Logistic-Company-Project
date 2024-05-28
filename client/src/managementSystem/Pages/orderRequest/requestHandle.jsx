@@ -38,6 +38,7 @@ const RequestHandle = () => {
     const navigate = useNavigate();
     const [quotationID, setQuotationID] = useState();
     const [addImage, setaddImage] = useState(true);
+    const [selectedCountry, setSelectedCountry] = useState(Countries.find((country) => country.label === countryP));
     const toggleAddImage = () => {
         setaddImage(addImage => !addImage);
     };
@@ -98,6 +99,16 @@ const RequestHandle = () => {
         navigate('../');
     }
 
+    const deleteRequest = () => {
+        axios.delete(`http://localhost:3001/api/priceQuotationRouter/${quotation_id}`, {
+        }).then((response) => {
+            navigate('../');
+        }).catch((error) => {
+            console.error('Error :', error);
+        });
+
+    }
+
     const handleImageChange = (e) => {
         setImage(e.target.files[0]); // Update the image file in the form data
     };
@@ -134,7 +145,7 @@ const RequestHandle = () => {
                 "shippingmethod": values.shippingmethod,
                 "quotation": values.quotation,
                 "description": values.description,
-                "supplierLoc": "China",//values.supplierLoc,
+                "supplierLoc": selectedCountry.label,
                 "status": "Just opened",
                 // "cusID": customerID,
                 // "name": customerName,//
@@ -303,15 +314,19 @@ const RequestHandle = () => {
                                                 error={touched.quotation && Boolean(errors.quotation)}
                                                 helperText={touched.quotation && errors.quotation}
                                             /></td>
-                                        <td><TextField label="Description" size="small" type='text' name='description' margin="normal"
+                                        <Box component='td' sx={{
+                                            '& .MuiTextField-root': { m: 1, width: '25ch' },
+                                        }}><TextField label="Description" size="small" type='text' name='description' margin="normal"
                                             value={values.description}
                                             onChange={handleChange}
                                             onBlur={handleBlur}
                                             error={touched.description && Boolean(errors.description)}
                                             helperText={touched.description && errors.description}
                                             initialValues={values.description}
-                                        />
-                                        </td>
+                                            multiline
+                                            maxRows={4}
+                                            />
+                                        </Box>
                                     </tr>
                                     <tr>
                                         <td> <Autocomplete
@@ -319,7 +334,7 @@ const RequestHandle = () => {
                                             sx={{ width: 250, mt: 2, mb: 2 }}
                                             options={Countries}
                                             autoHighlight
-                                            defaultValue={Countries.find((country) => country.label === 'China')}
+                                            defaultValue={selectedCountry}
                                             getOptionLabel={(option) => option.label}
                                             renderOption={(props, option) => (
                                                 <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
@@ -338,16 +353,15 @@ const RequestHandle = () => {
                                                     {...params}
                                                     label="Choose a country"
                                                     size="small"
-                                                    name='supplierLoc'
                                                     inputProps={{
                                                         ...params.inputProps,
                                                         autoComplete: 'new-password', // disable autocomplete and autofill
                                                     }}
-                                                    value={values.supplierLoc}
-                                                    onChange={handleChange}
-                                                    onBlur={handleBlur}
                                                 />
                                             )}
+                                            onChange={(event, newValue) => {
+                                                setSelectedCountry(newValue);
+                                            }}
                                         /></td>
                                     </tr>
                                     <tr>
@@ -440,17 +454,20 @@ const RequestHandle = () => {
                             </Box>
                         </Box>
 
-                        <Box component="div" sx={{ position: 'absolute', right: '8rem', bottom: '5rem' }}>
+                        <Box component="div" sx={{ position: 'absolute', right: '5rem', bottom: '5rem' }}>
                             <Button onClick={toOrders} variant="outlined"
                                 sx={{ ml: '1rem' }}>
-                                Cancel
+                                Back
                             </Button>
-
+                            <Button variant="outlined" color="error" sx={{ ml: '1rem' }} onClick={deleteRequest}>
+                                Delete
+                            </Button>
                             <Button variant="contained"
                                 type="submit"
                                 sx={{ backgroundColor: '#68DD62', ml: '1rem' }}>
                                 Create order
                             </Button>
+
                         </Box>
                     </Form>
                 </Formik>
