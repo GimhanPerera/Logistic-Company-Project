@@ -54,11 +54,11 @@ export default function FeedbackModel({ open, onClose, ordId }) {
         setStar5Color(newStarColors['star5']);
     };
 
-    const submitComplain = () => {
+    const submitComplain = async () => {
         console.log("Feedback send")
         // VALIDATION SHOULD BE DONE HERE
 
-        axios.post("http://localhost:3001/api/feedback", {
+        await axios.post("http://localhost:3001/api/feedback", {
             "order_id": ordId,
             "rating": rateValue,
             "feedback": feedbackText

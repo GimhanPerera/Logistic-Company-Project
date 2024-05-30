@@ -18,7 +18,7 @@ import {
 import axios from "axios";
 import { Field, Form, Formik } from 'formik';
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ReactToPrint from 'react-to-print';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -30,7 +30,6 @@ import PrintShippingMarks from './printShippingMarks';
 const initialVslues = {
   item: '',
   packages: '',
-  weight: '',
   shippingmethod: '',
   quotation: '',
   description: '',
@@ -90,7 +89,7 @@ function EditToolbar(props) {
   const handleClick = () => {
     const lastRowId = rows.length > 0 ? rows[rows.length - 1].id : 0;
     const id = parseInt(lastRowId) + 1;
-    setRows((oldRows) => [...oldRows, { id, package_count: '', items: '', length: '', height: '', width: '', weight: '', volume_metric_weight: '', gross_weight: '', isNew: true }]);
+    setRows((oldRows) => [...oldRows, { id, package_count: '', items: '', length: '', height: '', width: '', volume_metric_weight: '', gross_weight: '', isNew: true }]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
       [id]: { mode: GridRowModes.Edit, fieldToFocus: 'items' },
@@ -109,6 +108,8 @@ function EditToolbar(props) {
 export const Packages = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const location = useLocation();
+    const { category } = location.state || {};
   const toBack = () => {
     navigate('../');
   }
@@ -122,7 +123,6 @@ export const Packages = () => {
     //   "length": "23",
     //   "height": "23",
     //   "width": "12",
-    //   "weight": "12.3",
     //   "volume_metric_weight": "123.4",
     //   "gross_weight": "1233",
     // }, {
@@ -133,7 +133,6 @@ export const Packages = () => {
     //   "length": "42",
     //   "height": "12",
     //   "width": "65",
-    //   "weight": "32.3",
     //   "volume_metric_weight": "633.4",
     //   "gross_weight": "222",
     // }
@@ -250,7 +249,6 @@ export const Packages = () => {
             "length": item.length,
             "height": item.height,
             "width": item.width,
-            "weight": item.weight,
             "volume_metric_weight": item.volume_metric_weight,
             "gross_weight": item.gross_weight,
             isNew: true
@@ -294,13 +292,6 @@ export const Packages = () => {
     {
       field: 'width',
       headerName: 'Width(cm)',
-      type: 'number',
-      width: 95,
-      editable: true,
-    },
-    {
-      field: 'weight',
-      headerName: 'Weight(KG)',
       type: 'number',
       width: 95,
       editable: true,
@@ -414,11 +405,6 @@ export const Packages = () => {
     } catch (error) {
       console.error('Error creating order:', error);
     }
-  }
-
-  //Toggle the supplier form
-  const toggleSupplier = () => {
-
   }
 
   //Save all to database
@@ -619,7 +605,6 @@ export const Packages = () => {
   else { //Display shipping marks
     return (
       <>
-
         <h2>Shipping marks</h2>
         {/* Back btn */}
         <Button variant="contained"
@@ -647,7 +632,7 @@ export const Packages = () => {
         <Box component="div" sx={{ m: '10px 100px' }}>
           <Box component="div" ref={componentRef} className='motech' sx={{ m: '10px 10px' }}> {/*backgroundColor: 'yellow',*/}
 
-            <PrintShippingMarks printables={printables}></PrintShippingMarks>
+            <PrintShippingMarks printables={printables} category={category}></PrintShippingMarks>
 
           </Box>
         </Box>

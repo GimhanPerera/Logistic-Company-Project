@@ -1,13 +1,4 @@
-const { Invoice, Order, Package, Customer,Payment } = require('../models');
-
-
-
-//1. Add a customer
-const addCourier = async (req, res) => {
-    const courier = req.body;
-    await Courier.create(courier);
-    res.status(200).json(courier)
-}
+const { Invoice, Order, Package, Customer,Payment,Price_quotation } = require('../models');
 
 const getInvoiceDetails = async (req, res) => {
     try {
@@ -15,8 +6,7 @@ const getInvoiceDetails = async (req, res) => {
         // /const customer = await Customer.findByPk(req.params.customerID);
 
         const order = await Order.findOne({
-            attributes: ['order_id', 'customer_id', 'order_open_date']
-        }, {
+            attributes: ['order_id', 'customer_id', 'order_open_date'],
             where: { order_id: orderId }
         });
         const customer = await Customer.findByPk(order.customer_id, {
@@ -27,6 +17,10 @@ const getInvoiceDetails = async (req, res) => {
             where: { order_id: orderId }
         });
         const invoice = await Invoice.findOne({
+            where: { order_id: orderId }
+        });
+        const price_quo = await Price_quotation.findOne({
+            attributes: ['shipping_method'],
             where: { order_id: orderId }
         });
 
@@ -54,7 +48,8 @@ const getInvoiceDetails = async (req, res) => {
             order: order,
             customer: customer,
             packages: packages,
-            invoice: invoice
+            invoice: invoice,
+            price_quo: price_quo
         }
         res.status(200).json(respond)
     } catch (error) {
@@ -98,6 +93,21 @@ const setInvoiceDetails = async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 }
+const getCurrentSriLankanDateTime = () => {
+    
+    const currentDate = new Date();
+    //const time = currentDate.toLocaleTimeString();//This give the GMT time. Need to add 5.30hours to convert to Sri Lankan time
+    currentDate.setHours(currentDate.getHours() + 5);
+    currentDate.setMinutes(currentDate.getMinutes() + 30);
+    const updatedTime = currentDate.toLocaleTimeString(); //Sri lankan time
+
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
+
+    const formattedDate = `${year}-${month}-${day} ${updatedTime}`;
+    return formattedDate;
+};
 
 //add a payment
 const addPayment = async (req, res) => {

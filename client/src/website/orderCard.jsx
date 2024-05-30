@@ -41,13 +41,24 @@ const OrderCard = ({ orders }) => {
           sx={{
             fontWeight: 'bold',
             width: '300px',
-            marginBottom: '1rem'
+            marginBottom: '0.5rem'
           }}>
           Order number: {orders.order_id}
         </Box>
-        <div>Tracking number: {orders.main_tracking_number}</div>
-        <div>Status: {orders.status}</div>
-        <div>From: {orders.supplier_loc}</div>
+        <Box
+          sx={{
+            width: '300px',
+            marginBottom: '0.5rem'
+          }}>Tracking number: {orders.main_tracking_number}</Box>
+        <Box
+          sx={{
+            width: '300px',
+            marginBottom: '0.5rem'
+          }}>Status: {orders.status}</Box>
+        <Box
+          sx={{
+            width: '300px',
+          }}>From: {orders.supplier_loc}</Box>
       </Box>
 
       <Box component="div"
@@ -58,7 +69,7 @@ const OrderCard = ({ orders }) => {
           alignItems: 'flex-end',
           height: '100%'
         }}>
-        <div>Order open date: {formatDate(orders.order_open_date)}</div>
+        <div>Order open date: {formatDate(orders.order_open_date).substring(0, 10)}</div>
         {orders.Shipment ? (
           <p>Expecting receiving date: {orders.Shipment.displayed_arrival_date}</p>
         ) : (<p>Expecting receiving date: -</p>)}

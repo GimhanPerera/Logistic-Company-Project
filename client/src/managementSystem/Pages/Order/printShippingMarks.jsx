@@ -4,7 +4,7 @@ import { Box } from '@mui/material';
 import { QRCodeSVG } from 'qrcode.react';
 import React, { useRef } from 'react';
 
-const PrintShippingMarks = ({printables}) => {
+const PrintShippingMarks = ({printables,category}) => {
 
     const componentRef = useRef();
 
@@ -37,6 +37,10 @@ const PrintShippingMarks = ({printables}) => {
                                         <td><Box component="h1" sx={{ fontSize: '2.5rem' }}>P/No</Box></td>
                                         <td><Box component="h1" sx={{ fontSize: '2.5rem' }}>: {packageMark.smark.split(" ")[1]}</Box></td>
                                     </tr>
+                                    <tr>
+                                        <td><Box component="h1" sx={{ fontSize: '2.5rem' }}>Category</Box></td>
+                                        <td><Box component="h1" sx={{ fontSize: '2.5rem' }}>: {category}</Box></td>
+                                    </tr>
                                     {packageMark.smark[6] === "A" ? (
                                         <tr>
                                             <td>
@@ -63,12 +67,12 @@ const PrintShippingMarks = ({printables}) => {
                         <Box component="div"
                             sx={{
                                 border: '1px solid black',
-                                padding: '20px',
+                                padding: '40px 10px 10px 10px',
                                 flexGrow: 1,
                             }}>
-                            <QRCodeSVG size="122" value={packageMark.smark.split(" ")[0] + " " + packageMark.smark.split(" ")[1]} style={{ marginLeft: '1rem' }} />
+                            <QRCodeSVG size="135" value={packageMark.smark.split(" ")[0] + " " + packageMark.smark.split(" ")[1]} style={{ marginLeft: '1rem' }} />
 
-                            <table style={{ margin: 'auto' }}>
+                            {/* <table style={{ margin: 'auto' }}>
                                 <tbody>
 
                                     <tr>
@@ -84,15 +88,11 @@ const PrintShippingMarks = ({printables}) => {
                                         <td><Box component="p">: {packageMark.details.width}cm</Box></td>
                                     </tr>
                                     <tr>
-                                        <td><Box component="p">Weight</Box></td>
-                                        <td><Box component="p">: {packageMark.details.weight}kg</Box></td>
-                                    </tr>
-                                    <tr>
                                         <td><Box component="p">VMW</Box></td>
                                         <td><Box component="p">: {packageMark.details.volume_metric_weight}kg</Box></td>
                                     </tr>
                                 </tbody>
-                            </table>
+                            </table> */}
                         </Box>
                     </Box>
                 </Box>

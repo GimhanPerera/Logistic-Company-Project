@@ -2,7 +2,7 @@ import { Box } from '@mui/material';
 import axios from 'axios';
 import React from 'react';
 
-const CourierDetailsCard = ({ courier, reload, clickEdit }) => {
+const CourierDetailsCard = ({ courier, reload, clickEdit,setCourierDetails }) => {
 
   const deleteCourier = () => {
     axios.delete(`http://localhost:3001/api/courier/${courier.courier_id}`)
@@ -15,7 +15,8 @@ const CourierDetailsCard = ({ courier, reload, clickEdit }) => {
       });
   }
   const handleEditClick = () => {
-    clickEdit(courier.courier_id)
+    setCourierDetails(courier);
+    clickEdit(courier.courier_id);
   }
 
   // Check if courier is defined before trying to access its properties

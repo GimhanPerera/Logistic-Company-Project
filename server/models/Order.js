@@ -20,6 +20,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(20),
             allowNull: false
         },
+        category: {
+            type: DataTypes.STRING(5),
+            allowNull: true
+        },
         main_tracking_number: {
             type: DataTypes.STRING(20),
             allowNull: false

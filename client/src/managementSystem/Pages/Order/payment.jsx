@@ -29,12 +29,28 @@ const Payment = () => {
         setPaymentValue(event.target.value);
     };
 
+    const getCurrentSriLankanDateTime = () => {
+        const currentDate = new Date();
+        //const time = currentDate.toLocaleTimeString();//This give the GMT time. Need to add 5.30hours to convert to Sri Lankan time
+        currentDate.setHours(currentDate.getHours() + 5);
+        currentDate.setMinutes(currentDate.getMinutes() + 30);
+        const updatedTime = currentDate.toLocaleTimeString(); //Sri lankan time
+    
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+        const day = String(currentDate.getDate()).padStart(2, '0');
+    
+        const formattedDate = `${year}-${month}-${day} ${updatedTime}`;
+        return formattedDate;
+    };
+
     const addPayment = () => {
+
         const newPayment = {
             order_id: orderId,
             payment_method: paymentMethod,
             payment: paymentValue,
-            date_time: new Date().toISOString()
+            date_time: getCurrentSriLankanDateTime()
         };
 
         axios.post('http://localhost:3001/api/invoice/addPayment', newPayment)

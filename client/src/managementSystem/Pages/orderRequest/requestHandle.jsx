@@ -8,6 +8,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Swal from 'sweetalert2';
 import { Countries } from '../../../countryCodes';
 import { priceQuotationValidation } from '../../../validations';
 
@@ -20,6 +21,7 @@ const RequestHandle = () => {
         packages: packCountP,
         weight: weightP,
         shippingmethod: shippingMarkP,
+        category: 'G',
         quotation: '',
         description: desP,
         supplierLoc: countryP,
@@ -100,12 +102,31 @@ const RequestHandle = () => {
     }
 
     const deleteRequest = () => {
-        axios.delete(`http://localhost:3001/api/priceQuotationRouter/${quotation_id}`, {
-        }).then((response) => {
-            navigate('../');
-        }).catch((error) => {
-            console.error('Error :', error);
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.delete(`http://localhost:3001/api/priceQuotationRouter/${quotation_id}`, {
+                }).then((response) => {
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "Your file has been deleted.",
+                        icon: "success"
+                    });
+                    navigate('../');
+                }).catch((error) => {
+                    console.error('Error :', error);
+                });
+
+            }
         });
+
 
     }
 
@@ -143,6 +164,7 @@ const RequestHandle = () => {
                 "packages": values.packages,
                 "weight": values.weight,
                 "shippingmethod": values.shippingmethod,
+                "category": values.category,
                 "quotation": values.quotation,
                 "description": values.description,
                 "supplierLoc": selectedCountry.label,
@@ -219,7 +241,7 @@ const RequestHandle = () => {
                 // Get the content type from the response headers
                 const contentType = res.headers['content-type'];
 
-                console.log("TYPE", contentType)
+                //console.log("TYPE", contentType)
 
                 // Determine the file extension based on the content type
                 let extension = '';
@@ -363,6 +385,25 @@ const RequestHandle = () => {
                                                 setSelectedCountry(newValue);
                                             }}
                                         /></td>
+                                        <td>
+                                            <FormControl sx={{ m: 1, minWidth: 170 }}>
+                                                <InputLabel id="demo-simple-select-helper-label">Category</InputLabel>
+                                                <Field
+                                                    as={Select}
+                                                    name="category"
+                                                    value={values.category}
+                                                    onChange={handleChange}
+                                                    onBlur={handleBlur}
+                                                    label="Category"
+                                                    defaultValue={'G'}
+                                                    size='small'
+                                                >
+                                                    <MenuItem value={"G"}>G</MenuItem>
+                                                    <MenuItem value={"DG"}>DG</MenuItem>
+                                                    <MenuItem value={"DG-B"}>DG-B</MenuItem>
+                                                </Field>
+                                            </FormControl>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td><label for="invoice">Image :</label></td>

@@ -4,18 +4,23 @@ const jwt = require('jsonwebtoken')
 
 
 const customerLogin = async (req, res) => {
-
+try{
     //Authentication
     
     const user = {
         sub: req.body.cus_id,
         role: 'customer'
     }
-    const accessToken = createToken(user, 600) //Create the access token
+    const accessToken = createToken(user, 3600) //Create the access token
     res.json({
         isValid: "True",
         accessToken: accessToken
     })
+}catch (error) {
+    console.error("Error in customer Login:", error);
+    res.status(500).json({ error: "Internal server error" });
+}
+
 }
 
 const stuffLogin = async (req, res) => {
@@ -34,7 +39,7 @@ const stuffLogin = async (req, res) => {
                 role: userFromDB.position
             };
             console.log("User ",user)
-            const accessToken = createToken(user, 3600); // Create the access token
+            const accessToken = createToken(user, 36000); // Create the access token
             console.log("Access token: " + accessToken);
             res.json({
                 isValid: true,
@@ -46,7 +51,7 @@ const stuffLogin = async (req, res) => {
                 sub: '0',
                 role: ''
             };
-            const accessToken = createToken(user, 3600); // Create the access token
+            const accessToken = createToken(user, 36000); // Create the access token
             console.log("Access token: " + accessToken);
             res.json({
                 isValid: false,
@@ -69,7 +74,7 @@ const getData = async (req, res) => {
     //res.status(200).json(courier.courier_id)
 }
 
-//Meddleware to authenticate the token
+//Middleware to authenticate the token
 const authenticateToken  = async (req, res, next) => {
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]

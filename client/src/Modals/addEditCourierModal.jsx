@@ -1,12 +1,16 @@
 import { Box, Button } from '@mui/material';
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-export default function AddEditCourierModal({ open, onClose, courierID }) {
+export default function AddEditCourierModal({ open, onClose,courierDetails }) {
     const [resp, setResp] = useState();
     const [nameField, setNameField] = useState('');
     const [tpFields, setTpFields] = useState('');
     const token = localStorage.getItem('token');
+    useEffect(()=>{
+        setNameField(courierDetails? courierDetails.name : '');
+        setTpFields(courierDetails? `0${courierDetails.tel_number}` : '');
+    },[courierDetails])
 
     const handleClose = (e) => {
         if (e.target.id === 'container') {
@@ -137,6 +141,7 @@ export default function AddEditCourierModal({ open, onClose, courierID }) {
         </>
     )
     else if (open == 'false') return null;
+    //else if (nameField=='') return null;
     else return (
         <>
             {/*Edit courier Card*/}
@@ -177,6 +182,7 @@ export default function AddEditCourierModal({ open, onClose, courierID }) {
                             padding: '0.25rem'
                         }}
                         value={nameField}
+                        defaultValue={courierDetails.name}
                         onChange={(e) => setNameField(e.target.value)}
                     ></Box>
                     <p>Tel number: </p>

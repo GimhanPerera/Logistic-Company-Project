@@ -51,5 +51,6 @@ router.post("/toggleReadyStatus", orderController.toggleReadyStatus)
 //Completed Status
 router.post("/completeOrder", orderController.toggleCompleteStatus)
 
+router.delete("/:orderID", orderController.deleteOrderJOstate)
 
 module.exports = router;

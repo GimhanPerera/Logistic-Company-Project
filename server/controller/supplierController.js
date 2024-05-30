@@ -31,17 +31,27 @@ async function generateNextSupplierId() {
 }
 
 const getAllSuppliers = async (req, res) => {
+    try{
     const supplier = await Supplier.findAll({}) //{} : pass empty obj
-    res.status(200).json(supplier)
+    res.status(200).json(supplier);
+} catch (error) {
+    console.error('Error generating next supplier_id:', error);
+    throw error;
+}
 }
 const getAllSuppliersForAddPackage = async (req, res) => {
+    try{
     const supplier = await Supplier.findAll({}) //{} : pass empty obj
     const ww = supplier.map(item => `${item.supplier_id}-${item.name}`)
     res.status(200).json(ww)
+} catch (error) {
+    console.error('Error generating next supplier_id:', error);
+    throw error;
+}
 }
 
 const addSupplier = async (req, res) => {
-    
+    try{
     const newID = await generateNextSupplierId();
     
     const newSupplier = await Supplier.create({
@@ -55,6 +65,10 @@ const addSupplier = async (req, res) => {
     //await Supplier.create(newSupplier);
 
     res.status(200).json({"new_supplier": `${newID}-${req.body.name}`});
+} catch (error) {
+    console.error('Error generating next supplier_id:', error);
+    throw error;
+}
 }
 
 

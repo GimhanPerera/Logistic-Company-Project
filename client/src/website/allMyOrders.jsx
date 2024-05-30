@@ -46,10 +46,10 @@ export const AllMyOrders = () => {
           justifyContent: 'center'
         }}>
         <Button variant="outlined"
-          onClick={toBack}>
+          onClick={toBack}  sx={{mt:'10px'}}>
           Log out
         </Button>
-        <Button variant="outlined"
+        <Button  variant="contained" sx={{mt:'10px'}}
           onClick={orderRequest}>
           Order Request
         </Button>

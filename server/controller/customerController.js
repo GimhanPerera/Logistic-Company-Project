@@ -1,5 +1,5 @@
 const { Customer, Order,Price_quotation } = require('../models');
-
+const { Op } = require('sequelize');
 
 
 //1. Add a customer
@@ -82,7 +82,7 @@ const getAllCustomers = async (req, res) => {
 
     // For each customer, get the order count
     const customersWithOrderCount = await Promise.all(customers.map(async (customer) => {
-        const orderCount = await Order.count({ where: { customer_id: customer.customer_id } });
+        const orderCount = await Order.count({ where: { customer_id: customer.customer_id, status: { [Op.ne]: 'FINISH' } } });
         return {
             ...customer.dataValues, // Spread the customer's data values
             order_count: orderCount, // Add the order_count attribute

@@ -6,7 +6,7 @@ import { GrDeliver } from "react-icons/gr";
 import { IoIosPeople } from "react-icons/io";
 import { MdRequestQuote } from "react-icons/md";
 import { PiShippingContainerFill } from "react-icons/pi";
-import { RiLogoutBoxFill } from "react-icons/ri";
+import { RiLogoutBoxFill, RiStickyNoteFill } from "react-icons/ri";
 import { TbReportAnalytics } from "react-icons/tb";
 import { NavLink } from 'react-router-dom';
 
@@ -125,6 +125,20 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
                         <a href='' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
                             <GrDeliver style={{ marginRight: '0.6rem' }}></GrDeliver>
                             Courier services
+                        </a>
+                    </li>
+                </NavLink>
+                <NavLink to="/cmsystem/SpecialNotices" onClick={() => handleClick('Special Notices')}>
+                    <li
+                        style={{
+                            marginBottom: '1rem',
+                            color: 'white',
+                            listStyleType: 'none' // Remove bullet points
+                        }}
+                    >
+                        <a href='' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
+                            <RiStickyNoteFill style={{ marginRight: '0.6rem' }}></RiStickyNoteFill>
+                            Special Notices
                         </a>
                     </li>
                 </NavLink>

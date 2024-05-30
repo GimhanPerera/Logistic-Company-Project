@@ -9,6 +9,7 @@ const CourierDetails = () => {
     const [listOfCourier, setListOfCourier] = useState([]);
     const [loading, setLoading] = useState(true); // State to track loading status
     const [isModalOpen, setModalIsOpen] = useState('false'); //Status of Modal
+    const [courierDetails, setCourierDetails] = useState(null); //Coutier details
 
     //const [count, setCount] = useState(0);
     //const [reloading, setReloading] = useState(false);
@@ -21,6 +22,10 @@ const CourierDetails = () => {
     };
     const handleEditCourierClick = (cuID) => {
         setModalIsOpen(cuID); // Or setModalIsOpen(true) depending on how you handle the modal state
+        // setCourierDetails({
+        //     name:courierDetails.name,
+        //     tp:courierDetails.tel_number
+        // })
     };
     useEffect(() => {
         axios.get("http://localhost:3001/api/courier")
@@ -68,13 +73,13 @@ const CourierDetails = () => {
                         alignItems: 'center'
                       }}
                       >
-                        <CourierDetailsCard courier={courier} reload={reload} clickEdit={handleEditCourierClick} />
+                        <CourierDetailsCard courier={courier} reload={reload} clickEdit={handleEditCourierClick}  setCourierDetails={setCourierDetails}/>
                     </Box>
 
                 ))
 
             )}
-            <AddEditCourierModal open={isModalOpen} onClose={() => setModalIsOpen('false')}/>
+            <AddEditCourierModal open={isModalOpen} onClose={() => setModalIsOpen('false')} courierDetails={courierDetails}/>
         </div>
     );
 };

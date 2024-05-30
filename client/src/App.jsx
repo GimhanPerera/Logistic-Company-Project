@@ -4,6 +4,7 @@ import CourierDetails from './managementSystem/Pages/Courier/courierDetails';
 import CustomersDetails from './managementSystem/Pages/Customer/customersDetails';
 import Dashboard from './managementSystem/Pages/Dashboard/Dashboard';
 import AddCourierToOrder from './managementSystem/Pages/Order/addCourierToOrder';
+import DisplayShippingMark from './managementSystem/Pages/Order/displayShippingMarks';
 import InvoicePage from './managementSystem/Pages/Order/invoicePage';
 import NewOrder from './managementSystem/Pages/Order/newOrder';
 import OrderDetails from './managementSystem/Pages/Order/orderDetails';
@@ -16,6 +17,8 @@ import ViewOrder from './managementSystem/Pages/Order/viewOrder';
 import Reports from './managementSystem/Pages/Reports/Reports';
 import AddEditShipment from './managementSystem/Pages/Shipment/addEditShipment';
 import { ShipmentDetails } from './managementSystem/Pages/Shipment/shipmentDetails';
+import { AddEditSpecialNotices } from './managementSystem/Pages/SpecialNotices/addEditSpecialNotices';
+import { SpecialNotices } from './managementSystem/Pages/SpecialNotices/specialNotices';
 import OrderRequest from './managementSystem/Pages/orderRequest/orderRequest';
 import RequestHandle from './managementSystem/Pages/orderRequest/requestHandle';
 import ManagmentSystem from './managementSystem/managmentSystem';
@@ -63,12 +66,17 @@ function App() {
                 <Route path=":id" element={<InvoicePage />} />
                 <Route path="payments" element={<Payment />} />
                 <Route path="couriers" element={<AddCourierToOrder />} />
+                <Route path="shippingMarks" element={<DisplayShippingMark />} />
               </Route>
             </Route>
             <Route path="shipment">
               <Route index element={<ShipmentDetails />} />
               <Route path="details" element={<AddEditShipment />} />
               <Route path="scan" element={<ScanAndUpdate />} />
+            </Route>
+            <Route path="SpecialNotices">
+              <Route index element={<SpecialNotices/>} />
+              <Route path="addEdit" element={<AddEditSpecialNotices/> }/>
             </Route>
             <Route path="reports" element={<Reports />} />
 
