@@ -46,19 +46,20 @@ const SpecialNoticesCard = ({ notice }) => {
         <Box component="div"
             sx={{
                 width: '50%',
-                height: '8rem',
+                height: '9rem',
                 border: '2px solid',
                 marginTop: '0.75rem',
                 padding: '0.5rem',
                 display: 'flex',
                 justifyContent: 'space-between'
             }}>
-            <Box component="div" sx={{}}>
-                <Box component="p" sx={{marginBottom:'0.2rem'}}>ID: {notice.notice_id}</Box>
+            <Box component="div" sx={{position:'relative'}}>
+                <Box component="p" sx={{marginBottom:'0.2rem'}}>ID: {notice.notice_id}{notice.isLive ?<span style={{marginBottom:'0.2rem', color:'#03fe21', marginLeft:'1rem'}}>  Live</span>: ''}</Box>
                 <Box component="p" sx={{marginBottom:'0.2rem'}}>Title: {notice.title}</Box>
                 <Box component="p" sx={{marginBottom:'0.2rem'}}>Description: {notice.description}</Box>
                 <Box component="p" sx={{marginBottom:'0.2rem'}}>Expire Date: {notice.expire_date}</Box>
                 <Box component="p" sx={{marginBottom:'0.2rem'}}>Created by: {notice.emp_id}</Box>
+                
             </Box>
             <Box component="div"
                 sx={{

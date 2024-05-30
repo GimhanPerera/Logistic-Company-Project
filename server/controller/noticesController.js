@@ -56,13 +56,24 @@ const editCourier = async (req, res) => {
 //get all notices
 const getAllNotices = async (req, res) => {
     try {
-        const notices = await SpecialNotice.findAll({}) //{} : pass empty obj
-        res.status(200).json(notices);
+        const today = new Date(); // Get the current date
+        const notices = await SpecialNotice.findAll({});
+console.log(today)
+        // Add isLive attribute based on expire_date
+        const noticesWithIsLive = notices.map(notice => {
+            const isLive = new Date(notice.expire_date) > today;
+            return {
+                ...notice.toJSON(), // Convert Sequelize instance to plain object
+                isLive
+            };
+        });
+
+        res.status(200).json(noticesWithIsLive);
     } catch (error) {
-        console.error("Error :", error);
+        console.error("Error:", error);
         res.status(500).json({ error: "Internal server error" });
     }
-}
+};
 
 //get all public notices
 const getAllPublicNotices = async (req, res) => {

@@ -14,7 +14,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { shipmentDetailsValidation } from '../../../validations';
 
-
 const AddEditShipment = () => {
     const location = useLocation();
     const { shipment, shippingMethod, isNew } = location.state || {};
@@ -169,6 +168,7 @@ const AddEditShipment = () => {
                 })
                 .catch((error) => {
                     console.error("Error fetching courier details:", error);
+                    toast.error("BL number is already exist");
                 });
         }
 
@@ -337,7 +337,7 @@ const AddEditShipment = () => {
                     >
 
                     </Box>
-                </Box>
+                </Box><ToastContainer />
             </>
         );
 
@@ -488,7 +488,7 @@ const AddEditShipment = () => {
                         }}
                     >
                     </Box>
-                </Box>
+                </Box><ToastContainer />
             </>
         );
     }
