@@ -16,14 +16,21 @@ const newOrder = async (req, res) => {//Add a order - NOT TESTED
         }
         console.log("CID: ", cus_id);
 
+        let shippingmethod = 'A'
+        if (req.body.shippingmethod == "Ship cargo") shippingmethod = 'S'
+
         //----------------------Update Order table----------------------------------
         // Get the last order ID of the given customer
         const lastOrder = await Order.findOne({
             where: {
-                customer_id: cus_id
+                customer_id: cus_id,
+        order_id: {
+            [Op.like]: `${cus_id}${shippingmethod}%`
+        }
             },
             order: [['order_id', 'DESC']]
         });
+        console.log("Last order: ",lastOrder.dataValues.order_id)
 
         // Extract the numeric portion from the last order ID and increment by one
         let newNumericPortion = 1001;
@@ -35,8 +42,7 @@ const newOrder = async (req, res) => {//Add a order - NOT TESTED
             //console.log("lastNumericPortion: "+lastNumericPortion)
         }
 
-        let shippingmethod = 'A'
-        if (req.body.shippingmethod == "Ship cargo") shippingmethod = 'S'
+        
 
         // Combine customer ID, shipping method, and the new numeric portion to create the new order ID
         const newOrderId = `${cus_id}${shippingmethod}-${newNumericPortion}`;
@@ -55,7 +61,8 @@ const newOrder = async (req, res) => {//Add a order - NOT TESTED
             "supplier_loc": req.body.supplierLoc,
             "main_tracking_number": newTnumbers, //NEW TRACKING NUMBER
             "status": req.body.status,
-            "customer_id": cus_id
+            "customer_id": cus_id,
+            "category":req.body.category,
         });
 
         console.log("Order table updated")
@@ -100,8 +107,9 @@ const newOrder = async (req, res) => {//Add a order - NOT TESTED
 const confirmOrder = async (req, res) => {
     try {
         console.log("Updateing",req.body.order_id)
-        const resultO = await Order.update({
+        const category = await Order.update({
             "status": "Just opened",
+            "category": req.body.category,
         }, {
             where: {
                 order_id: req.body.order_id // orderID HERE
@@ -111,8 +119,9 @@ const confirmOrder = async (req, res) => {
             {
                 "items": req.body.items,
                 "packages": req.body.packages,
-                "weight": req.body.weight,
+                "raugh_weight": req.body.weight,
                 "shippingmethod": req.body.shippingmethod,
+                "quotation": req.body.quotation,
                 "quotation": req.body.quotation,
                 "description": req.body.description,
                 "supplierLoc": req.body.supplierLoc,//values.supplierLoc,
@@ -150,37 +159,21 @@ const generateUniqueTrackingNumber = (existingTrackingNumbers) => {
     return trackingNumber;
 };
 
-const getCurrentSriLankanDateTime = () => { //Not working well
-
+const getCurrentSriLankanDateTime = () => {
+    
     const currentDate = new Date();
+    //const time = currentDate.toLocaleTimeString();//This give the GMT time. Need to add 5.30hours to convert to Sri Lankan time
+    currentDate.setHours(currentDate.getHours() + 5);
+    currentDate.setMinutes(currentDate.getMinutes() + 30);
+    const updatedTime = currentDate.toLocaleTimeString(); //Sri lankan time
 
-    const formattedDateTime = currentDate.toISOString().slice(0, 19).replace('T', ' '); // Format: 'YYYY-MM-DD HH:mm:ss'
-    return formattedDateTime;
-}
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
 
-const getAllOrderDetailsForOrderCard = async (req, res) => { //Get all Order
-    try {
-        const orders = await Order.findAll({
-            where: {
-                status: {
-                    [Op.ne]: 'Request'
-                }
-            },
-            include: [{
-                model: Customer,
-                attributes: ['customer_id', 'f_name', 'l_name', 'tel_number']
-            }]
-        });
-
-        res.status(200).json(orders);
-
-    } catch (error) {
-        // Handle error
-        console.error("Error fetching order details:", error);
-        res.status(500).json({ error: "Internal server error" });
-    }
-
-}
+    const formattedDate = `${year}-${month}-${day} ${updatedTime}`;
+    return formattedDate;
+};
 
 // 2. Get all Courier
 const getCourierAndOrder = async (req, res) => {
@@ -277,7 +270,6 @@ const updateTracking = async (req, res) => {
             Package.update({
                 status: packageData.status,
                 warehouse_tracking_number: packageData.warehouse_tracking_number,
-                local_tracking_number: packageData.local_tracking_number,
             },{
                 where: { shipping_mark: packageData.shipping_mark } }
             );
@@ -294,7 +286,7 @@ const readyToShipOrderIDs = async (req, res) => {
     try {
         
         const orders = await Order.findAll({
-            attributes: ['order_id'],
+            attributes: ['order_id', 'category'],
             where: { status: 'In Warehouse' }
         });
         //const orderIds = orders.map(item => item.order_id);
@@ -420,6 +412,30 @@ const toggleReadyStatus = async (req, res) => {
     }
 }
 
+const getAllOrderDetailsForOrderCard = async (req, res) => { //Get all Order
+    try {
+        const orders = await Order.findAll({
+            where: {
+                status: {
+                    [Op.ne]: 'Request'
+                }
+            },
+            include: [{
+                model: Customer,
+                attributes: ['customer_id', 'f_name', 'l_name', 'tel_number']
+            }]
+        });
+
+        res.status(200).json(orders);
+
+    } catch (error) {
+        // Handle error
+        console.error("Error fetching order details:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+
+}
+
 const toggleCompleteStatus = async (req, res) => {
     try {
         console.log("OID ",req.body)
@@ -436,6 +452,7 @@ const toggleCompleteStatus = async (req, res) => {
         // }
 
         order.status = 'FINISH';
+        order.order_close_date = getCurrentSriLankanDateTime();
 
         await order.save();
         res.json(order);
@@ -446,6 +463,40 @@ const toggleCompleteStatus = async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 }
+
+//Delete order in just opend state
+const deleteOrderJOstate = async (req, res) => {
+    try {
+        console.log(req.params.orderID);
+        const paymnet = await Payment.destroy({
+            where: {
+                order_id: req.params.orderID,
+            },
+        });
+        const package = await Package.destroy({
+            where: {
+                order_id: req.params.orderID,
+            },
+        });
+        const quotation = await Price_quotation.destroy({
+            where: {
+                order_id: req.params.orderID,
+            },
+        });
+        const order = await Order.destroy({
+            where: {
+                order_id: req.params.orderID,
+            },
+        });
+        
+        console.log(order);
+        res.status(200).json("orderID " + req.params.orderID + " deleted");
+    } catch (error) {
+        console.error("Error deleting courier:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
 
 module.exports = {
     getAllOrderDetailsForOrderCard,
@@ -458,5 +509,6 @@ module.exports = {
     readyToShipOrderIDs,
     getAllDetailsOfAOrder,
     toggleReadyStatus,
-    toggleCompleteStatus
+    toggleCompleteStatus,
+    deleteOrderJOstate,
 }

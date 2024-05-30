@@ -2,11 +2,12 @@ const { Shipment, Order, Package } = require('../models');
 
 
 
-//Add a shipmet
+//Add a shipment
 const addShipment = async (req, res) => {
     try {
         const shipment = [{
             BL_no: req.body.BLnumber,
+            category: req.body.category,
             shipping_method: req.body.shippingMethod,
             loaded_date: new Date(req.body.loadedDate), // Convert to Date object
             arrival_date: new Date(req.body.arrivalDate), // Convert to Date object
@@ -126,71 +127,26 @@ const getPackagesOfAShipment = async (req, res) => {
     }
 }
 
-//Update form scanned result
-// const saveScanUpdates = async (req, res) => {
-//     try {
-//         // Get the user id(Employee id)
-//         // Get the current date and time
-//         const packageUpdatePromises = req.body.map(packageDetails => {
-//             //console.log(packageDetails);
-//             //console.log("--------------------------------");
-//             return Package.update({
-//                 collected_count: packageDetails.collectedCount,
-//                 //collected_date_time: 'NOW DATETIME',
-//                 //emp_id: 'EMPLOYEE ID',
-//             }, {
-//                 where: { shipping_mark: packageDetails.shippingMark }
-//             });
-//         });
+const getCurrentSriLankanDateTime = () => {
+    
+    const currentDate = new Date();
+    //const time = currentDate.toLocaleTimeString();//This give the GMT time. Need to add 5.30hours to convert to Sri Lankan time
+    currentDate.setHours(currentDate.getHours() + 5);
+    currentDate.setMinutes(currentDate.getMinutes() + 30);
+    const updatedTime = currentDate.toLocaleTimeString(); //Sri lankan time
 
-//         //await Promise.all(packageUpdatePromises);
-//         console.log("--------------------------------");
-//         // Calculate total package count and collected package count for each order
-//         const orderTotals = req.body.reduce((acc, packageDetails) => {
-//             const orderId = packageDetails.shippingMark.substring(0, 12); // Extract order ID from shipping mark
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const day = String(currentDate.getDate()).padStart(2, '0');
 
-//             if (!acc[orderId]) {
-//                 acc[orderId] = {
-//                     orderId: orderId,
-//                     totalPackageCount: 0,
-//                     totalCollectedCount: 0
-//                 };
-//             }
+    const formattedDate = `${year}-${month}-${day} ${updatedTime}`;
+    return formattedDate;
+};
 
-//             acc[orderId].totalPackageCount += packageDetails.count;
-//             acc[orderId].totalCollectedCount += packageDetails.collectedCount;
-
-//             return acc;
-//         }, {});
-//         //console.log(orderTotals);
-
-//         //update the order table
-//         const orderIdsToUpdate = [];
-//         for (const orderId in orderTotals) {
-//             const { totalPackageCount, totalCollectedCount } = orderTotals[orderId];
-//             let orderStatus = 'Ship/airfreight';
-//             if (totalPackageCount === totalCollectedCount) {
-//                 orderStatus = 'onhand';
-//             }
-
-//             // Update order status in the database
-//             //await Order.update({ status: orderStatus }, { where: { id: orderId } });
-//             orderIdsToUpdate.push(orderId);
-//         }
-//         console.log("ID: ",orderId,"orderStatus: ",orderStatus);
-
-//         //res.status(200).json("Success");
-//     } catch (error) {
-//         // Handle error
-//         console.error("Error fetching order details:", error);
-//         res.status(500).json({ error: "Internal server error" });
-//     }
-// }
 const saveScanUpdates = async (req, res) => {
     try {
         // Get the user id(Employee id) and current date and time
         const userId = req.user.sub;
-        const currentDateTime = new Date();
         let allCompleted = true;
         
 
@@ -198,7 +154,7 @@ const saveScanUpdates = async (req, res) => {
             console.log(packageDetails);
             return Package.update({
                 collected_count: packageDetails.collectedCount,
-                collected_date_time: currentDateTime,
+                collected_date_time: getCurrentSriLankanDateTime(),
                 emp_id: userId,
             }, {
                 where: { shipping_mark: packageDetails.shippingMark }

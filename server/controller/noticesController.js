@@ -1,18 +1,34 @@
-const { Courier,Order } = require('../models');
+const { Courier, Order, SpecialNotice } = require('../models');
+const { Op } = require('sequelize');
 
 
-
-//1. Add a customer
-const addCourier = async (req, res) => {
+//1. Add notice
+const addNotices = async (req, res) => {
     try {
-        console.log("GOOD")
-    const courier = req.body;
-    await Courier.create(courier);
-    res.status(200).json(courier)
-} catch (error) {
-    console.error('Error updating courier:', error);
-    res.status(500).json({ error: 'Internal server error' });
-}
+        // Get the last invoice ID
+        const lastPayment = await Payment.findOne({
+            attributes: ['payment_id'],
+            order: [['payment_id', 'DESC']]
+        });
+
+        // Determine the new invoice ID
+        const newPaymentId = lastPayment ? parseInt(lastPayment.payment_id, 10) + 1 : 10000;
+
+
+        const payment = await Payment.create({
+            payment_id: newPaymentId,
+            payment_method: req.body.payment_method,
+            payment: req.body.payment,
+            date_time: req.body.date_time,
+            order_id: req.body.order_id,
+        });
+
+        res.status(200).json(payment);
+    } catch (error) {
+        // Handle error
+        console.error("Error fetching customer details:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
 }
 
 const editCourier = async (req, res) => {
@@ -37,21 +53,36 @@ const editCourier = async (req, res) => {
     }
 }
 
-
-// 2. Get all Courier
-const getAllCourier = async (req, res) => {
-    //const customer = await Customer.findByPk(id) //ID eken one nan
-    const courier = await Courier.findAll({}) //{} : pass empty obj
-    res.status(200).json(courier);
-
-    // const now = new Date();
-    // const time = now.toLocaleTimeString();
-    // const currentDateTime = {
-    //     date: now.toLocaleDateString(),
-    //     time: now.toLocaleTimeString(),
-    //     iso: now.toISOString()
-    // };
+//get all notices
+const getAllNotices = async (req, res) => {
+    try {
+        const notices = await SpecialNotice.findAll({}) //{} : pass empty obj
+        res.status(200).json(notices);
+    } catch (error) {
+        console.error("Error :", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
 }
+
+//get all public notices
+const getAllPublicNotices = async (req, res) => {
+    try {
+        const today = new Date(); // Get the current date
+        const notices = await SpecialNotice.findAll({
+            where: {
+                expire_date: {
+                    [Op.gt]: today // Filter notices where expire_date is greater than today
+                }
+            },
+            attributes: ['notice_id', 'title', 'description']
+        });
+        res.status(200).json(notices);
+    } catch (error) {
+        console.error("Error :", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
 
 // 2. Get all Courier
 const getCourierAndOrder = async (req, res) => {
@@ -65,21 +96,20 @@ const getCourierAndOrder = async (req, res) => {
     res.status(200).json(customer)
 }
 
-const deleteCourier = async (req, res) => {
+const deleteNotice = async (req, res) => {
     try {
-        const a = await Courier.destroy({
+        const a = await SpecialNotice.destroy({
             where: {
-                courier_id: req.params.courier_id,
+                notice_id: req.params.id,
             },
         });
         console.log(a);
-        res.status(200).json("Courier number " + req.params.courier_id + " deleted");
+        res.status(200).json("Courier number " + req.params.id + " deleted");
     } catch (error) {
         console.error("Error deleting courier:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 };
-
 
 const test = async (req, res) => {
 
@@ -135,12 +165,7 @@ const clearCourier = async (req, res) => {
 }
 
 module.exports = {
-    addCourier,
-    getAllCourier,
-    getCourierAndOrder,
-    deleteCourier,
-    editCourier,
-    test,
-    assignCourier,
-    clearCourier
+    getAllNotices,
+    getAllPublicNotices,
+    deleteNotice
 }

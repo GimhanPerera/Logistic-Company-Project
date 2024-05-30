@@ -208,12 +208,6 @@ const UpdateTracking = () => {
             editable: true,
         },
         {
-            field: 'local_tracking_number',
-            headerName: 'local_tracking_number',
-            width: 200,
-            editable: localTrackingEditable,
-        },
-        {
             field: 'actions',
             type: 'actions',
             headerName: 'Actions',
@@ -284,7 +278,6 @@ const UpdateTracking = () => {
                 shipping_mark: sName.shipping_mark,
                 status: sName.status,
                 warehouse_tracking_number: sName.warehouse_tracking_number,
-                local_tracking_number: sName.local_tracking_number
             };
         });
         const data = {
@@ -355,11 +348,11 @@ const UpdateTracking = () => {
                             </td>
                             <td>
                                 <FormControl sx={{ m: 1, minWidth: 120 }}>
-                                    <InputLabel id="demo-select-small-label">Received status</InputLabel>
+                                    <InputLabel id="demo-select-small-label">Received Status</InputLabel>
                                     <Select
                                         disabled={!readyToShip}
                                         value={tracking}
-                                        label="Status"
+                                        label="Received Status"
                                         onChange={handleTracking}
                                     >
                                         <MenuItem value="Waiting">Waiting</MenuItem>

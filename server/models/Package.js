@@ -16,10 +16,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(13),
             allowNull: false,
         },
-        local_tracking_number: {
-            type: DataTypes.STRING(20),
-            allowNull: true,
-        },
         warehouse_tracking_number: {
             type: DataTypes.STRING(20),
             allowNull: true,
@@ -34,10 +30,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true,
         },
         width: {
-            type: DataTypes.DECIMAL(6, 2),
-            allowNull: true,
-        },
-        weight: {
             type: DataTypes.DECIMAL(6, 2),
             allowNull: true,
         },

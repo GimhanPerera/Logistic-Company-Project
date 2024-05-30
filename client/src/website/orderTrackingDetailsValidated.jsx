@@ -49,32 +49,82 @@ export const OrderTrackingDetailsValidated = () => {
                     <p>Loading...</p>
                 ) : (
                     <div>
-                        <Button variant="outlined"
+                        <Button variant="outlined" sx={{ margin: '15px', position: 'absolute' }}
                             onClick={toLogin}>
                             back
                         </Button>
-                        <div>
+                        <Box component="div" sx={{ marginTop: '2px', width: '400px', margin: 'auto' }}>
                             <Box component="h1">Tracking details</Box>
-                            <p>status: {firstTrackingDetails.status}</p>
-                            <p>Order ID: {firstTrackingDetails.order_id}</p>
-                            <p>Main Tracking Number: {firstTrackingDetails.main_tracking_number}</p>
-                            <p>order_open_date: {firstTrackingDetails.order_open_date}</p>
+                            <table>
+                                <tr>
+                                    <td><p>status : </p></td>
+                                    <td><p>{firstTrackingDetails.status}</p></td>
+                                </tr>
+                                <tr>
+                                    <td><p>Order ID : </p></td>
+                                    <td><p>{firstTrackingDetails.order_id}</p></td>
+                                </tr>
+                                <tr>
+                                    <td><p>status :</p></td>
+                                    <td><p>{firstTrackingDetails.status}</p></td>
+                                </tr>
+                                <tr>
+                                    <td><p>Tracking Number : </p></td>
+                                    <td><p>{firstTrackingDetails.main_tracking_number}</p></td>
+                                </tr>
+                                <tr>
+                                    <td><p>order_open_date :</p></td>
+                                    <td><p>{firstTrackingDetails.order_open_date}</p></td>
+                                </tr>
+                                {firstTrackingDetails.Shipment ? (
+                                    <tr>
+                                        <td><p>Arrival date:</p></td>
+                                        <td><p>{firstTrackingDetails.Shipment.displayed_arrival_date}</p></td>
+                                    </tr>
+                                ) : (
+                                    <tr>
+                                        <td><p>Arrival date:</p></td>
+                                        <td><p> -</p></td>
+                                    </tr>
+                                )}
+                                <tr>
+                                    <td><p>No of packages:</p></td>
+                                    <td><p>{firstTrackingDetails.Price_quotation.no_of_packages}</p></td>
+                                </tr>
+                                <tr>
+                                    <td><p>supplier_loc: </p></td>
+                                    <td><p>{firstTrackingDetails.supplier_loc}</p></td>
+                                </tr>
+                                <tr>
+                                    <td><p></p></td>
+                                    <td><p></p></td>
+                                </tr>
+                                <tr>
+                                    <td><p></p></td>
+                                    <td><p></p></td>
+                                </tr>
+                                <tr>
+                                    <td><p></p></td>
+                                    <td><p></p></td>
+                                </tr>
+                            
                             {firstTrackingDetails.Shipment ? (
-                                <p>displayed_arrival_date: {firstTrackingDetails.Shipment.displayed_arrival_date}</p>
-                            ) : (<p>displayed_arrival_date: -</p>)}
-
-                            <p>No of packages: {firstTrackingDetails.Price_quotation.no_of_packages}</p>
-                            <p>supplier_loc: {firstTrackingDetails.supplier_loc}</p>
-                            {firstTrackingDetails.Shipment ? (
-                                <p>Price quatation: {firstTrackingDetails.Price_quotation.quotation}</p>
-                            ) : (<p>Price quatation: -</p>)}
-                            {firstTrackingDetails.Shipment ? (
+                                <tr>
+                                <td>Price quotation:</td>
+                                <td>{firstTrackingDetails.Price_quotation.quotation}</td>
+                                </tr>
+                            ) : (<tr>
+                                <td>Shipping method:</td>
+                                <td> -</td>
+                            </tr>)}
+                            {/* {firstTrackingDetails.Shipment ? (
                                 <p>Shipping method: {firstTrackingDetails.Price_quotation.shipping_method}</p>
-                            ) : (<p>Shipping method: -</p>)}
-                        </div>
-                        <div>
-                            <p>If you have any issue with our service, You can <a onClick={() => setComplainIsOpen(true)} >open a complain</a></p>
-                            <p>Give your <a onClick={() => setFeedackIsOpen(true)} >feedback</a></p>
+                            ) : (<p>Shipping method: -</p>)} */}
+                            </table>
+                        </Box>
+                        <div style={{ marginTop: '2px', width: '600px', margin: 'auto', marginTop: '10px' }}>
+                            <p>If you have any issue with our service, You can <a style={{ color: 'blue', textDecoration: 'underline' }} onClick={() => setComplainIsOpen(true)} >open a complain</a></p>
+                            <p>Give your <a style={{ color: 'blue', textDecoration: 'underline' }} onClick={() => setFeedackIsOpen(true)} >feedback</a></p>
                         </div>
                         <ComplainModel open={isComplainOpen} onClose={() => setComplainIsOpen(false)} ordId={firstTrackingDetails.order_id}>
                         </ComplainModel>

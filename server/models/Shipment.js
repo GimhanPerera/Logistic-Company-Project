@@ -8,6 +8,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(10),
             allowNull: false,
         },
+        category: {
+            type: DataTypes.STRING(4),
+            allowNull: false,
+        },
         loaded_date: {
             type: DataTypes.DATEONLY,
             allowNull: false,

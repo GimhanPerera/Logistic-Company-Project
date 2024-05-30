@@ -24,11 +24,9 @@ const addPackages = async (req, res) => {
                     "items": package.details.items,
                     "package_count": package.details.package_count,
                     "status": 'not received',
-                    "local_tracking_number": package.details.local_tracking_number,//not collected
                     "length": package.details.length,
                     "height": package.details.height,
                     "width": package.details.width,
-                    "weight": package.details.weight,
                     "volume_metric_weight": package.details.volume_metric_weight,
                     "gross_weight": package.details.gross_weight,
                     "chargable_weight": package.details.chargable_weight,

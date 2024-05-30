@@ -1,6 +1,7 @@
 import { Box, Button } from '@mui/material';
 import axios from "axios";
 import FileSaver from 'file-saver';
+import FileDownload from "js-file-download";
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -16,6 +17,7 @@ const ViewOrder = () => {
     const componentRef = useRef();
     const [addImage, setaddImage] = useState(true);
     const [image, setImage] = useState(null);
+    const [printables, setPrintables] = useState([]);
 
     const toggleAddImage = () => {
         setaddImage(addImage => !addImage);
@@ -24,12 +26,40 @@ const ViewOrder = () => {
     const toInvoice = () => {
         navigate(`./${id}`);
     }
+
     const toBack = () => {
         navigate('./..');
     }
+
+    const toShippingMarks = () => {
+        let SMdetails = [];
+        let processedBases = new Set();
+
+        orderDetails.packages.forEach((row) => {
+            console.log(row.shipping_mark);
+            const [base, count] = row.shipping_mark.split(' ');
+            const [_, totalPackages] = count.split('-'); // '_' is a throwaway variable for the total
+            const totalNumber = parseInt(totalPackages, 10);
+
+            if (!processedBases.has(base)) {
+                for (let i = 1; i <= totalNumber; i++) {
+                    SMdetails.push({ smark: `${base} ${i}-${totalNumber}` });
+                }
+                processedBases.add(base);
+            }
+        });
+
+        console.log(SMdetails);
+        navigate('./shippingMarks', { state: { orderId: id, printables: SMdetails, category: orderDetails.order.category } });
+    };
+
+
+
+
     const toPayment = () => {
         navigate('./payments', { state: { orderId: orderDetails.order.order_id, payments: orderDetails.payment } });
     }
+
     const toggleReadyStatus = () => {
         const oid = orderDetails.order.order_id;
         console.log("oid ", oid)
@@ -141,29 +171,6 @@ const ViewOrder = () => {
         padding: '8px'
     }
 
-    const couriers = [
-        {
-            "courier_id": 1000,
-            "name": "Nuwan Perera",
-            "tel_number": 775843239
-        },
-        {
-            "courier_id": 1001,
-            "name": "Nuwan Perera",
-            "tel_number": 775843239
-        },
-        {
-            "courier_id": 1002,
-            "name": "Nuwan Perera",
-            "tel_number": 775843239
-        },
-        {
-            "courier_id": 1003,
-            "name": "Nuwan Perera",
-            "tel_number": 775843239
-        }
-    ];
-
     const downloadImage = async (e) => {
         e.preventDefault();
         try {
@@ -246,9 +253,15 @@ const ViewOrder = () => {
                 <Button onClick={toBack}>
                     Back
                 </Button>
-                <Button onClick={toInvoice}>
-                    Invoice
-                </Button>
+                {orderDetails.order.status == 'Just opened' ?
+                    "" : <>
+                        <Button onClick={toShippingMarks}>
+                            Shipping Marks
+                        </Button>
+                        <Button onClick={toInvoice}>
+                            Invoice
+                        </Button>
+                    </>}
                 <Button onClick={addCourier}>
                     Add courier
                 </Button>
@@ -274,12 +287,13 @@ const ViewOrder = () => {
 
                     <Box component="p">Customer ID: {orderDetails.customer.customer_id}</Box>
                     <Box component="p">Name: {orderDetails.customer.f_name} {orderDetails.customer.l_name}</Box>
-                    <Box component="p">Tel. number: {orderDetails.customer.tel_number}</Box>
+                    <Box component="p">Tel. number: 0{orderDetails.customer.tel_number}</Box>
                     <Box component="p">Address: {orderDetails.customer.address}</Box>
                     <Box component="p">Assign To: {orderDetails.courier != null ? orderDetails.courier.courier_id : ''} - {orderDetails.courier != null ? orderDetails.courier.name : ''}</Box>
                     <Box component="p">Open date: {orderDetails.order.order_open_date}</Box>
                     <Box component="p">Shipment: {orderDetails.order.BL_no}</Box>
                     <Box component="p">From: {orderDetails.order.supplier_loc}</Box>
+                    <Box component="p">Category: {orderDetails.order.category}</Box>
                     <table style={{ borderCollapse: 'collapse' }}>
                         <thead>
                             <tr>
@@ -287,10 +301,13 @@ const ViewOrder = () => {
                                 <th style={tableCell}>Count</th>
                                 <th style={tableCell}>L</th>
                                 <th style={tableCell}>H</th>
-                                <th style={tableCell}>W</th>
                                 <th style={tableCell}>V.W.</th>
                                 <th style={tableCell}>G.W.</th>
-                                <th style={tableCell}>C.W.</th>
+                                {orderDetails.priceReq[0].shipping_method == 'Air cargo' ?
+                                    <th style={tableCell}>C.W.</th>
+                                    :
+                                    <th style={tableCell}>CBM</th>
+                                }
                                 <th style={tableCell}>Rate</th>
                                 <th style={tableCell}>Tax</th>
                                 <th style={tableCell}>Amount</th>
@@ -303,7 +320,6 @@ const ViewOrder = () => {
                                     <td style={tableCell}>{row.collected_count}</td>
                                     <td style={tableCell}>{row.length}</td>
                                     <td style={tableCell}>{row.height}</td>
-                                    <td style={tableCell}>{row.weight}</td>
                                     <td style={tableCell}>{row.volume_metric_weight}</td>
                                     <td style={tableCell}>{row.gross_weight}</td>
                                     <td style={tableCell}>{row.chargable_weight || ''}</td>

@@ -1,17 +1,22 @@
+import { Box, Button, TextField } from '@mui/material';
 import React from 'react';
 
 const SearchBar = () => {
   return (
-    <div className="flex items-center justify-center mt-4">
-      <input
-        type="text"
+    <Box display="flex" alignItems="center" justifyContent="center">
+      <TextField
+        variant="outlined"
         placeholder="Search"
-        className="border border-gray-300 px-4 py-2 mr-2 rounded-md focus:outline-none focus:border-blue-500"
+        sx={{ mr: 2 }}
+        size='small'
       />
-      <button className="bg-[#68DD62] hover:bg-blue-600 text-white px-4 py-2 rounded-md focus:outline-none">
+      <Button
+        variant="contained"
+        sx={{ backgroundColor: '#68DD62', '&:hover': { backgroundColor: '#45a049' } }}
+      >
         Search
-      </button>
-    </div>
+      </Button>
+    </Box>
   );
 };
 

@@ -15,6 +15,7 @@ const initialValues = {
     packages: '',
     weight: '',
     shippingmethod: 'Air cargo',
+    category: 'G',
     quotation: '',
     description: '',
     supplierLoc: 'China',
@@ -36,6 +37,7 @@ const NewOrder = () => {
     const [invoice, setInvoice] = useState(null);
     const navigate = useNavigate();
     const [selectedCountry, setSelectedCountry] = useState(Countries.find((country) => country.label === 'China'));
+    const [category,setCategory] = useState('G');
 
     const toOrders = () => {
         navigate('../order');
@@ -62,10 +64,13 @@ const NewOrder = () => {
         axios.get(`http://localhost:3001/api/customers/search/${customerID}`, {
         }).then((response) => {
             setCustomerName(response.data.name)
-            setCustomerTp(response.data.tel_number)
+            setCustomerTp(response.data.tel_number);
 
         }).catch((error) => {
             console.error('Error :', error);
+            setCustomerName("");
+            setCustomerTp("");
+            toast.error("Wrong customer ID");
         });
     }
 
@@ -93,15 +98,16 @@ const NewOrder = () => {
                 "packages": values.packages,
                 "weight": values.weight,
                 "shippingmethod": values.shippingmethod,
-                "quotation": values.quotation,//
+                "quotation": values.quotation,
                 "description": values.description,
                 "supplierLoc": selectedCountry.label,
-                "status": "Just opened",//
+                "status": "Just opened",
                 "image": image,
                 "invoice": invoice,
                 "cusID": customerID,
-                "name": customerName,//
-                "tp": customerTp,//
+                "name": customerName,
+                "tp": customerTp,
+                "category": values.category
             }, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -201,7 +207,6 @@ const NewOrder = () => {
                                     </tr>
                                     <tr>
                                         <td> <Autocomplete
-                                            id="country-select-demo"
                                             sx={{ width: 250, mt: 2, mb: 2 }}
                                             options={Countries}
                                             autoHighlight
@@ -234,6 +239,25 @@ const NewOrder = () => {
                                                 setSelectedCountry(newValue);
                                             }}
                                         /></td>
+                                        <td>
+                                        <FormControl sx={{ m: 1, minWidth: 170 }}>
+                                                <InputLabel id="demo-simple-select-helper-label">Category</InputLabel>
+                                                <Field
+                                                    as={Select}
+                                                    name="category"
+                                                    value={values.category}
+                                                    onChange={handleChange}
+                                                    onBlur={handleBlur}
+                                                    label="Category"
+                                                    defaultValue={'G'}
+                                                    size='small'
+                                                >
+                                                    <MenuItem value={"G"}>G</MenuItem>
+                                                    <MenuItem value={"DG"}>DG</MenuItem>
+                                                    <MenuItem value={"DG-B"}>DG-B</MenuItem>
+                                                </Field>
+                                            </FormControl>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td><label for="invoice">Image :</label></td>

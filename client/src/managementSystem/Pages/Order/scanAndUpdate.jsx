@@ -68,7 +68,7 @@ function EditToolbar(props) {
     const handleClick = () => {
         const lastRowId = rows.length > 0 ? rows[rows.length - 1].id : 0;
         const id = parseInt(lastRowId) + 1;
-        setRows((oldRows) => [...oldRows, { id, package_count: '', items: '', length: '', height: '', width: '', weight: '', volume_metric_weight: '', gross_weight: '', isNew: true }]);
+        setRows((oldRows) => [...oldRows, { id, package_count: '', items: '', length: '', height: '', width: '', volume_metric_weight: '', gross_weight: '', isNew: true }]);
         setRowModesModel((oldModel) => ({
             ...oldModel,
             [id]: { mode: GridRowModes.Edit, fieldToFocus: 'items' },

@@ -4,6 +4,7 @@ import axios from "axios";
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import ReactToPrint from 'react-to-print';
+import { ToastContainer, toast } from 'react-toastify';
 
 const InvoicePage = () => {
     const location = useLocation();
@@ -17,7 +18,7 @@ const InvoicePage = () => {
     const componentRef = useRef();
 
     useEffect(() => {
-        console.log("ID: ", id)
+        console.log("GET INVOICE OF ID: ", id)
         axios.get(`http://localhost:3001/api/invoice/${id}`)
             .then((response) => {
                 setOrderDetails(response.data);
@@ -45,6 +46,7 @@ const InvoicePage = () => {
         axios.post('http://localhost:3001/api/invoice', orderDetails)
             .then((response) => {
                 console.log(response.data);
+                toast.success("Invoice saved");
             })
             .catch((error) => {
                 console.error("Error fetching order details:", error);
@@ -73,6 +75,7 @@ const InvoicePage = () => {
 
     return (
         <>
+        <ToastContainer />
             <div>
             <Button variant="contained"
                     sx={{ }}
@@ -115,10 +118,13 @@ const InvoicePage = () => {
                                 <th style={tableCell}>Count</th>
                                 <th style={tableCell}>L</th>
                                 <th style={tableCell}>H</th>
-                                <th style={tableCell}>W</th>
                                 <th style={tableCell}>V.W.</th>
                                 <th style={tableCell}>G.W.</th>
-                                <th style={tableCell}>C.W.</th>
+                                {orderDetails.price_quo.shipping_method == 'Air cargo' ?
+                                    <th style={tableCell}>C.W.</th>
+                                    :
+                                    <th style={tableCell}>CBM</th>
+                                }
                                 <th style={tableCell}>Rate</th>
                                 <th style={tableCell}>Tax</th>
                                 <th style={tableCell}>Amount</th>
@@ -131,7 +137,6 @@ const InvoicePage = () => {
                                     <td style={tableCell}>{row.collected_count}</td>
                                     <td style={tableCell}>{row.length}</td>
                                     <td style={tableCell}>{row.height}</td>
-                                    <td style={tableCell}>{row.weight}</td>
                                     <td style={tableCell}>{row.volume_metric_weight}</td>
                                     <td style={tableCell}>{row.gross_weight}</td>
                                     <td style={tableCell}>

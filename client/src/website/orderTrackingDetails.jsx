@@ -53,16 +53,16 @@ export const OrderTrackingDetails = () => {
                             <p>status: {firstTrackingDetails.status}</p>
                             <p>Order ID: {firstTrackingDetails.order_id}</p>
                             <p>Main Tracking Number: {firstTrackingDetails.main_tracking_number}</p>
-                            <p>order_open_date: {firstTrackingDetails.order_open_date}</p>
+                            <p>Order Open Date: {firstTrackingDetails.order_open_date}</p>
                             {firstTrackingDetails.Shipment ? (
-                                <p>displayed_arrival_date: {firstTrackingDetails.Shipment.displayed_arrival_date}</p>
-                            ) : (<p>displayed_arrival_date: -</p>)}
+                                <p>Arrival Date: {firstTrackingDetails.Shipment.displayed_arrival_date}</p>
+                            ) : (<p>Arrival Date: -</p>)}
 
                             <p>No of packages: {firstTrackingDetails.Price_quotation.no_of_packages}</p>
-                            <p>supplier_loc: {firstTrackingDetails.supplier_loc}</p>
+                            <p>supplier location: {firstTrackingDetails.supplier_loc}</p>
                             {firstTrackingDetails.Shipment ? (
-                                <p>Price quatation: {firstTrackingDetails.Price_quotation.quotation}</p>
-                            ) : (<p>Price quatation: -</p>)}
+                                <p>Price quotation: {firstTrackingDetails.Price_quotation.quotation}</p>
+                            ) : (<p>Price quotation: -</p>)}
                             {firstTrackingDetails.Shipment ? (
                                 <p>Shipping method: {firstTrackingDetails.Price_quotation.shipping_method}</p>
                             ) : (<p>Shipping method: -</p>)}
