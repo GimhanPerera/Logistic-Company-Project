@@ -2,6 +2,8 @@ import { Box, Button } from '@mui/material';
 import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import SearchBar from "../../../components/SearchBar";
 import nodataImg from './../../../assets/nodata.png';
 import SpecialNoticesCard from './specialNoticesCard';
@@ -25,11 +27,16 @@ export const SpecialNotices = () => {
             });
     }, []);
 
-    
+
 
     const toNewNotices = () => {
-          navigate('./addEdit', { state: {notice:[], isNew:true}});
-      }
+        const liveNoticesCount = listOfNotices.filter(listOfNotices => listOfNotices.isLive).length;
+        if (liveNoticesCount >= 3) {
+            toast.error("Max 3 notices can display in the website");
+            return
+        }
+        navigate('./addEdit', { state: { notice: [], isNew: true } });
+    }
 
     if (listOfNotices.length == 0) return (
         <>
@@ -51,11 +58,11 @@ export const SpecialNotices = () => {
             <div>
                 <SearchBar />
                 <Button variant="contained"
-                sx={{ backgroundColor: '#68DD62', position: 'fixed', right: '2em', top: '4.7rem' }}
-                onClick={toNewNotices}
-            >
-                New Notice
-            </Button>
+                    sx={{ backgroundColor: '#68DD62', position: 'fixed', right: '2em', top: '4.7rem' }}
+                    onClick={toNewNotices}
+                >
+                    New Notice
+                </Button>
                 {listOfNotices.map((notice, index) => (
                     <Box component="div" key={index}
                         sx={{
@@ -67,6 +74,7 @@ export const SpecialNotices = () => {
                         <SpecialNoticesCard notice={notice} />
                     </Box>
                 ))}
+                <ToastContainer />
             </div>
         );
 };
