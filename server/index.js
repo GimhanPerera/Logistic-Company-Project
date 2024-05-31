@@ -45,6 +45,9 @@ app.use("/api/invoice",invoice);
 const noticesRouter = require('./routes/noticesRouter');
 app.use("/api/noitces",noticesRouter);
 
+const smsRouter = require('./routes/smsRouter');
+app.use("/api/sms",smsRouter);
+
 
 db.sequelize.sync().then(() => {
     app.listen(3001, () => {

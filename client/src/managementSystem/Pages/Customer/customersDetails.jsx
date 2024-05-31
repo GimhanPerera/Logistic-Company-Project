@@ -7,6 +7,8 @@ import CustomerDetailsCard from "./CustomerDetailsCard";
 const CustomersDetails = () => {
   
   const [listOfCustomers, setListOfCustomers] = useState([]);
+  const [search, setSearch] = useState('');
+
     useEffect(() => {
         axios.get("http://localhost:3001/api/customers").then((response)=>{
           setListOfCustomers(response.data);
@@ -15,9 +17,13 @@ const CustomersDetails = () => {
 
   return (
     <div>
-        <SearchBar/>
+        <SearchBar label={"Search by customer id"} search={search} setSearch={setSearch}/>
         {/* key kiyanne index in the array */}
-        {listOfCustomers.map((customer, index) => (
+        {listOfCustomers.filter((item) => {
+                    return search.toLowerCase() === ''
+                        ? item
+                        : item.customer_id.toLowerCase().includes(search);
+                }).map((customer, index) => (
         <Box component="div" key={index}
         sx={{
           display: 'flex',

@@ -4,6 +4,8 @@ import FileSaver from 'file-saver';
 import FileDownload from "js-file-download";
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
+import 'react-toastify/dist/ReactToastify.css';
+import Swal from 'sweetalert2';
 
 const ViewOrder = () => {
     const location = useLocation();
@@ -62,42 +64,156 @@ const ViewOrder = () => {
 
     const toggleReadyStatus = () => {
         const oid = orderDetails.order.order_id;
-        console.log("oid ", oid)
-        axios.post('http://localhost:3001/api/order/toggleReadyStatus', {
-            oid: oid
-        })
-            .then((response) => {
-                setOrderDetails(prevDetails => ({
-                    ...prevDetails,
-                    order: {
-                        ...prevDetails.order,
-                        status: response.data.status
-                    }
-                }));
-            })
-            .catch((error) => {
-                console.error("Error toggling order status:", error);
-            });
+        console.log("oid ", oid);
+
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: "btn btn-success",
+                cancelButton: "btn btn-danger"
+            },
+            //buttonsStyling: false
+        });
+        swalWithBootstrapButtons.fire({
+            title: "Inform the Customer?",
+            text: "SMS will send to the customer",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, Send it!",
+            cancelButtonText: "No, only update status",
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.post('http://localhost:3001/api/order/toggleReadyStatus', {
+                    oid: oid,
+                    sendSMS: true
+                })
+                    .then((response) => {
+                        setOrderDetails(prevDetails => ({
+                            ...prevDetails,
+                            order: {
+                                ...prevDetails.order,
+                                status: response.data.status
+                            }
+                        }));
+                    })
+                    .catch((error) => {
+                        console.error("Error toggling order status:", error);
+                    });
+                swalWithBootstrapButtons.fire({
+                    title: "SMS send and Order status changed!",
+                    // text: "Your file has been deleted.",
+                    icon: "success"
+                });
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                axios.post('http://localhost:3001/api/order/toggleReadyStatus', {
+                    oid: oid,
+                    sendSMS: true
+                })
+                    .then((response) => {
+                        setOrderDetails(prevDetails => ({
+                            ...prevDetails,
+                            order: {
+                                ...prevDetails.order,
+                                status: response.data.status
+                            }
+                        }));
+                    })
+                    .catch((error) => {
+                        console.error("Error toggling order status:", error);
+                    });
+                swalWithBootstrapButtons.fire({
+                    title: "Order status changed!",
+                    // text: "Your imaginary file is safe :)",
+                    icon: "success"
+                });
+            }
+        });
     }
     const toggleCompleteStatus = () => {
         const oid = orderDetails.order.order_id;
-        console.log("oid ", oid)
-        axios.post('http://localhost:3001/api/order/completeOrder', {
-            oid: oid
-        })
-            .then((response) => {
-                setOrderDetails(prevDetails => ({
-                    ...prevDetails,
-                    order: {
-                        ...prevDetails.order,
-                        status: response.data.status
+        console.log("oid ", oid);
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const swalWithBootstrapButtons = Swal.mixin({
+                    customClass: {
+                        confirmButton: "btn btn-success",
+                        cancelButton: "btn btn-danger"
+                    },
+                    //buttonsStyling: false
+                });
+                swalWithBootstrapButtons.fire({
+                    title: "Inform the Customer?",
+                    text: "SMS will send to the customer",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, Send it!",
+                    cancelButtonText: "No, only update status",
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        axios.post('http://localhost:3001/api/order/completeOrder', {
+                            oid: oid,
+                            sendSMS: true
+                        })
+                            .then((response) => {
+                                setOrderDetails(prevDetails => ({
+                                    ...prevDetails,
+                                    order: {
+                                        ...prevDetails.order,
+                                        status: response.data.status
+                                    }
+                                }));
+                            })
+                            .catch((error) => {
+                                console.error("Error toggling order status:", error);
+                            });
+                        swalWithBootstrapButtons.fire({
+                            title: "SMS send and Order completed!",
+                            // text: "Your file has been deleted.",
+                            icon: "success"
+                        });
+                    } else if (
+                        /* Read more about handling dismissals below */
+                        result.dismiss === Swal.DismissReason.cancel
+                    ) {
+                        axios.post('http://localhost:3001/api/order/completeOrder', {
+                            oid: oid,
+                            sendSMS: true
+                        })
+                            .then((response) => {
+                                setOrderDetails(prevDetails => ({
+                                    ...prevDetails,
+                                    order: {
+                                        ...prevDetails.order,
+                                        status: response.data.status
+                                    }
+                                }));
+                            })
+                            .catch((error) => {
+                                console.error("Error toggling order status:", error);
+                            });
+                        swalWithBootstrapButtons.fire({
+                            title: "Order  Order completed!!",
+                            // text: "Your imaginary file is safe :)",
+                            icon: "success"
+                        });
                     }
-                }));
-            })
-            .catch((error) => {
-                console.error("Error toggling order status:", error);
-            });
+                });
+            }
+        });
     }
+
     const addCourier = () => {
         navigate('./couriers', { state: { orderId: orderDetails.order.order_id, courierId: orderDetails.order.courier_id } });
     }

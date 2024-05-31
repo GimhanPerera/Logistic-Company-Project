@@ -144,7 +144,7 @@ export const StaffLogin = () => {
                                     {errors.password && touched.password && <small style={{ color: 'red' }}>{errors.password}</small>}
                                 </div>
                                 <div>
-                                    <Box component="p" sx={{ color: '#1E90FF', fontSize: '0.875rem', fontWeight: 'medium', cursor: 'pointer', m: '1rem 0' }} underline="always">Forgot tracking number?</Box>
+                                    <Box component="p" sx={{ color: '#1E90FF', fontSize: '0.875rem', fontWeight: 'medium', cursor: 'pointer', m: '1rem 0' }} underline="always">Forgot password?</Box>
                                 </div>
                                 <div>
                                 </div>

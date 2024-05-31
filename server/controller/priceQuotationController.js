@@ -1,7 +1,6 @@
 const { Price_quotation,Order } = require('../models');
 
 
-
 //add a quotation request
 const addAQuotationReq = async (req, res) => {//Add a order - NOT TESTED
     try {

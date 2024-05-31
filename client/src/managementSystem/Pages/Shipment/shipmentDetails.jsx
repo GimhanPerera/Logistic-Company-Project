@@ -14,6 +14,7 @@ export const ShipmentDetails = () => {
     const [listOfShipment, setListOfShipment] = useState([]);
     const [loading, setLoading] = useState(true); // State to track loading status
     const [orderIds, setOrderIds] = useState([]);
+    const [search, setSearch] = useState('');
 
     useEffect(() => {
         axios.get("http://localhost:3001/api/shipment")
@@ -82,7 +83,7 @@ export const ShipmentDetails = () => {
 
     return (
         <div>
-            <SearchBar />
+            <SearchBar label='Search by BL number' search={search} setSearch={setSearch} />
             <Button variant="contained"
                 sx={{ backgroundColor: '#68DD62', position: 'fixed', right: '2em', top: '4.7rem' }} onClick={addShipment}>
                 Add Shipment
@@ -106,7 +107,11 @@ export const ShipmentDetails = () => {
             {loading ? (
                 <p>Loading...</p>
             ) : (
-                filteredItems.map((shipment, index) => (
+                filteredItems.filter((item) => {
+                    return search.toLowerCase() === ''
+                        ? item
+                        : item.BL_no.toLowerCase().includes(search);
+                }).map((shipment, index) => (
                     <Box component="div" key={`items-${index}`}
                         sx={{
                             display: 'flex',

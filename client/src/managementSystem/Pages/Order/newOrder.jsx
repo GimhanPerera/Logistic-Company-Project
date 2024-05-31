@@ -1,5 +1,7 @@
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import axios from "axios";
 import { Field, Form, Formik, useFormik } from 'formik';
 import React, { useState } from 'react';
@@ -37,18 +39,24 @@ const NewOrder = () => {
     const [invoice, setInvoice] = useState(null);
     const navigate = useNavigate();
     const [selectedCountry, setSelectedCountry] = useState(Countries.find((country) => country.label === 'China'));
-    const [category,setCategory] = useState('G');
+    const [category, setCategory] = useState('G');
+    const [chatLink, setChatLink] = useState('');
+    const [checked, setChecked] = React.useState(false);
+
+    const handleCheckboxChange = (event) => {
+        setChecked(event.target.checked);
+    };
 
     const toOrders = () => {
         navigate('../order');
     }
 
     const handleImageChange = (e) => {
-        setImage( e.target.files[0]); // Update the image file in the form data
+        setImage(e.target.files[0]); // Update the image file in the form data
     };
     const handleInvoiceChange = (e) => {
-        setInvoice( e.target.files[0]); // Update the image file in the form data
-        
+        setInvoice(e.target.files[0]); // Update the image file in the form data
+
     };
 
     const searchCustomer = async (e) => {//search customer
@@ -83,10 +91,10 @@ const NewOrder = () => {
         } else if (!regex.test(customerID)) {
             toast.error("Wrong Customer ID format");
             return
-        }else if (image == null) {
+        } else if (image == null) {
             toast.error("Image is required");
             return
-        }else if (invoice == null) {
+        } else if (invoice == null) {
             toast.error("Invoice is required");
             return
         }
@@ -107,14 +115,15 @@ const NewOrder = () => {
                 "cusID": customerID,
                 "name": customerName,
                 "tp": customerTp,
-                "category": values.category
+                "category": values.category,
+                "chatLink": checked ? chatLink : ''
             }, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${token}`
                 }
             });
-            
+
             navigate('../order');
         } catch (error) {
             console.error('Error creating order:', error);
@@ -240,7 +249,7 @@ const NewOrder = () => {
                                             }}
                                         /></td>
                                         <td>
-                                        <FormControl sx={{ m: 1, minWidth: 170 }}>
+                                            <FormControl sx={{ m: 1, minWidth: 170 }}>
                                                 <InputLabel id="demo-simple-select-helper-label">Category</InputLabel>
                                                 <Field
                                                     as={Select}
@@ -332,13 +341,19 @@ const NewOrder = () => {
                                 </table>
                             </Box>
                         </Box>
-                        
-                        <Box component="div" sx={{ position: 'absolute', right: '8rem', bottom:'5rem' }}>
+                        <Box component="div" sx={{ position: 'absolute', right: '8rem', bottom: '8.5rem', display:'flex', flexDirection:'column'}}>
+                            <TextField label="ChatLink" size="small" type='text' name='chatlink'
+                                value={chatLink}
+                                onChange={(e) => setChatLink(e.target.value)}
+                            />
+                            <FormControlLabel control={<Checkbox checked={checked} onChange={handleCheckboxChange} />} label="Send Chat link" />
+                        </Box>
+                        <Box component="div" sx={{ position: 'absolute', right: '8rem', bottom: '5rem' }}>
                             <Button onClick={toOrders} variant="outlined"
                                 sx={{ ml: '1rem' }}>
                                 Cancel
                             </Button>
-                            
+
                             <Button variant="contained"
                                 type="submit"
                                 sx={{ backgroundColor: '#68DD62', ml: '1rem' }}>
