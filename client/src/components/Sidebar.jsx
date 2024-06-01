@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaHome } from 'react-icons/fa';
 import { GoListOrdered } from "react-icons/go";
 import { GrDeliver } from "react-icons/gr";
@@ -11,6 +11,15 @@ import { TbReportAnalytics } from "react-icons/tb";
 import { NavLink } from 'react-router-dom';
 
 const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
+
+    const [currentUser, setCurrentUser] = useState(undefined);
+    useEffect(() => {
+        const userRole = localStorage.getItem("user");
+        if (userRole) {
+            const parsedUserRole = JSON.parse(userRole); // Parse the string into an object
+            setCurrentUser(parsedUserRole.role);
+        }
+    }, []);
 
     const handleClick = (display_name) => {
         handleChangeValue(display_name);
@@ -49,7 +58,7 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
                             marginBottom: '1rem',
                             color: 'white',
                             listStyleType: 'none',
-                            marginTop:'2rem' // Remove bullet points
+                            marginTop: '2rem' // Remove bullet points
                         }}
                     >
                         <a href='' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
@@ -66,7 +75,7 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
                             listStyleType: 'none' // Remove bullet points
                         }}
                     >
-                        <a href=''  style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
+                        <a href='' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
                             <MdRequestQuote style={{ marginRight: '0.6rem' }}></MdRequestQuote >
                             Quotation Requests
                         </a>
@@ -108,7 +117,7 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
                             listStyleType: 'none' // Remove bullet points
                         }}
                     >
-                        <a href=''  style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
+                        <a href='' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
                             <IoIosPeople style={{ marginRight: '0.6rem' }}></IoIosPeople >
                             Customers
                         </a>
@@ -128,6 +137,7 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
                         </a>
                     </li>
                 </NavLink>
+                {currentUser == 'ADMIN' && (
                 <NavLink to="/cmsystem/SpecialNotices" onClick={() => handleClick('Special Notices')}>
                     <li
                         style={{
@@ -142,6 +152,7 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
                         </a>
                     </li>
                 </NavLink>
+                )}
                 <NavLink to="/cmsystem/reports" onClick={() => handleClick('Reports')}>
                     <li
                         style={{
@@ -156,7 +167,8 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
                         </a>
                     </li>
                 </NavLink>
-                <NavLink to="/" onClick={() => {localStorage.removeItem('user');
+                <NavLink to="/" onClick={() => {
+                    localStorage.removeItem('user');
                 }}>
                     <li
                         style={{
