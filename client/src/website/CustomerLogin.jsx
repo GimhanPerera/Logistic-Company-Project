@@ -50,7 +50,7 @@ export const CustomerLogin = () => {
           "pwd": values.pwd
         });
         if (response.data.isValid) {
-          localStorage.setItem('token', response.data.accessToken);
+          localStorage.setItem('user', JSON.stringify(response.data));
           navigate('./myorders');
         } else {
   

@@ -156,7 +156,8 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
                         </a>
                     </li>
                 </NavLink>
-                <NavLink to="/">
+                <NavLink to="/" onClick={() => {localStorage.removeItem('user');
+                }}>
                     <li
                         style={{
                             marginBottom: '0.6rem',

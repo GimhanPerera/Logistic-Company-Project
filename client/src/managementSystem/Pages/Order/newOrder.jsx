@@ -10,6 +10,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AddCustomerModel from "../../../Modals/addCustomerModal";
 import { Countries } from '../../../countryCodes';
+import Autheader from "../../../services/Autheader";
 import { priceQuotationValidation } from '../../../validations';
 
 const initialValues = {
@@ -120,7 +121,7 @@ const NewOrder = () => {
             }, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${token}`
+                    ...Autheader()
                 }
             });
 

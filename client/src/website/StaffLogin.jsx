@@ -21,10 +21,12 @@ export const StaffLogin = () => {
             });
             console.log("Valid: ",response.data.isValid)
             if (response.data.isValid) {
-                localStorage.setItem('token', response.data.accessToken);
+                localStorage.setItem('user', JSON.stringify(response.data));
+                console.log("TOKENS ",response.data);
                 navigate('../cmsystem');
+                window.location.reload();
             } else {
-                toast.error("Invalid email or password1");
+                toast.error("Invalid email or password");
             }
             
 

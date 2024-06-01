@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import './App.css';
 import CourierDetails from './managementSystem/Pages/Courier/courierDetails';
@@ -32,6 +33,17 @@ import { OrderTrackingDetailsValidated } from './website/orderTrackingDetailsVal
 import { Website } from './website/website';
 
 function App() {
+const [currentUser, setCurrentUser] = useState(undefined);
+useEffect(() => {
+  const userRole = localStorage.getItem("user");
+  if (userRole) {
+    const parsedUserRole = JSON.parse(userRole); // Parse the string into an object
+    setCurrentUser(parsedUserRole.role);
+  }
+  console.log("userChecked", userRole);
+  console.log("ROLE: ", currentUser); // Log the role correctly
+}, []);
+
   return (
     <Router>
       <Routes>
@@ -49,6 +61,7 @@ function App() {
               <Route path="request" element={<NewOrderRequest />} />
             </Route>
           </Route>
+          {currentUser == 'ADMIN' && (
           <Route path="cmsystem" element={<ManagmentSystem />}>
             <Route index element={<Dashboard />} />
             <Route path="customers" element={<CustomersDetails />} />
@@ -83,6 +96,7 @@ function App() {
             <Route path="neworder" element={<NewOrder />} />
 
           </Route>
+          )}
         </Route>
       </Routes>
     </Router>
