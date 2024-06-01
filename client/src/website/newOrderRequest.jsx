@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Countries } from '../countryCodes';
+import Autheader from "../services/Autheader";
 import { priceQuotationByCustomerValidation } from '../validations';
 import Navbar from './navbar';
 
@@ -63,7 +64,7 @@ export const NewOrderRequest = () => {
             }, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${token}`
+                    ...Autheader()
                 }
             });
             navigate('../');

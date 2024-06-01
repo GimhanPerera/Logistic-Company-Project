@@ -2,6 +2,7 @@ require('dotenv').config()
 const { Courier, Employee } = require('../models');
 const jwt = require('jsonwebtoken')
 
+let refreshTokens = [];
 
 const customerLogin = async (req, res) => {
     try {
@@ -28,7 +29,6 @@ const customerLogin = async (req, res) => {
 
 }
 
-let refreshTokens = [];
 const stuffLogin = async (req, res) => {
     try {
         // Authentication
@@ -44,7 +44,7 @@ const stuffLogin = async (req, res) => {
                 sub: userFromDB.emp_id,
                 role: userFromDB.position
             };
-            console.log("User ", user)
+            //console.log("User ", user)
             const accessToken = createAccessToken(user, "300m"); // Create the access token
             const refreshToken = createRefreshToken(user, "6h"); // Create the refresh token
             refreshTokens.push(refreshToken);
@@ -61,9 +61,9 @@ const stuffLogin = async (req, res) => {
                 sub: '0',
                 role: ''
             };
-            const accessToken = createAccessToken(user, "1m"); // Create the access token
-            const refreshToken = createRefreshToken(user, "6h"); // Create the access token
-            console.log("Access token: " + accessToken);
+            //const accessToken = createAccessToken(user, "1m"); // Create the access token
+           //const refreshToken = createRefreshToken(user, "6h"); // Create the access token
+            //.log("Access token: " + accessToken);
             res.json({
                 isValid: false,
             });

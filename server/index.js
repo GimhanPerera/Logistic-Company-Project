@@ -48,6 +48,11 @@ app.use("/api/noitces",noticesRouter);
 const smsRouter = require('./routes/smsRouter');
 app.use("/api/sms",smsRouter);
 
+const dashboardRouter = require('./routes/dashboardRouter');
+app.use("/api/dashboard",dashboardRouter);
+
+const reportRouter = require('./routes/reportRouter');
+app.use("/api/report",reportRouter);
 
 db.sequelize.sync().then(() => {
     app.listen(3001, () => {

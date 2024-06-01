@@ -16,6 +16,7 @@ import { Html5QrcodeScanner } from 'html5-qrcode';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ScanResultHandler from '../../../Modals/scanResultHandler';
+import Autheader from "../../../services/Autheader";
 import { scanPackagesValidation } from './../../../validations';
 
 //Table theme
@@ -241,7 +242,7 @@ const ScanAndUpdate = () => {
         console.log(rows);
         axios.post('http://localhost:3001/api/shipment/saveScanUpdates', rows, {
             headers: {
-                Authorization: `Bearer ${token}`
+                ...Autheader()
             }
         })
             .then((response) => {

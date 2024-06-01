@@ -1,14 +1,15 @@
 import { Box, Button } from '@mui/material';
+import Paper from '@mui/material/Paper';
 import React from 'react';
 
 
 const CustomerDetailsCard = ({ customer }) => {
   return (
-    <Box component="div"
+    <Paper
       sx={{
         width: '50%',
         height: '7rem',
-        border: '2px solid',
+        border: '1px solid',
         marginTop: '0.75rem',
         padding: '0.5rem',
         display: 'flex',
@@ -49,7 +50,7 @@ const CustomerDetailsCard = ({ customer }) => {
           <Button sx={{ fontSize: '0.8rem', padding: '0.1rem' }}>History</Button>
         </Box>
       </div>
-    </Box>
+    </Paper>
   )
 }
 

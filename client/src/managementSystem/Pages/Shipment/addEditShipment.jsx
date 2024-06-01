@@ -12,6 +12,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Autheader from "../../../services/Autheader";
 import { shipmentDetailsValidation } from '../../../validations';
 
 const AddEditShipment = () => {
@@ -159,6 +160,7 @@ const AddEditShipment = () => {
                 axios.post('http://localhost:3001/api/shipment',jsonString, {
                 headers: {
                     'Content-Type': 'application/json',
+                    ...Autheader()
                 }
             })
                 .then((response) => {
@@ -167,7 +169,7 @@ const AddEditShipment = () => {
                     navigate('../');
                 })
                 .catch((error) => {
-                    console.error("Error fetching courier details:", error);
+                    console.error("HHError fetching courier details:", error);
                     toast.error("BL number is already exist");
                 });
         }

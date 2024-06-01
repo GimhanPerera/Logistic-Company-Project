@@ -30,8 +30,7 @@ const InvoicePage = () => {
                     initialSubTotal += parseFloat(pkg.total) || 0;
                 });
                 setSubTotal(initialSubTotal);
-
-                setDiscount(orderDetails.invoice.discount);
+                setDiscount(response.data.invoice.discount || 0);
                 setLoading(false); // Set loading to false after data is fetched
             })
             .catch((error) => {
