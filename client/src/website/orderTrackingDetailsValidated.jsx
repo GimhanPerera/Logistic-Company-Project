@@ -122,7 +122,7 @@ export const OrderTrackingDetailsValidated = () => {
                             ) : (<p>Shipping method: -</p>)} */}
                             </table>
                         </Box>
-                        <div style={{ marginTop: '2px', width: '600px', margin: 'auto', marginTop: '10px' }}>
+                        <div style={{ width: '600px', margin: 'auto', marginTop: '10px' }}>
                             <p>If you have any issue with our service, You can <a style={{ color: 'blue', textDecoration: 'underline' }} onClick={() => setComplainIsOpen(true)} >open a complain</a></p>
                             <p>Give your <a style={{ color: 'blue', textDecoration: 'underline' }} onClick={() => setFeedackIsOpen(true)} >feedback</a></p>
                         </div>

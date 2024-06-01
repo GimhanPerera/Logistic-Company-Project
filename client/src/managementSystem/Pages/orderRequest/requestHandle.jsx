@@ -1,5 +1,7 @@
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import axios from "axios";
 import FileSaver from 'file-saver';
 import { Field, Form, Formik, useFormik } from 'formik';
@@ -41,8 +43,13 @@ const RequestHandle = () => {
     const [quotationID, setQuotationID] = useState();
     const [addImage, setaddImage] = useState(true);
     const [selectedCountry, setSelectedCountry] = useState(Countries.find((country) => country.label === countryP));
+    const [chatLink, setChatLink] = useState('');
+    const [checked, setChecked] = React.useState(false);
     const toggleAddImage = () => {
         setaddImage(addImage => !addImage);
+    };
+    const handleCheckboxChange = (event) => {
+        setChecked(event.target.checked);
     };
 
     useEffect(() => {
@@ -169,7 +176,8 @@ const RequestHandle = () => {
                 "description": values.description,
                 "supplierLoc": selectedCountry.label,
                 "status": "Just opened",
-                // "cusID": customerID,
+                "chatLink": checked ? chatLink : '',
+                "cusID": customerID,
                 // "name": customerName,//
                 // "tp": customerTp,//
             }, {
@@ -493,6 +501,13 @@ const RequestHandle = () => {
                                     </tr>
                                 </table>
                             </Box>
+                        </Box>
+                        <Box component="div" sx={{ position: 'absolute', right: '8rem', bottom: '9rem', display:'flex', flexDirection:'column'}}>
+                            <TextField label="ChatLink" size="small" type='text' name='chatlink'
+                                value={chatLink}
+                                onChange={(e) => setChatLink(e.target.value)}
+                            />
+                            <FormControlLabel control={<Checkbox checked={checked} onChange={handleCheckboxChange} />} label="Send Chat link" />
                         </Box>
 
                         <Box component="div" sx={{ position: 'absolute', right: '5rem', bottom: '5rem' }}>

@@ -10,7 +10,8 @@ const CourierDetails = () => {
     const [loading, setLoading] = useState(true); // State to track loading status
     const [isModalOpen, setModalIsOpen] = useState('false'); //Status of Modal
     const [courierDetails, setCourierDetails] = useState(null); //Coutier details
-
+  const [search, setSearch] = useState('');
+  
     //const [count, setCount] = useState(0);
     //const [reloading, setReloading] = useState(false);
     const reload = () => {
@@ -54,7 +55,7 @@ const CourierDetails = () => {
 
     return (
         <div className="relative">
-            <SearchBar />
+      <SearchBar label='Search by courier id' search={search} setSearch={setSearch}/>
             <Button variant="contained"
                 onClick={handleAddCourierClick}
                 sx={{ backgroundColor: '#68DD62', position: 'fixed', right: '2em', top: '4.7rem' }}>
@@ -65,8 +66,12 @@ const CourierDetails = () => {
             {loading ? (
                 <p>Loading...</p>
             ) : (
-                listOfCourier.map((courier, index) => (
-                    <Box component="div" key={index} 
+                listOfCourier.filter((item) => {
+                    return search == ''
+                        ? item
+                        : item.courier_id.includes(search);
+                }).map((courier, index) => (
+                    <Box component="div" key={index}
                     sx={{
                         display: 'flex',
                         flexDirection: 'column',

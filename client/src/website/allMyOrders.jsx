@@ -4,13 +4,14 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Autheader from "../services/Autheader";
 import Navbar from "./navbar";
 import OrderCard from "./orderCard";
-
 export const AllMyOrders = () => {
   const navigate = useNavigate();
   const [reqCount,setReqCount]=useState(0);
   const toBack = () => {
+    localStorage.removeItem('user')
     navigate('../');
   }
   const orderRequest = () => {
@@ -24,17 +25,21 @@ export const AllMyOrders = () => {
   }
   const [listOfOrders, setListOfOrders] = useState([]);
   useEffect(() => {
-    const token = localStorage.getItem('token');
     axios.get("http://localhost:3001/api/order/myTrackingDetails", {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+        headers: Autheader()
     }).then((response) => {
-      setListOfOrders(response.data);
-      setReqCount(listOfOrders.filter(order => order.status === 'Request').length);
-      console.log("COUNT ",listOfOrders.filter(order => order.status === 'Request').length)
-    })
-  }, [])
+      if(response.status!=200){
+        navigate('./..');
+      }
+        setListOfOrders(response.data);
+        const requestCount = response.data.filter(order => order.status === 'Request').length;
+        setReqCount(requestCount);
+        console.log("REQ COUNT ", requestCount);
+    }).catch((error) => {
+        console.error("Error fetching orders: ", error);
+        navigate('./..');
+    });
+}, []);
 
   return (
     <>

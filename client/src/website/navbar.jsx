@@ -9,8 +9,8 @@ const Navbar = () => {
   const [value, setValue] = useState(0);
   const theme = useTheme()
   const isMatch = useMediaQuery(theme.breakpoints.down('md'));
-  console.log("REST: " + isMatch);
-  console.log("V: " + value);
+  //console.log("REST: " + isMatch);
+  //console.log("V: " + value);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);

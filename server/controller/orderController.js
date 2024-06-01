@@ -1,14 +1,14 @@
 const { Order, Customer, Shipment, Price_quotation, Package,Invoice, Payment,Courier } = require('../models');
 const Sequelize = require('sequelize');
 const { Op } = require('sequelize');
+const { sendNormalSMS } = require('../middleware/smsGateway');
 
-const newOrder = async (req, res) => {//Add a order - NOT TESTED
+const newOrder = async (req, res) => {//Add a order
     try {
         // Extract the filename
         const { filename: productImage } = req.files['image'][0];
         const { filename: invoice } = req.files['invoice'][0];
         let cus_id;
-        console.log("Req: ");
         if (req.body.status == "Just opened") {
             cus_id = req.body.cusID;
         } else if (req.body.status == "Request") {
@@ -30,11 +30,12 @@ const newOrder = async (req, res) => {//Add a order - NOT TESTED
             },
             order: [['order_id', 'DESC']]
         });
-        console.log("Last order: ",lastOrder.dataValues.order_id)
+        
 
         // Extract the numeric portion from the last order ID and increment by one
         let newNumericPortion = 1001;
         if (lastOrder) {
+            console.log("Last order: ",lastOrder.dataValues.order_id)
             const lastOrderId = lastOrder.order_id;
             const lastNumericPortion = parseInt(lastOrderId.substring(8), 10);
             //parseInt(lastOrderId.substring(orderId.length - 4), 10);
@@ -76,7 +77,16 @@ const newOrder = async (req, res) => {//Add a order - NOT TESTED
         // Calculate the new complain_id
         const new_price_quotation_id = last_price_quotation_id.quotation_id ? last_price_quotation_id.quotation_id + 1 : 1001;
         // Insert the new record
-        console.log("New PQ_ID: " + new_price_quotation_id)
+        console.log("New PQ_ID: " + new_price_quotation_id);
+
+        let chatLink='';
+        if(req.body.chatLink!=''){
+            chatLink = `\nWECHAT link: ${req.body.chatLink}`;
+        }
+        const tempPwd = generateRandomPassword(6);
+        sendNormalSMS(newOrderId, `Order placed\nOrder ID: ${newOrderId}\nCustomer ID: ${cus_id}\nTemplary pwd: ${tempPwd}${chatLink}\nContact: 0714744874`);//send sms
+        
+
         const newPriceQuotation = await Price_quotation.create({
             "quotation_id": new_price_quotation_id,
             "items": req.body.items,
@@ -102,6 +112,16 @@ const newOrder = async (req, res) => {//Add a order - NOT TESTED
         console.error("Error fetching order details:", error);
         res.status(500).json({ error: "Internal server error" });
     }
+}
+
+function generateRandomPassword(length) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let password = '';
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        password += characters.charAt(randomIndex);
+    }
+    return password;
 }
 
 const confirmOrder = async (req, res) => {
@@ -131,6 +151,14 @@ const confirmOrder = async (req, res) => {
                 quotation_id: req.body.quotation_id // orderID HERE
             }
         })
+
+        let chatLink='';
+        if(req.body.chatLink!=''){
+            chatLink = `\nWECHAT link: ${req.body.chatLink}`;
+        }
+        //const tempPwd = generateRandomPassword(6);
+        sendNormalSMS(req.body.order_id, `Order placed\nOrder ID: ${req.body.order_id}\nCustomer ID: ${req.body.cusID}${chatLink}\nContact: 0714744874`);//send sms
+
         res.status(200).json("Updated");
     } catch (error) {
         // Handle error
@@ -398,6 +426,8 @@ const toggleReadyStatus = async (req, res) => {
         // Toggle the status
         if (order.status === 'onhand') {
             order.status = 'Ready';
+            if(req.body.sendSMS)
+                sendNormalSMS(req.body.oid, `ORDER STATUS UPDATE\n\nOrder ID: ${req.body.oid}\nYour order is ready.\nContact: 0714744874`);//send sms
         } else if (order.status === 'Ready') {
             order.status = 'onhand';
         }
@@ -455,6 +485,8 @@ const toggleCompleteStatus = async (req, res) => {
         order.order_close_date = getCurrentSriLankanDateTime();
 
         await order.save();
+        if(req.body.sendSMS)
+            sendNormalSMS(req.body.oid, `ORDER STATUS UPDATE\n\nOrder ID: ${req.body.oid}\nYour order is completed.\nContact: 0714744874`);//send sms
         res.json(order);
 
     }catch (error) {

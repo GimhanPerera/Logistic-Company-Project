@@ -21,10 +21,12 @@ export const StaffLogin = () => {
             });
             console.log("Valid: ",response.data.isValid)
             if (response.data.isValid) {
-                localStorage.setItem('token', response.data.accessToken);
+                localStorage.setItem('user', JSON.stringify(response.data));
+                console.log("TOKENS ",response.data);
                 navigate('../cmsystem');
+                window.location.reload();
             } else {
-                toast.error("Invalid email or password1");
+                toast.error("Invalid email or password");
             }
             
 
@@ -144,7 +146,7 @@ export const StaffLogin = () => {
                                     {errors.password && touched.password && <small style={{ color: 'red' }}>{errors.password}</small>}
                                 </div>
                                 <div>
-                                    <Box component="p" sx={{ color: '#1E90FF', fontSize: '0.875rem', fontWeight: 'medium', cursor: 'pointer', m: '1rem 0' }} underline="always">Forgot tracking number?</Box>
+                                    <Box component="p" sx={{ color: '#1E90FF', fontSize: '0.875rem', fontWeight: 'medium', cursor: 'pointer', m: '1rem 0' }} underline="always">Forgot password?</Box>
                                 </div>
                                 <div>
                                 </div>

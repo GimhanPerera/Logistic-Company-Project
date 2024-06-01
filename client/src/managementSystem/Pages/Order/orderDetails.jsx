@@ -9,6 +9,7 @@ const OrderDetails = () => {
   const [selectedFilters, setSelectedFilters] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
   let filters = ["Just opened","Waiting","In Warehouse","Ship/airfreight","onhand","Ready","FINISH"];
+  const [search, setSearch] = useState('');
 
   const navigate = useNavigate();
   const [listOfOrderDetails, setListOfOrder] = useState([]);
@@ -50,7 +51,7 @@ const OrderDetails = () => {
 
   return (
     <div className="relative">
-      <SearchBar />
+      <SearchBar label='Search by order id' search={search} setSearch={setSearch}/>
       <Button variant="contained"
         sx={{ backgroundColor: '#68DD62', position: 'fixed', right: '2em', top: '4.7rem' }}
         onClick={toNewOrder}>
@@ -74,7 +75,11 @@ const OrderDetails = () => {
       </Box>
       
       <div>
-      {filteredItems.map((order, index) => (
+      {filteredItems.filter((item) => {
+          return search.toLowerCase() === ''
+          ? item
+          : item.order_id.toLowerCase().includes(search);
+        }).map((order, index) => (
         <Box component="div" key={`items-${index}`}
           sx={{
             display: 'flex',
