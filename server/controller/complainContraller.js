@@ -43,6 +43,15 @@ const setAsReviewed = async (req, res) => {
     }
 }
 
+const testFunction = async (req, res) => {
+    try {
+        res.status(200).json(complain);
+
+    } catch (error) {
+        res.status(400).json("Server error");
+    }
+}
+
 module.exports = {
     addAComplain,
     getAllComplains,
