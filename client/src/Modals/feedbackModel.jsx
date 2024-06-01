@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import Autheader from "../services/Autheader";
 import './feedbackModal.css';
 
 export default function FeedbackModel({ open, onClose, ordId }) {
@@ -19,7 +20,7 @@ export default function FeedbackModel({ open, onClose, ordId }) {
         }
     }
     const clickCloseBtn = () => {
-        setStar1Color({ color: '#d1d5db' });
+        setStar1Color({ color: '#FDE68A' });
         setStar2Color({ color: '#d1d5db' });
         setStar3Color({ color: '#d1d5db' });
         setStar4Color({ color: '#d1d5db' });
@@ -55,26 +56,25 @@ export default function FeedbackModel({ open, onClose, ordId }) {
     };
 
     const submitComplain = async () => {
-        console.log("Feedback send")
-        // VALIDATION SHOULD BE DONE HERE
-
+        console.log("Feedback send");
         await axios.post("http://localhost:3001/api/feedback", {
             "order_id": ordId,
             "rating": rateValue,
             "feedback": feedbackText
         }, {
             headers: {
-                Authorization: `Bearer ${token}`
+                ...Autheader()
             }
         }).then((response) => {
-            setResp(response.data);
+            setResp(response.data); // Check if response.data is what you expect
             console.log("T2");
-            clickCloseBtn();
+            clickCloseBtn(); // Check if this function is implemented correctly
         }).catch((error) => {
             console.error('Error submitting complain:', error);
             console.log("T3");
         });
     };
+    
 
 
     if (!open) return null;

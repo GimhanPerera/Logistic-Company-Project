@@ -70,7 +70,7 @@ export const CustomerLogin = () => {
     <div>
       <Navbar />
       {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}{" "}
-      <Box component="section" sx={{ backgroundColor: '#e0f0f3', height:'86.6vh',marginTop:'0rem' }}>
+      <Box component="section" sx={{ backgroundColor: '#e0f0f3', height:'88vh',marginTop:'0rem' }}>
         <Box component="div"
           sx={{
             display: 'flex',

@@ -13,7 +13,7 @@ const CustomersDetails = () => {
         axios.get("http://localhost:3001/api/customers").then((response)=>{
           setListOfCustomers(response.data);
         })
-    }, [])
+    }, []);
 
   return (
     <div>

@@ -61,7 +61,7 @@ useEffect(() => {
               <Route path="request" element={<NewOrderRequest />} />
             </Route>
           </Route>
-          {currentUser == 'ADMIN' && (
+          {['ADMIN', 'MANAGER', 'EMP'].includes(currentUser) && (
           <Route path="cmsystem" element={<ManagmentSystem />}>
             <Route index element={<Dashboard />} />
             <Route path="customers" element={<CustomersDetails />} />
@@ -98,6 +98,7 @@ useEffect(() => {
           </Route>
           )}
         </Route>
+        {/* <Route path="*" element={<h1>NO ROUTE</h1>} /> */}
       </Routes>
     </Router>
   );

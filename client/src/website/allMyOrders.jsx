@@ -45,16 +45,17 @@ export const AllMyOrders = () => {
     <>
     <ToastContainer />
       <Navbar />
+      <Button variant="outlined"
+          onClick={toBack}  sx={{ position:'fixed', mt:'20px', ml:'35px', p:'10px'}}>
+          Log out
+        </Button>
       <Box component="div"
         sx={{
           display: 'grid',
           justifyContent: 'center'
         }}>
-        <Button variant="outlined"
-          onClick={toBack}  sx={{mt:'10px'}}>
-          Log out
-        </Button>
-        <Button  variant="contained" sx={{mt:'10px'}}
+        
+        <Button  variant="contained" sx={{mt:'25px'}}
           onClick={orderRequest}>
           Order Request
         </Button>
