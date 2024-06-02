@@ -87,8 +87,8 @@ const ViewOrder = () => {
                 axios.post('http://localhost:3001/api/order/toggleReadyStatus', {
                     oid: oid,
                     sendSMS: true
-                },{
-                    headers:{
+                }, {
+                    headers: {
                         ...Autheader()
                     }
                 })
@@ -116,6 +116,10 @@ const ViewOrder = () => {
                 axios.post('http://localhost:3001/api/order/toggleReadyStatus', {
                     oid: oid,
                     sendSMS: true
+                }, {
+                    headers: {
+                        ...Autheader()
+                    }
                 })
                     .then((response) => {
                         setOrderDetails(prevDetails => ({
@@ -137,6 +141,7 @@ const ViewOrder = () => {
             }
         });
     }
+
     const toggleCompleteStatus = () => {
         const oid = orderDetails.order.order_id;
         console.log("oid ", oid);
@@ -170,8 +175,8 @@ const ViewOrder = () => {
                         axios.post('http://localhost:3001/api/order/completeOrder', {
                             oid: oid,
                             sendSMS: true
-                        },{
-                            headers:{
+                        }, {
+                            headers: {
                                 ...Autheader()
                             }
                         })
@@ -199,6 +204,10 @@ const ViewOrder = () => {
                         axios.post('http://localhost:3001/api/order/completeOrder', {
                             oid: oid,
                             sendSMS: true
+                        }, {
+                            headers: {
+                                ...Autheader()
+                            }
                         })
                             .then((response) => {
                                 setOrderDetails(prevDetails => ({
@@ -282,7 +291,6 @@ const ViewOrder = () => {
         }
     }, []);
 
-
     if (loading) {
         return <div>Loading...</div>; // Show loading indicator while fetching data
     }
@@ -294,6 +302,10 @@ const ViewOrder = () => {
     const tableCell = {
         border: '1px solid #dddddd',
         padding: '8px'
+    }
+    const tableRowStyle = {
+        padding: '0.2rem',
+        border: '1px solid black'
     }
 
     const downloadImage = async (e) => {
@@ -371,21 +383,21 @@ const ViewOrder = () => {
 
     const totalPaymentsMade = orderDetails.payment.reduce((sum, payment) => sum + parseFloat(payment.payment) || 0, 0);
     const amountDue = orderDetails.invoice.total - totalPaymentsMade;
-
     return (
         <>
-            <div>
-                <Button onClick={toBack}>
+            {/* Button section */}
+            <Box component="div" sx={{ mb: '1rem' }}>
+                <Button onClick={toBack} sx={{ m: '0 2rem' }}>
                     Back
                 </Button>
                 {orderDetails.order.status == 'Just opened'
                     ? ""
                     : <>
-                        <Button onClick={toShippingMarks}>
+                        <Button variant="outlined" sx={{ ml: '1rem' }} onClick={toShippingMarks}>
                             Shipping Marks
                         </Button>
                         {orderDetails.order.status == 'FINISH' ? '' :
-                            <Button onClick={toInvoice}>
+                            <Button variant="outlined" sx={{ ml: '1rem' }} onClick={toInvoice}>
                                 Invoice
                             </Button>
                         }
@@ -394,59 +406,114 @@ const ViewOrder = () => {
                 {orderDetails.order.status == 'FINISH'
                     ? ''
                     : <>
-                        <Button onClick={addCourier}>
+                        <Button variant="outlined" sx={{ ml: '1rem' }} onClick={addCourier}>
                             Add courier
                         </Button>
                         {orderDetails.order.status == 'onhand' || orderDetails.order.status == 'Ready'
                             ?
-                            <Button onClick={toggleReadyStatus}>
-                                {orderDetails.order.status == 'Ready' ? 'Change as not Ready' : 'Change as Ready'}
-                            </Button>
+                            <>{orderDetails.order.status == 'Ready' ?
+                                <Button variant="outlined" sx={{ ml: '1rem' }} onClick={toggleReadyStatus}>
+                                    Change as not Ready
+                                </Button>
+                                : <Button variant="contained" sx={{ ml: '1rem' }} onClick={toggleReadyStatus}>
+                                    Change as Ready
+                                </Button>
+                            }
+                            </>
                             : ''
                         }
-                        <Button onClick={toPayment}>
+                        <Button variant="outlined" sx={{ ml: '1rem' }} onClick={toPayment}>
                             Payments
                         </Button>
                     </>
                 }
                 {orderDetails.order.status == 'Ready' ?
-                    <Button variant="contained" onClick={toggleCompleteStatus}>
+                    <Button variant="contained" sx={{ ml: '1rem' }} onClick={toggleCompleteStatus}>
                         Complete Order
                     </Button>
                     : ''}
-                <Box component="h1">Order ID: {orderDetails.order.order_id}</Box>
-                <Box component="h2">Status: {orderDetails.order.status}</Box>
+            </Box>
 
-                {/* INVOICE */}
-                <Box component="div" sx={{ width: '1000px', p: '2rem', border: '1px black solid' }}>
-                    {/* <Box component="p">Invoice ID: {orderDetails.invoice.invoice_id}</Box> */}
+            <Box component="div" sx={{ mt: '1rem' }}>
+                <Box component="h1" sx={{ textAlign: 'center' }}>Order ID: {orderDetails.order.order_id}</Box>
+                <Box component="h2" sx={{ textAlign: 'center' }}>Status: {orderDetails.order.status}</Box>
+            </Box>
 
-                    <Box component="p">Customer ID: {orderDetails.customer.customer_id}</Box>
-                    <Box component="p">Name: {orderDetails.customer.f_name} {orderDetails.customer.l_name}</Box>
-                    <Box component="p">Tel. number: 0{orderDetails.customer.tel_number}</Box>
-                    <Box component="p">Address: {orderDetails.customer.address}</Box>
-                    <Box component="p">Assign To: {orderDetails.courier != null ? orderDetails.courier.courier_id : ''} - {orderDetails.courier != null ? orderDetails.courier.name : ''}</Box>
-                    <Box component="p">Open date: {orderDetails.order.order_open_date}</Box>
-                    <Box component="p">Shipment: {orderDetails.order.BL_no}</Box>
-                    <Box component="p">From: {orderDetails.order.supplier_loc}</Box>
-                    <Box component="p">Category: {orderDetails.order.category}</Box>
+            {/* INVOICE */}
+            <Box component="div" sx={{ mt: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+                <Box component="div" sx={{ width: '1000px', p: '2rem', border: '1px black solid', borderRadius:'10px'}}>
+                    <Box component="h3" sx={{ textAlign: 'center' }}>Invoice ID: {orderDetails.invoice.invoice_id}</Box>
+                    <Box component="h3" sx={{ textAlign: 'center', mb: '1rem' }}>Order ID: {orderDetails.order.order_id}</Box>
+                    <Box component="div" sx={{ mb: '1rem', display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between' }}>
+                        <Box component="div">
+                            <Box component="p" >CREATIVE FREIGHTWAY LOGISTIC(PVT)LTD<br />No25A/2,<br />Thoranawila Junction,<br />Makandana,<br />Piliyandala.<br />94712055774</Box>
+                            <br />
+                            <table>
+                                <tr>
+                                    <td>Assign To:</td>
+                                    <td>{orderDetails.courier != null ? orderDetails.courier.courier_id : ''} - {orderDetails.courier != null ? orderDetails.courier.name : ''}</td>
+                                </tr>
+                                <tr>
+                                    <td>Open date:</td>
+                                    <td>{orderDetails.order.order_open_date}</td>
+                                </tr>
+                                <tr>
+                                    <td>Shipment:</td>
+                                    <td>{orderDetails.order.BL_no}</td>
+                                </tr>
+                                <tr>
+                                    <td>From:</td>
+                                    <td>{orderDetails.order.supplier_loc}</td>
+                                </tr>
+                                <tr>
+                                    <td>Category:</td>
+                                    <td>{orderDetails.order.category}</td>
+                                </tr>
+                            </table>
+                        </Box>
+
+                        {/* customer details section */}
+                        <Box component="p">
+                            <table style={{ borderCollapse: 'collapse' }}>
+                                <tr>
+                                    <td style={{ paddingRight: '0.4rem' }}>Customer ID:</td>
+                                    <td style={tableRowStyle}>{orderDetails.customer.customer_id}</td>
+                                </tr>
+                                <tr>
+                                    <td>Name:</td>
+                                    <td style={tableRowStyle}>{orderDetails.customer.f_name} {orderDetails.customer.l_name}</td>
+                                </tr>
+                                <tr>
+                                    <td>Tel. number:</td>
+                                    <td style={tableRowStyle}>0{orderDetails.customer.tel_number}</td>
+                                </tr>
+                                <tr>
+                                    <td>Address:</td>
+                                    <td style={tableRowStyle}>{orderDetails.customer.address}</td>
+                                </tr>
+
+                            </table>
+                        </Box>
+                    </Box>
+
+                    {/* main table */}
                     <table style={{ borderCollapse: 'collapse' }}>
                         <thead>
                             <tr>
-                                <th style={tableCell}>Shipping Marks</th>
+                                <th style={{ ...tableCell, minWidth: '200px' }}>Shipping Marks</th>
                                 <th style={tableCell}>Count</th>
-                                <th style={tableCell}>L</th>
-                                <th style={tableCell}>H</th>
-                                <th style={tableCell}>V.W.</th>
-                                <th style={tableCell}>G.W.</th>
+                                <th style={{ ...tableCell, minWidth: '70px' }}>L</th>
+                                <th style={{ ...tableCell, minWidth: '70px' }}>H</th>
+                                <th style={{ ...tableCell, minWidth: '70px' }}>V.W.</th>
+                                <th style={{ ...tableCell, minWidth: '70px' }}>G.W.</th>
                                 {orderDetails.priceReq[0].shipping_method == 'Air cargo' ?
-                                    <th style={tableCell}>C.W.</th>
+                                    <th style={{ ...tableCell, minWidth: '70px' }}>C.W.</th>
                                     :
-                                    <th style={tableCell}>CBM</th>
+                                    <th style={{ ...tableCell, width: '70px' }}>CBM</th>
                                 }
-                                <th style={tableCell}>Rate</th>
-                                <th style={tableCell}>Tax</th>
-                                <th style={tableCell}>Amount</th>
+                                <th style={{ ...tableCell, minWidth: '60px' }}>Rate</th>
+                                <th style={{ ...tableCell, minWidth: '100px' }}>Tax</th>
+                                <th style={{ ...tableCell, minWidth: '140px' }}>Amount</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -460,40 +527,45 @@ const ViewOrder = () => {
                                     <td style={tableCell}>{row.gross_weight}</td>
                                     <td style={tableCell}>{row.chargable_weight || ''}</td>
                                     <td style={tableCell}>{row.rate || ''}</td>
-                                    <td style={tableCell}>{row.tax || '0'}</td>
-                                    <td style={tableCell}>{row.total || '0'}</td>
+                                    <td style={{ ...tableCell, textAlign: 'right', paddingRight: '0.7rem' }}>{row.tax || '0'}</td>
+                                    <td style={{ ...tableCell, textAlign: 'right', paddingRight: '0.5rem' }}>{row.total || '0'}</td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
-                    <Box component="div" sx={{ display: 'flex', justifyContent: 'flex-end', mt: '0.5rem', mr: '1rem' }}>
+                    {orderDetails.payment.length == 0 ? <Box component="h4" sx={{ mt: 2, textAlign:'center'}}>No Packages added yet</Box>:''}
+
+                    <Box component="div" sx={{ display: 'flex', justifyContent: 'flex-end', mt: '0.5rem', mr: '1.5rem' }}>
                         <table style={{ width: '220px' }}>
                             <tbody>
                                 <tr>
-                                    <td style={{ textAlign: 'left' }}><Box component="h4">Sub Total</Box></td>
-                                    <td style={{ textAlign: 'right' }}><Box component="h4">{subTotal}.00</Box></td>
+                                    <td style={{ textAlign: 'left', paddingTop: '0.3rem' }}><Box component="h4">Sub Total</Box></td>
+                                    <td style={{ textAlign: 'right', paddingTop: '0.3rem' }}><Box component="h4">{subTotal}.00</Box></td>
                                 </tr>
                                 <tr>
-                                    <td style={{ textAlign: 'left' }}><Box component="h4">Discount</Box></td>
-                                    <td style={{ textAlign: 'right' }}><Box component="h4">{orderDetails.invoice.discount}</Box></td>
+                                    <td style={{ textAlign: 'left', paddingTop: '0.3rem' }}><Box component="h4">Discount</Box></td>
+                                    <td style={{ textAlign: 'right', paddingTop: '0.3rem' }}><Box component="h4">{orderDetails.invoice.discount}</Box></td>
                                 </tr>
                                 {/* <tr>
                                     <td style={{ textAlign: 'left' }}><Box component="h4">Total Tax</Box></td>
                                     <td style={{ textAlign: 'right' }}><Box component="h4">000</Box></td>
                                 </tr> */}
                                 <tr>
-                                    <td style={{ textAlign: 'left' }}><Box component="h3">Total</Box></td>
-                                    <td style={{ textAlign: 'right' }}><Box component="h3">{orderDetails.invoice.total}</Box></td>
+                                    <td style={{ textAlign: 'left', paddingTop: '0.3rem' }}><Box component="h3">Total</Box></td>
+                                    <td style={{ textAlign: 'right', paddingTop: '0.3rem' }}><Box component="h3">LKR {orderDetails.invoice.total}</Box></td>
                                 </tr>
                             </tbody>
                         </table>
                     </Box>
                 </Box>
-            </div>
+            </Box>
 
-
-
-            {/*Payments*/}
+            {/* 2nd section */}
+            <Box component="div" sx={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around', p:'2rem 3rem'}}>
+                {/*Payments section*/}
+            <Box component="div">
+            <Box component="h2" sx={{ mb: 2, textAlign:'center' }}>Payment Details</Box>
+            <Box component="div" sx={{ border: '1px solid gray', borderRadius:'10px', padding: '1rem' }}>
             <Box component="h3" sx={{}}>Total Payments: {orderDetails.payment.reduce((sum, payment) => sum + parseFloat(payment.payment) || 0, 0)}</Box>
             <Box component="h3" sx={{ mb: 2 }}>Need to pay: {amountDue.toFixed(2)}</Box>
             <table style={{ borderCollapse: 'collapse' }}>
@@ -516,13 +588,15 @@ const ViewOrder = () => {
                     ))}
                 </tbody>
             </table>
-
+            {orderDetails.payment.length == 0 ? <Box component="h4" sx={{ mt: 2, textAlign:'center'}}>No Payments</Box>:''}
+            </Box>
+            </Box>
             {/* Price quotation details*/}
             <Box component="div"
-                sx={{ display: 'flex', justifyContent: 'space-around', mt: '1rem' }}>
+                sx={{ display: 'flex', justifyContent: 'space-around' }}>
                 <Box component="div">
-                    <Box component="h3" sx={{ mb: 2 }}>Price quotation details</Box>
-                    <table style={{ border: '1px solid gray', padding: '1rem' }}>
+                <Box component="h2" sx={{ mb: 2, textAlign:'center' }}>Price quotation details</Box>
+                    <table style={{ border: '1px solid gray', borderRadius:'10px', padding: '1rem' }}>
                         <tr>
                             <td>Items:</td>
                             <td>{orderDetails.priceReq[0].items}</td>
@@ -609,6 +683,11 @@ const ViewOrder = () => {
                     </table>
                 </Box>
             </Box>
+            </Box>
+            
+
+            
+            
         </>
     )
 }
