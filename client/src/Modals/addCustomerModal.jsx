@@ -4,7 +4,7 @@ import { useFormik } from 'formik';
 import React, { useState } from 'react';
 import { addCustomerValidation } from '../validations';
 
-export default function AddCustomerModel({ open, onClose, setCustomerID }) {
+export default function AddCustomerModel({ open, onClose, setCustomerID ,setPasscode}) {
     const [nicFront, setNicFront] = useState(null);
     const handleNicFrontChange = (e) => {
         setNicFront( e.target.files[0]); // Update the image file in the form data
@@ -33,6 +33,8 @@ export default function AddCustomerModel({ open, onClose, setCustomerID }) {
         ).then((response) => {
             //alert("New customer " + response.data.cus_id + " added")
             setCustomerID(response.data.cus_id);
+            setPasscode(response.data.passcode);
+            console.log("PWD ",response.data);
             onClose();
             setErrors({});
             clearFields();

@@ -36,6 +36,9 @@ const OrderDetails = () => {
       setFilteredItems([...listOfOrderDetails]);
     }
   }
+  const removeOrderFromList = (cid) => {
+    setListOfOrder(prevList => prevList.filter(order => order.order_id !== cid));
+};
 
   const toNewOrder = () => {
     navigate('../neworder');
@@ -87,7 +90,7 @@ const OrderDetails = () => {
             alignItems: 'center'
           }}
         >
-          <OrderDetailsCard order={order} />
+          <OrderDetailsCard order={order} removeOrderFromList={removeOrderFromList}/>
         </Box>
       ))}
       </div>

@@ -1,13 +1,38 @@
 require('dotenv').config()
-const { Courier, Employee } = require('../models');
+const { Courier, Employee, Customer } = require('../models');
 const jwt = require('jsonwebtoken')
-
+const bcrypt = require('bcrypt');
 let refreshTokens = [];
 
 const customerLogin = async (req, res) => {
     try {
         //Authentication
+        const customer = await Customer.findOne({
+            where: { customer_id: req.body.cus_id}
+        });
+        //const customer = Customer.findOne(u => u.customer_id === req.body.cus_id);
+        if (!customer) {
+            console.error("Wrong username or password");
+            res.status(401).json("Wrong username or password");
+            return
+        }
 
+        const password = req.body.pwd;
+        //const hash = "$2b$10$ktnOLONWJPnPkcrrwU0XguWDJbvEG/dLZsrbhLJNEW4CSZuLdt2jm"//await bcrypt.genSalt(10);
+        //const hashPassword = await bcrypt.hash(password, hash);//convert password to hash
+        console.log("Password ", password);
+        //console.log("Hash Passord ", hashPassword);
+        console.log("Password in database: ", customer.passcode);
+
+        //Check the password is correct
+        const isMatch = await bcrypt.compare(password, customer.passcode);
+        console.log("isMatch: ",isMatch)
+        if(!isMatch){
+            res.status(401).json("Wrong username or password");
+            return
+        }
+        
+        //Set the user
         const user = {
             sub: req.body.cus_id,
             role: 'customer'
@@ -15,7 +40,7 @@ const customerLogin = async (req, res) => {
         const accessToken = createAccessToken(user, "30m") //Create the access token
         const refreshToken = createRefreshToken(user, "6h"); // Create the refresh token
         refreshTokens.push(refreshToken);
-        console.log("Access token: " + accessToken);
+        //console.log("Access token: " + accessToken);
         res.json({
             isValid: true,
             role: 'customer',
@@ -33,11 +58,28 @@ const stuffLogin = async (req, res) => {
     try {
         // Authentication
         const userFromDB = await Employee.findOne({
-            attributes: ['emp_id', 'f_name', 'position'],
-            where: { email: req.body.email, password: req.body.password }
+            where: { email: req.body.email }
         });
+        if (!userFromDB) {
+            console.log("User not found");
+            const user = {
+                sub: '0',
+                role: ''
+            };
+            res.json({
+                isValid: false,
+            });
+            return
+        }
+        const isMatch = await bcrypt.compare(req.body.password, userFromDB.password);
+        console.log("isMatch: ",isMatch)
 
-        if (userFromDB) {
+        if(!isMatch){
+            res.status(401).json("Wrong username or password");
+            return
+        }
+
+        //if (userFromDB) {
             // If user is found
             console.log("User found - emp_id:", userFromDB.emp_id, ", f_name:", userFromDB.f_name);
             const user = {
@@ -55,19 +97,19 @@ const stuffLogin = async (req, res) => {
                 accessToken,
                 refreshToken,
             });
-        } else {
-            console.log("User not found");
-            const user = {
-                sub: '0',
-                role: ''
-            };
-            //const accessToken = createAccessToken(user, "1m"); // Create the access token
-           //const refreshToken = createRefreshToken(user, "6h"); // Create the access token
-            //.log("Access token: " + accessToken);
-            res.json({
-                isValid: false,
-            });
-        }
+        // } else {
+        //     console.log("User not found");
+        //     const user = {
+        //         sub: '0',
+        //         role: ''
+        //     };
+        //     //const accessToken = createAccessToken(user, "1m"); // Create the access token
+        //     //const refreshToken = createRefreshToken(user, "6h"); // Create the access token
+        //     //.log("Access token: " + accessToken);
+        //     res.json({
+        //         isValid: false,
+        //     });
+        // }
     } catch (error) {
         console.error("Error in stuffLogin:", error);
         res.status(500).json({ error: "Internal server error" });

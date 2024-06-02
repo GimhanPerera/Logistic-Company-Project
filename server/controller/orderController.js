@@ -5,6 +5,9 @@ const { sendNormalSMS } = require('../middleware/smsGateway');
 
 const newOrder = async (req, res) => {//Add a order
     try {
+        console.log("TempPWD ",req.body.passcode)
+        //return
+
         // Extract the filename
         const { filename: productImage } = req.files['image'][0];
         const { filename: invoice } = req.files['invoice'][0];
@@ -83,8 +86,9 @@ const newOrder = async (req, res) => {//Add a order
         if(req.body.chatLink!=''){
             chatLink = `\nWECHAT link: ${req.body.chatLink}`;
         }
-        const tempPwd = generateRandomPassword(6);
-        sendNormalSMS(newOrderId, `Order placed\nOrder ID: ${newOrderId}\nCustomer ID: ${cus_id}\nTemplary pwd: ${tempPwd}${chatLink}\nContact: 0714744874`);//send sms
+        console.log("TempPWD ",req.body.passcode)
+        const tempPwd = req.body.passcode =='' ? '': `Templary pwd: ${req.body.passcode}`;
+        sendNormalSMS(newOrderId, `Order placed\nOrder ID: ${newOrderId}\nCustomer ID: ${cus_id}\n${tempPwd}${chatLink}\nContact: 0714744874`, req.user.sub);//send sms
         
 
         const newPriceQuotation = await Price_quotation.create({
@@ -157,7 +161,7 @@ const confirmOrder = async (req, res) => {
             chatLink = `\nWECHAT link: ${req.body.chatLink}`;
         }
         //const tempPwd = generateRandomPassword(6);
-        sendNormalSMS(req.body.order_id, `Order placed\nOrder ID: ${req.body.order_id}\nCustomer ID: ${req.body.cusID}${chatLink}\nContact: 0714744874`);//send sms
+        sendNormalSMS(req.body.order_id, `Order placed\nOrder ID: ${req.body.order_id}\nCustomer ID: ${req.body.cusID}${chatLink}\nContact: 0714744874`, req.user.sub);//send sms
 
         res.status(200).json("Updated");
     } catch (error) {
@@ -427,7 +431,7 @@ const toggleReadyStatus = async (req, res) => {
         if (order.status === 'onhand') {
             order.status = 'Ready';
             if(req.body.sendSMS)
-                sendNormalSMS(req.body.oid, `ORDER STATUS UPDATE\n\nOrder ID: ${req.body.oid}\nYour order is ready.\nContact: 0714744874`);//send sms
+                sendNormalSMS(req.body.oid, `ORDER STATUS UPDATE\n\nOrder ID: ${req.body.oid}\nYour order is ready.\nContact: 0714744874`, req.user.sub);//send sms
         } else if (order.status === 'Ready') {
             order.status = 'onhand';
         }
@@ -453,6 +457,9 @@ const getAllOrderDetailsForOrderCard = async (req, res) => { //Get all Order
             include: [{
                 model: Customer,
                 attributes: ['customer_id', 'f_name', 'l_name', 'tel_number']
+            },{
+                model: Price_quotation,
+                attributes: ['items', 'no_of_packages']
             }]
         });
 
@@ -486,7 +493,7 @@ const toggleCompleteStatus = async (req, res) => {
 
         await order.save();
         if(req.body.sendSMS)
-            sendNormalSMS(req.body.oid, `ORDER STATUS UPDATE\n\nOrder ID: ${req.body.oid}\nYour order is completed.\nContact: 0714744874`);//send sms
+            sendNormalSMS(req.body.oid, `ORDER STATUS UPDATE\n\nOrder ID: ${req.body.oid}\nYour order is completed.\nContact: 0714744874`, req.user.sub);//send sms
         res.json(order);
 
     }catch (error) {

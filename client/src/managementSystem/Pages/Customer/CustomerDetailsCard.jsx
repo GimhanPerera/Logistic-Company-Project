@@ -47,7 +47,7 @@ const CustomerDetailsCard = ({ customer }) => {
           {/* <Button sx={{ fontSize: '0.8rem', padding: '0.1rem' }}>New order</Button> */}
           <Button sx={{ fontSize: '0.8rem', padding: '0.1rem' }}>Edit</Button>
           {/* <Button sx={{ fontSize: '0.8rem', padding: '0.1rem' }}>Delete</Button> */}
-          <Button sx={{ fontSize: '0.8rem', padding: '0.1rem' }}>History</Button>
+          {/* <Button sx={{ fontSize: '0.8rem', padding: '0.1rem' }}>History</Button> */}
         </Box>
       </div>
     </Paper>

@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true
         },
         passcode: {
-            type: DataTypes.STRING(50),
+            type: DataTypes.STRING(64),
             allowNull: false
         },
         f_name: {

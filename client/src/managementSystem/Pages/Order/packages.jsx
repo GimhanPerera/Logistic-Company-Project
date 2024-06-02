@@ -109,7 +109,7 @@ export const Packages = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
-    const { category } = location.state || {};
+    const { category, items, expectedPackageCount } = location.state || {};
   const toBack = () => {
     navigate('../');
   }
@@ -463,6 +463,8 @@ export const Packages = () => {
     return (
       <>
         <Box component="h1" sx={{ textAlign: 'center', position: 'relative' }}>Add packages</Box>
+        <Box component="h3" sx={{ textAlign: 'center', position: 'relative' }}>Items: {items}</Box>
+        <Box component="h3" sx={{ textAlign: 'center', position: 'relative' }}>Expected Package count: {expectedPackageCount}</Box>
 
         {/* SAVE btn */}
         <Button

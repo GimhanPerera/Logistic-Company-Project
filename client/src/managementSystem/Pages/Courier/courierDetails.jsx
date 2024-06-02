@@ -16,8 +16,11 @@ const CourierDetails = () => {
     //const [reloading, setReloading] = useState(false);
     const reload = () => {
         //Not working
-        console.log("Not worked2")
+        //console.log("Not worked2")
     }
+    const removeCourierFromList = (courierID) => {
+        setListOfCourier(prevList => prevList.filter(courier => courier.courier_id !== courierID));
+    };
     const handleAddCourierClick = () => {
         setModalIsOpen('add'); // Or setModalIsOpen(true) depending on how you handle the modal state
     };
@@ -78,7 +81,7 @@ const CourierDetails = () => {
                         alignItems: 'center'
                       }}
                       >
-                        <CourierDetailsCard courier={courier} reload={reload} clickEdit={handleEditCourierClick}  setCourierDetails={setCourierDetails}/>
+                        <CourierDetailsCard courier={courier} reload={reload} clickEdit={handleEditCourierClick}  setCourierDetails={setCourierDetails} removeCourierFromList={removeCourierFromList}/>
                     </Box>
 
                 ))

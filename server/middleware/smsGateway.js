@@ -1,6 +1,8 @@
 const twilio = require('twilio');
 const dotenv = require('dotenv');
-const { Order,Customer } = require('../models');
+const { Order,Customer, Sms, Order_sms } = require('../models');
+const { getCurrentSriLankanDateTime} = require('./dateTime');
+
 const sendTestSMS = async (req, res) => {
     try {
         sendSMS();
@@ -22,7 +24,41 @@ const testRUNS = async () => {
     }
 };
 
-const sendNormalSMS = async (oid, msg) => {
+const insertSmsRecord = async (massage, emp_id, oid) => {
+    try {
+        // Check if the table is empty
+        const count = await Sms.count();
+        
+        let newId;
+        if (count === 0) {
+            newId = 100000;
+        } else {
+            // Get the maximum sms_id
+            const maxId = await Sms.max('sms_id');
+            newId = maxId + 1;
+        }
+
+        const dateTime = await getCurrentSriLankanDateTime();
+        
+        // Insert the new record
+        await Sms.create({
+            sms_id: newId,
+            massage: massage,
+            Date_time: dateTime,
+            emp_id: emp_id ? emp_id : 'EMP02'
+        });
+        await Order_sms.create({
+            order_id: oid,
+            sms_id: newId
+        });
+
+        console.log(`New SMS record inserted with id ${newId}`);
+    } catch (error) {
+        console.error('Error inserting SMS record:', error);
+    }
+}
+
+const sendNormalSMS = async (oid, msg, empID) => {
     try {
         // Get the customer_id from the Order table
         const order = await Order.findOne({
@@ -46,6 +82,7 @@ const sendNormalSMS = async (oid, msg) => {
 
         console.log("----------------------------------------------------------------------------------------------\nMSG SEND SUCCESSFULLY: ",msg)
         //sendSMS(customer_tp,msg);
+        insertSmsRecord(msg, empID, oid);
 
         //res.status(200).json("SEND");
     } catch (error) {
@@ -59,7 +96,7 @@ const sendSMS = ( async (tp, msg)=>{
     return client.messages
     .create({body: `Creative Freight Way Logistics Pvt Ltd\n\n${msg}`, from:'+18284265490', to: process.env.MY_NUMBER})    //'\nHey,\nI am Gimhan. This is a dummy message'  //'+94755850243'
     .then(message => {
-        console.log(message, "Message sent")
+        console.log(message, "Message sent");
     })
     .catch(err => console.log(err))
 

@@ -6,6 +6,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from 'sweetalert2';
+import Autheader from "../../../services/Autheader";
 
 const ViewOrder = () => {
     const location = useLocation();
@@ -86,6 +87,10 @@ const ViewOrder = () => {
                 axios.post('http://localhost:3001/api/order/toggleReadyStatus', {
                     oid: oid,
                     sendSMS: true
+                },{
+                    headers:{
+                        ...Autheader()
+                    }
                 })
                     .then((response) => {
                         setOrderDetails(prevDetails => ({
@@ -165,6 +170,10 @@ const ViewOrder = () => {
                         axios.post('http://localhost:3001/api/order/completeOrder', {
                             oid: oid,
                             sendSMS: true
+                        },{
+                            headers:{
+                                ...Autheader()
+                            }
                         })
                             .then((response) => {
                                 setOrderDetails(prevDetails => ({
@@ -369,26 +378,37 @@ const ViewOrder = () => {
                 <Button onClick={toBack}>
                     Back
                 </Button>
-                {orderDetails.order.status == 'Just opened' ?
-                    "" : <>
+                {orderDetails.order.status == 'Just opened'
+                    ? ""
+                    : <>
                         <Button onClick={toShippingMarks}>
                             Shipping Marks
                         </Button>
-                        <Button onClick={toInvoice}>
-                            Invoice
+                        {orderDetails.order.status == 'FINISH' ? '' :
+                            <Button onClick={toInvoice}>
+                                Invoice
+                            </Button>
+                        }
+                    </>
+                }
+                {orderDetails.order.status == 'FINISH'
+                    ? ''
+                    : <>
+                        <Button onClick={addCourier}>
+                            Add courier
                         </Button>
-                    </>}
-                <Button onClick={addCourier}>
-                    Add courier
-                </Button>
-                {orderDetails.order.status == 'onhand' || orderDetails.order.status == 'Ready' ?
-                    <Button onClick={toggleReadyStatus}>
-                        {orderDetails.order.status == 'Ready' ? 'Change as not Ready' : 'Change as Ready'}
-                    </Button>
-                    : ''}
-                <Button onClick={toPayment}>
-                    Payments
-                </Button>
+                        {orderDetails.order.status == 'onhand' || orderDetails.order.status == 'Ready'
+                            ?
+                            <Button onClick={toggleReadyStatus}>
+                                {orderDetails.order.status == 'Ready' ? 'Change as not Ready' : 'Change as Ready'}
+                            </Button>
+                            : ''
+                        }
+                        <Button onClick={toPayment}>
+                            Payments
+                        </Button>
+                    </>
+                }
                 {orderDetails.order.status == 'Ready' ?
                     <Button variant="contained" onClick={toggleCompleteStatus}>
                         Complete Order

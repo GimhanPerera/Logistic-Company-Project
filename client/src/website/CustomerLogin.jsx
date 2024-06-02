@@ -47,7 +47,7 @@ export const CustomerLogin = () => {
       try {
         const response = await axios.post("http://localhost:3001/api/login/customer", {
           "cus_id": values.customerID,
-          "pwd": values.pwd
+          "pwd": values.password
         });
         if (response.data.isValid) {
           localStorage.setItem('user', JSON.stringify(response.data));
@@ -57,9 +57,11 @@ export const CustomerLogin = () => {
         }
       } catch (error) {
         if (error.response && error.response.data) {
-          setErrorMessage(error.response.data);
+          //setErrorMessage(error.response.data);
+          toast.error("Wrong username or password");
         } else {
-          setErrorMessage("An unexpected error occurred. Please try again.");
+          //setErrorMessage("An unexpected error occurred. Please try again.");
+          toast.error("Wrong username or password");
         }
         toast.error(errorMessage);
       }
@@ -77,7 +79,7 @@ export const CustomerLogin = () => {
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
-            paddingTop:'3rem'
+            paddingTop:'5rem',
           }}>
             <Box component="div">
               <img src={loginImg} alt='login image'  style={{width:'26.4rem', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',}}/>
