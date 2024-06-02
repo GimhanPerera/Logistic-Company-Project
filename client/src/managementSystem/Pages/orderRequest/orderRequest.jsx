@@ -18,10 +18,11 @@ const OrderRequest = () => {
   if (listOfpriceQ.length == 0) return (
     <>
       <SearchBar label='Search by quotation id' search={search} setSearch={setSearch}/>
-      <Box component="div" sx={{width:'100%'}}>
-        <img src={nodataImg} alt='empty image' style={{ margin:'auto', width: '26rem', marginLeft:'300px'}} />
+      <Box component="div" sx={{margin:'auto',display: 'flex', justifyContent: 'center'}}>
+        <img src={nodataImg} alt='empty image' style={{ width: '25rem'}} />
+        </Box>
         <Box component="p" sx={{width:'100px', margin:'auto', fontSize:'20px', fontWeight:'600'}}>No Data</Box>
-      </Box>
+      
     </>)
   else
     return (

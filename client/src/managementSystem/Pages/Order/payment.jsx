@@ -104,14 +104,23 @@ const Payment = () => {
     return (
         <>
             <div>
-                <Button onClick={toBack}>
+                <Button onClick={toBack} variant="outlined" sx={{display:'fixed', top:'1rem', left:'2rem'}}>
                     Back
                 </Button>
             </div>
-
-            <Box component="p" sx={{ fontSize: '1.2rem' }}>Amount</Box>
-            <TextField size='small' variant="outlined" value={paymentValue} onChange={handleAmountChange} type='number' />
-            <Box component="h3" sx={{ mb: 2, width: '150px' }}>
+            <Box sx={{width:'500px', margin:'auto', display:'flex', flexDirection:'row', justifyContent:'space-between', mb:'1rem' }}>
+            <Box component="h3" sx={{}}>Total Payments: {paymentList.reduce((sum, payment) => sum + parseFloat(payment.payment) || 0, 0)}</Box>
+            <Box component="h3" sx={{ mb: 2 }}>Need to pay: {amountDue.toFixed(2)}</Box>
+            </Box>
+            <Box sx={{border: '1px black solid', borderRadius:'10px', width:'350px', p:'1.5rem', margin:'auto'}}>
+            <table>
+                <tr>
+                    <td><Box component="p" sx={{ fontSize: '1.2rem', mr:'1rem' }}>Amount</Box></td>
+                    <td><TextField size='small' variant="outlined" value={paymentValue} onChange={handleAmountChange} type='number' /></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><Box component="h3" sx={{ mb: 2, mt:2, width: '150px' }}>
                 <FormControl fullWidth>
                     <Select
                         size='small'
@@ -122,14 +131,23 @@ const Payment = () => {
                         <MenuItem value={'Bank transfer'}>Bank transfer</MenuItem>
                     </Select>
                 </FormControl>
-            </Box>
-            <Button onClick={addPayment} variant="contained">
+            </Box></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <Button onClick={addPayment} variant="contained">
                 Add
             </Button>
+            </td>
+                </tr>
+            </table>
+            </Box>
+            
+            
 
             {/*Payments*/}
-            <Box component="h3" sx={{}}>Total Payments: {paymentList.reduce((sum, payment) => sum + parseFloat(payment.payment) || 0, 0)}</Box>
-            <Box component="h3" sx={{ mb: 2 }}>Need to pay: {amountDue.toFixed(2)}</Box>
+            <Box sx={{display:'flex',p:'1.5rem', justifyContent:'center' }}>
             <table style={{ borderCollapse: 'collapse' }}>
                 <thead>
                     <tr>
@@ -153,6 +171,8 @@ const Payment = () => {
                     ))}
                 </tbody>
             </table>
+            </Box>
+            {paymentList== 0? <Box component="h4" sx={{ mt: 2, textAlign:'center'}}>No Payments</Box>:''}
         </>
     )
 }

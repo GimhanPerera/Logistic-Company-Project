@@ -11,7 +11,7 @@ const Navbar = ({ sidebarToggle, setSidebarToggle, value }) => {
         position: 'fixed',
         display: 'flex',
         justifyContent: 'space-between',
-
+        zIndex:'1',
         ...(sidebarToggle ? { width: '100%' } : { width: 'calc(100% - 16rem)' })
       }}
     >

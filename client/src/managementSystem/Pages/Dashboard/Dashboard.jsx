@@ -76,7 +76,7 @@ const Dashboard = () => {
       </Box>
 
       {/* row 2 */}
-      <Box component="div" sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+      <Box component="div" sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', mt:'2rem' }}>
         <Paper elevation={3} component="div" sx={{ width: '30rem', m: '1rem', p: '1rem' }}>
           <Box component="h2" sx={{ textAlign: 'center' }}>Monthly Income</Box>
           <BarChart
