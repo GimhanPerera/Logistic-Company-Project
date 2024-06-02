@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
-const OrderDetailsCard = ({ order }) => {
+const OrderDetailsCard = ({ order,removeOrderFromList }) => {
   const navigate = useNavigate();
   const [visible, setVisible] = useState(true);
 
@@ -17,7 +17,8 @@ const OrderDetailsCard = ({ order }) => {
       retrun
     }
     const id = order.order_id;
-    navigate(`./${id}`, { state: { category: order.category } });
+    //console.log("TEST!: ",order.Price_quotation.items, order.Price_quotation.no_of_packages)
+    navigate(`./${id}`, { state: { category: order.category, items : order.Price_quotation.items, expectedPackageCount: order.Price_quotation.no_of_packages} });
   }
   const toView = () => {
     navigate('./view', { state: { id: order.order_id } });
@@ -49,6 +50,7 @@ const OrderDetailsCard = ({ order }) => {
               icon: "success"
             });
             setVisible(false);
+            removeOrderFromList(orderID);
           })
           .catch((error) => {
             console.error("Error fetching courier details:", error);

@@ -13,7 +13,7 @@ const addShipment = async (req, res) => {
             arrival_date: new Date(req.body.arrivalDate), // Convert to Date object
             displayed_arrival_date: new Date(req.body.displayDate) // Convert to Date object
         }];
-        
+
         console.log(req.body.displayDate);
         await Shipment.create(shipment[0]); //need to check duplications
 
@@ -73,12 +73,12 @@ const getPackagesOfAShipment = async (req, res) => {
 
         // Retrieve shipping marks for the retrieved order IDs
         const packages = await Package.findAll({
-            attributes: ['shipping_mark','package_count','collected_count'],
+            attributes: ['shipping_mark', 'package_count', 'collected_count'],
             where: {
                 order_id: orderIDs,
             },
         });
-        
+
         // Initialize totals
         let totalPackageCount = 0;
         let totalCollectedCount = 0;
@@ -89,7 +89,7 @@ const getPackagesOfAShipment = async (req, res) => {
         //     const range = parts[1].split("-");
         //     const start = parseInt(range[0], 10);
         //     const end = parseInt(range[1], 10);
-            
+
         //     if (start === end) {
         //         return `${parts[0]} ${start}`;
         //     } else {
@@ -102,9 +102,9 @@ const getPackagesOfAShipment = async (req, res) => {
             const collectedCount = pkg.collected_count !== null ? pkg.collected_count : 0;
             totalPackageCount += pkg.package_count;
             totalCollectedCount += collectedCount;
-            
+
             //const displayMark = generateDisplayMark(pkg.shipping_mark);
-            
+
             return {
                 shipping_mark: pkg.shipping_mark,
                 package_count: pkg.package_count,
@@ -128,7 +128,7 @@ const getPackagesOfAShipment = async (req, res) => {
 }
 
 const getCurrentSriLankanDateTime = () => {
-    
+
     const currentDate = new Date();
     //const time = currentDate.toLocaleTimeString();//This give the GMT time. Need to add 5.30hours to convert to Sri Lankan time
     currentDate.setHours(currentDate.getHours() + 5);
@@ -148,7 +148,7 @@ const saveScanUpdates = async (req, res) => {
         // Get the user id(Employee id) and current date and time
         const userId = req.user.sub;
         let allCompleted = true;
-        
+
 
         const packageUpdatePromises = req.body.map(packageDetails => {
             console.log(packageDetails);
@@ -188,14 +188,14 @@ const saveScanUpdates = async (req, res) => {
             let orderStatus = 'onhand';
             if (totalPackageCount != totalCollectedCount) {
                 orderStatus = 'Ship/airfreight';
-                allCompleted=false;
+                allCompleted = false;
             }
 
             // Update order status in the database
             await Order.update({ status: orderStatus }, { where: { order_id: orderId } });
             orderIdsToUpdate.push(orderId);
             console.log("-------------------------------");
-            console.log(orderId,orderStatus);console.log("ID: ",req.user)
+            console.log(orderId, orderStatus); console.log("ID: ", req.user)
         }
 
         //Get BL_number
@@ -206,14 +206,14 @@ const saveScanUpdates = async (req, res) => {
         //console.log("ID 1: ",orderIdsToUpdate[0])
 
         //Update shipment
-        if(allCompleted){
+        if (allCompleted) {
             await Shipment.update({ status: 'completed' }, { where: { BL_no: BL_no.BL_no } });
-        }else{
+        } else {
             await Shipment.update({ status: 'waiting' }, { where: { BL_no: BL_no.BL_no } });
         }
-        console.log("All completed? "+allCompleted);
-        console.log("BL? ",BL_no.BL_no);
-        
+        console.log("All completed? " + allCompleted);
+        console.log("BL? ", BL_no.BL_no);
+
 
         res.status(200).json({
             message: "Success",
@@ -226,10 +226,80 @@ const saveScanUpdates = async (req, res) => {
     }
 }
 
+//edit a shipment
+const editShipment = async (req, res) => {
+    try {
+        console.log("TEST!");
+        const shipment = await Shipment.update({
+            displayed_arrival_date: req.body.displayDate,
+            loaded_date: req.body.loadedDate,
+            arrival_date: req.body.arrivalDate,
+        }, {
+            where: { BL_no: req.body.BL_number }
+        });
+
+        const order = await Order.update({
+            BL_no: null,
+            status: 'In Warehouse'
+        }, {
+            where: {
+                BL_no: req.body.BL_number,
+            },
+        });
+        // Update orders concurrently
+        const orderUpdatePromises = req.body.orderIds.map(orderId => {
+            console.log(orderId);
+            return Order.update({
+                BL_no: req.body.BL_number,
+                status: 'Ship/airfreight',
+            }, {
+                where: { order_id: orderId }
+            });
+        });
+
+        await Promise.all(orderUpdatePromises);
+        console.log("TESTLAST");
+        res.status(200).json(shipment);
+    } catch (error) {
+        // Handle error
+        console.error("Error fetching order details:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+const deleteShipment = async (req, res) => {
+    try {
+        const BL_number = req.params.BL_number;
+        console.log(req.params.orderID);
+        const order = await Order.update({
+            BL_no: null,
+            status: 'In Warehouse'
+        }, {
+            where: {
+                BL_no: BL_number,
+            },
+        });
+        const shipment = await Shipment.destroy({
+            where: {
+                BL_no: BL_number,
+            },
+        });
+
+
+
+        res.status(200).json("SUCCESS");
+    } catch (error) {
+        // Handle error
+        console.error("Error fetching order details:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
 
 module.exports = {
     getAllShipments,
     addShipment,
     getPackagesOfAShipment,
-    saveScanUpdates
+    saveScanUpdates,
+    editShipment,
+    deleteShipment
 }

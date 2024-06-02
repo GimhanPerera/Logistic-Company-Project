@@ -1,6 +1,7 @@
 const { Customer, Order,Price_quotation } = require('../models');
 const { Op } = require('sequelize');
-
+require('dotenv').config()
+const bcrypt = require('bcrypt');
 
 //1. Add a customer
 const addCustomer = async (req, res) => {
@@ -9,10 +10,12 @@ const addCustomer = async (req, res) => {
     const { filename: nicFrontImg } = req.files['nicFront'][0];
     const { filename: nicBackImg } = req.files['nicBack'][0];
 
-    const cus_id = await generateNextPKforCustomer()
+    const cus_id = await generateNextPKforCustomer();
+    const passcode = await generatePassword();
+    const hashPassword = await bcrypt.hash(passcode, process.env.HASH);//convert password to hash
     const customer = await Customer.create({
         "customer_id": cus_id,
-        "passcode": await generatePassword(),
+        "passcode": hashPassword,
         "f_name": req.body.f_name,
         "l_name": req.body.l_name,
         "tel_number": req.body.tel_number,
@@ -24,12 +27,17 @@ const addCustomer = async (req, res) => {
         "nicFront": nicFrontImg,
         "nicBack": nicBackImg,
     })
-console.log("AWA")
+    
     //const customer = req.body;
-    console.log("new cus_id: ", cus_id)
+    console.log({
+        "cus_id: ": cus_id,
+        "passcode": passcode
+    })
     //await Customer.create(customer);
     
-    res.status(200).json({"cus_id": cus_id})
+    res.status(200).json({"cus_id": cus_id,
+    "passcode": passcode
+    })
 } catch (error) {
     // Handle error
     console.error("Error fetching order details:", error);

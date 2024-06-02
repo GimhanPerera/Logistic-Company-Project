@@ -1,19 +1,46 @@
 import { Box } from '@mui/material';
 import axios from 'axios';
 import React from 'react';
+import Swal from 'sweetalert2';
 
-const CourierDetailsCard = ({ courier, reload, clickEdit,setCourierDetails }) => {
+const CourierDetailsCard = ({ courier, reload, clickEdit,setCourierDetails,removeCourierFromList }) => {
 
   const deleteCourier = () => {
-    axios.delete(`http://localhost:3001/api/courier/${courier.courier_id}`)
-      .then((response) => {
-        reload;
-        console.log("Not worked")
-      })
-      .catch((error) => {
-        console.error("Error fetching courier details:", error);
-      });
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#68DD62",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Create the order!"
+  }).then(async (result) => {
+      if (result.isConfirmed) {
+          try {
+            axios.delete(`http://localhost:3001/api/courier/${courier.courier_id}`)
+            .then((response) => {
+              //reload;
+              removeCourierFromList(courier.courier_id);
+              console.log("Not worked")
+            })
+            .catch((error) => {
+              console.error("Error fetching courier details:", error);
+            });
+
+              Swal.fire({
+                  title: `Deleted`,
+                  icon: "success"
+              });
+              navigate('../order');
+          } catch (error) {
+              console.error('Error creating order:', error);
+          }
+      }
+  });
+    
   }
+
+
   const handleEditClick = () => {
     setCourierDetails(courier);
     clickEdit(courier.courier_id);

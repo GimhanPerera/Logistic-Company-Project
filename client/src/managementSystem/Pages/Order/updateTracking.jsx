@@ -197,7 +197,7 @@ const UpdateTracking = () => {
             field: 'status',
             headerName: 'Status',
             width: 140,
-            editable: true,
+            editable: tracking != 'Waiting' ? false : true,
             type: 'singleSelect',
             valueOptions: ['not received', 'received'],
         },

@@ -12,6 +12,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from 'sweetalert2';
 import { Countries } from '../../../countryCodes';
+import Autheader from "../../../services/Autheader";
 import { priceQuotationValidation } from '../../../validations';
 
 const RequestHandle = () => {
@@ -161,37 +162,55 @@ const RequestHandle = () => {
         //     toast.error("Invoice is required");
         //     return
         // }
-
-        try {
-            const token = localStorage.getItem('token');
-            await axios.post("http://localhost:3001/api/order/requestconfirm", {
-                "order_id": order_id,
-                "quotation_id": quotation_id,
-                "items": values.items,
-                "packages": values.packages,
-                "weight": values.weight,
-                "shippingmethod": values.shippingmethod,
-                "category": values.category,
-                "quotation": values.quotation,
-                "description": values.description,
-                "supplierLoc": selectedCountry.label,
-                "status": "Just opened",
-                "chatLink": checked ? chatLink : '',
-                "cusID": customerID,
-                // "name": customerName,//
-                // "tp": customerTp,//
-            }, {
-                headers: {
-                    //'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${token}`
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#68DD62",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Create the order!"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    //const token = localStorage.getItem('token');
+                    await axios.post("http://localhost:3001/api/order/requestconfirm", {
+                        "order_id": order_id,
+                        "quotation_id": quotation_id,
+                        "items": values.items,
+                        "packages": values.packages,
+                        "weight": values.weight,
+                        "shippingmethod": values.shippingmethod,
+                        "category": values.category,
+                        "quotation": values.quotation,
+                        "description": values.description,
+                        "supplierLoc": selectedCountry.label,
+                        "status": "Just opened",
+                        "chatLink": checked ? chatLink : '',
+                        "cusID": customerID,
+                        // "name": customerName,//
+                        // "tp": customerTp,//
+                    }, {
+                        headers: {
+                            //'Content-Type': 'multipart/form-data',
+                            ...Autheader()
+                        }
+                    });
+                    Swal.fire({
+                        title: `Order ${order_id} created`,
+                        icon: "success"
+                    });
+                    navigate('../');
+                } catch (error) {
+                    console.error('Error creating order:', error);
                 }
-            });
 
-            navigate('../');
-        } catch (error) {
-            console.error('Error creating order:', error);
-        }
+            }
+        });
+
+
     }
+
     const { values, touched, handleBlur, isSubmitting, setErrors, handleChange, handleSubmit, errors } = useFormik({
         initialValues: initialValues,
         validationSchema: priceQuotationValidation,
@@ -502,7 +521,7 @@ const RequestHandle = () => {
                                 </table>
                             </Box>
                         </Box>
-                        <Box component="div" sx={{ position: 'absolute', right: '8rem', bottom: '9rem', display:'flex', flexDirection:'column'}}>
+                        <Box component="div" sx={{ position: 'absolute', right: '8rem', bottom: '9rem', display: 'flex', flexDirection: 'column' }}>
                             <TextField label="ChatLink" size="small" type='text' name='chatlink'
                                 value={chatLink}
                                 onChange={(e) => setChatLink(e.target.value)}

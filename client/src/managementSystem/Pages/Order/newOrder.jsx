@@ -8,6 +8,7 @@ import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Swal from 'sweetalert2';
 import AddCustomerModel from "../../../Modals/addCustomerModal";
 import { Countries } from '../../../countryCodes';
 import Autheader from "../../../services/Autheader";
@@ -34,6 +35,7 @@ const NewOrder = () => {
     };
     const [isAddCustomerOpen, setAddCustomerOpen] = useState(false);
     const [customerID, setCustomerID] = useState("");
+    const [passcode, setPasscode] = useState('');
     const [customerName, setCustomerName] = useState("");
     const [customerTp, setCustomerTp] = useState("");
     const [image, setImage] = useState(null);
@@ -100,35 +102,52 @@ const NewOrder = () => {
             return
         }
 
-        try {
-            const token = localStorage.getItem('token');
-            await axios.post("http://localhost:3001/api/order", {
-                "items": values.items,
-                "packages": values.packages,
-                "weight": values.weight,
-                "shippingmethod": values.shippingmethod,
-                "quotation": values.quotation,
-                "description": values.description,
-                "supplierLoc": selectedCountry.label,
-                "status": "Just opened",
-                "image": image,
-                "invoice": invoice,
-                "cusID": customerID,
-                "name": customerName,
-                "tp": customerTp,
-                "category": values.category,
-                "chatLink": checked ? chatLink : ''
-            }, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    ...Autheader()
+        //========================
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#68DD62",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Create the order!"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    //const token = localStorage.getItem('token');
+                    await axios.post("http://localhost:3001/api/order", {
+                        "items": values.items,
+                        "packages": values.packages,
+                        "weight": values.weight,
+                        "shippingmethod": values.shippingmethod,
+                        "quotation": values.quotation,
+                        "description": values.description,
+                        "supplierLoc": selectedCountry.label,
+                        "status": "Just opened",
+                        "image": image,
+                        "invoice": invoice,
+                        "cusID": customerID,
+                        "passcode":passcode,
+                        "name": customerName,
+                        "tp": customerTp,
+                        "category": values.category,
+                        "chatLink": checked ? chatLink : ''
+                    }, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                            ...Autheader()
+                        }
+                    });
+                    Swal.fire({
+                        title: `New order created`,
+                        icon: "success"
+                    });
+                    navigate('../order');
+                } catch (error) {
+                    console.error('Error creating order:', error);
                 }
-            });
-
-            navigate('../order');
-        } catch (error) {
-            console.error('Error creating order:', error);
-        }
+            }
+        });
     }
 
     const { values, touched, handleBlur, isSubmitting, setErrors, handleChange, handleSubmit, errors } = useFormik({
@@ -137,7 +156,6 @@ const NewOrder = () => {
 
         onSubmit,
     });
-
 
     return (
         <>
@@ -342,7 +360,7 @@ const NewOrder = () => {
                                 </table>
                             </Box>
                         </Box>
-                        <Box component="div" sx={{ position: 'absolute', right: '8rem', bottom: '8.5rem', display:'flex', flexDirection:'column'}}>
+                        <Box component="div" sx={{ position: 'absolute', right: '8rem', bottom: '8.5rem', display: 'flex', flexDirection: 'column' }}>
                             <TextField label="ChatLink" size="small" type='text' name='chatlink'
                                 value={chatLink}
                                 onChange={(e) => setChatLink(e.target.value)}
@@ -364,7 +382,7 @@ const NewOrder = () => {
                     </Form>
                 </Formik>
                 <div>
-                    <AddCustomerModel open={isAddCustomerOpen} onClose={() => setAddCustomerOpen(false)} setCustomerID={setCustomerID} ></AddCustomerModel>
+                    <AddCustomerModel open={isAddCustomerOpen} onClose={() => setAddCustomerOpen(false)} setCustomerID={setCustomerID} setPasscode={setPasscode}></AddCustomerModel>
                 </div>
             </div>
 

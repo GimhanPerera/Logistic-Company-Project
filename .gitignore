@@ -1,4 +1,5 @@
 server/.env
 client/src/testfile.jsx
 client/src/testfile2.jsx
-/server/images
+server/images
+server/node_modules

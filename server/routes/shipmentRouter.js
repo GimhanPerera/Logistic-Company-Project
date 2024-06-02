@@ -15,4 +15,11 @@ router.get("/getPackagesOf/:BLnumber", shipmentController.getPackagesOfAShipment
 //get all packages of a shipment
 router.post("/saveScanUpdates",loginController.authenticateToken, shipmentController.saveScanUpdates);
 
+//delete Shipment
+router.delete("/:BL_number", shipmentController.deleteShipment);
+
+//get shipment
+router.post("/update", shipmentController.editShipment);
+
+
 module.exports = router;

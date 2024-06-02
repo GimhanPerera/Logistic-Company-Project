@@ -46,10 +46,10 @@ router.get("/readyToShipOrderIDs", orderController.readyToShipOrderIDs)
 router.get("/allById/:orderId", orderController.getAllDetailsOfAOrder)
 
 //Toggle onHand/Ready Status
-router.post("/toggleReadyStatus", orderController.toggleReadyStatus)
+router.post("/toggleReadyStatus",loginController.authenticateToken, orderController.toggleReadyStatus)
 
 //Completed Status
-router.post("/completeOrder", orderController.toggleCompleteStatus)
+router.post("/completeOrder",loginController.authenticateToken, orderController.toggleCompleteStatus)
 
 router.delete("/:orderID", orderController.deleteOrderJOstate)
 

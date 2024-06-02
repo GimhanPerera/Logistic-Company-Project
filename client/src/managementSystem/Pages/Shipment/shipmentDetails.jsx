@@ -43,6 +43,9 @@ export const ShipmentDetails = () => {
             setFilteredItems([...listOfShipment]);
         }
     }
+    const removeShipmentFromList = (BL) => {
+        setListOfShipment(prevList => prevList.filter(shipment => shipment.BL_no !== BL));
+    };
 
     const handleFilterButtonClick = (selectedCategory) => {
         if (selectedFilters.includes(selectedCategory)) {
@@ -119,7 +122,7 @@ export const ShipmentDetails = () => {
                             alignItems: 'center'
                         }}
                     >
-                        <ShipmentDetailsCard shipment={shipment} />
+                        <ShipmentDetailsCard shipment={shipment}  removeShipmentFromList={removeShipmentFromList}/>
                     </Box>
                 ))
             )}

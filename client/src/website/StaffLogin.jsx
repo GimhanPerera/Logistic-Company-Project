@@ -5,6 +5,7 @@ import React from 'react';
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import loginImg from '../assets/staffLoginImg.jpg';
 import { staffLoginValidation } from '../validations';
 import Navbar from './navbar';
 
@@ -47,7 +48,7 @@ export const StaffLogin = () => {
     return (
         <div>
             <Navbar />
-            <Box component="section" sx={{ backgroundColor: '#edfeff' }}>
+            <Box component="section" sx={{ backgroundColor: '#edfeff', height:'87vh' }}>
                 <Box component="div"
                     sx={{
                         display: 'flex',
@@ -58,36 +59,40 @@ export const StaffLogin = () => {
                         paddingRight: '1.5rem',
                         paddingTop: '4rem',
                         paddingBottom: '2rem',
-                        marginLeft: 'auto',
-                        marginRight: 'auto',
                     }}>
                     <Box component="div"
                         sx={{
-                            width: '30%',
                             backgroundColor: '#fff',
                             boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
                             borderColor: '#374151',
                             marginTop: 0,
                             maxWidth: '100%',
-                            padding: 0
+                            padding: 0,
+                            display:'flex',
+                            flexDirectionL:'row'
                         }}>
+                            <Box component="div">
+              <img src={loginImg} alt='login image'  style={{width:'26.4rem', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',}}/>
+            </Box>
                         <Box component="div"
                             sx={{
-                                height: '24rem',
+                                height: '23rem',
                                 display: 'flex',
                                 flexDirection: 'column',
                                 paddingTop: '2.5rem',
                                 paddingBottom: '2.5rem',
                                 paddingLeft: '3rem',
                                 paddingRight: '3rem',
-                                gap: '1.5rem'
+                                gap: '1.5rem',
+                                width:'26.4rem'
                             }}>
                             <Box component="h1"
                                 sx={{
                                     fontSize: '1.5rem',
                                     fontWeight: 700,
                                     lineHeight: 1.25,
-                                    letterSpacing: '-0.025em'
+                                    letterSpacing: '-0.025em',
+                                    marginTop:'2rem'
                                 }}>
                                 Login
                             </Box>

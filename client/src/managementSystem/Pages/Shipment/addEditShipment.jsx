@@ -25,7 +25,7 @@ const AddEditShipment = () => {
 
     useEffect(() => {
         const selectedCategory = 'G';
-        console.log(shipment.Orders);
+        console.log("INIT", shipment.Orders);
 
         // Filter orders based on the selected category and map to order_ids
         const filteredOrderIds = shipment.Orders
@@ -77,16 +77,16 @@ const AddEditShipment = () => {
         // Filter orders based on the selected category and map to order_ids
         const filteredOrderIds = shipment.Orders
             .filter(order => order.category === selectedCategory)
-            
-            let filteredOrders = [];
-            if (selectedCargo == 'Air cargo')
-                filteredOrders = filterOrdersWithA(filteredOrderIds);
-            else
-                filteredOrders = filterOrdersWithS(filteredOrderIds);
+
+        let filteredOrders = [];
+        if (selectedCargo == 'Air cargo')
+            filteredOrders = filterOrdersWithA(filteredOrderIds);
+        else
+            filteredOrders = filterOrdersWithS(filteredOrderIds);
 
         // Update state with the filtered order IDs
         setOrderIds(filteredOrders.map(order => order.order_id));
-        
+
 
         // handleChange(event);
     };
@@ -110,8 +110,8 @@ const AddEditShipment = () => {
             filteredOrders = filterOrdersWithA(shipment.Orders);
         else
             filteredOrders = filterOrdersWithS(shipment.Orders);
-        
-            console.log("Filter based on Method ", filteredOrders);
+
+        console.log("Filter based on Method ", filteredOrders);
 
         // Filter orders based on the selected condition and map to order_ids
         const filteredOrderIds = filteredOrders.filter(order => order.category === selectedCat)
@@ -141,7 +141,12 @@ const AddEditShipment = () => {
 
     if (isNew) {
         const onSubmit = async (values, actions) => {
-            
+            try{
+            console.log("checked ",checked);
+            if (checked.length == 0){
+                toast.error("No orders selected");
+                return
+            }
             const data = {
                 BLnumber: values.BLnumber,
                 shippingMethod: values.shippingMethod,
@@ -153,11 +158,11 @@ const AddEditShipment = () => {
             };
             const jsonString = JSON.stringify(data);
             console.log("checked ", checked);
-            if(checked.length==0){
+            if (checked.length == 0) {
                 toast.error("No orders selected");
                 return
-            } 
-                axios.post('http://localhost:3001/api/shipment',jsonString, {
+            }
+            axios.post('http://localhost:3001/api/shipment', jsonString, {
                 headers: {
                     'Content-Type': 'application/json',
                     ...Autheader()
@@ -169,9 +174,12 @@ const AddEditShipment = () => {
                     navigate('../');
                 })
                 .catch((error) => {
-                    console.error("HHError fetching courier details:", error);
+                    console.error("Error fetching courier details:", error);
                     toast.error("BL number is already exist");
                 });
+            }catch(error){
+                toast.error("Something wrong");
+            }
         }
 
         const { values, touched, handleBlur, isSubmitting, setErrors, handleChange, handleSubmit, errors } = useFormik({
@@ -346,7 +354,48 @@ const AddEditShipment = () => {
     }
     else {
         const onSubmit = async (values, actions) => {
-            console.log("UPDATED")
+            console.log("UPDATED ",values.displayDate);
+            //return
+
+            try{
+                console.log("checked ",checked);
+                if (checked.length == 0){
+                    toast.error("No orders selected");
+                    return
+                }
+                const data = {
+                    BL_number: values.BLnumber,
+                    shippingMethod: values.shippingMethod,
+                    displayDate: values.displayDate,
+                    category: values.category,
+                    loadedDate: values.loadedDate,
+                    arrivalDate: values.arrivalDate,
+                    orderIds: checked
+                };
+                const jsonString = JSON.stringify(data);
+                //console.log("checked ", checked);
+                if (checked.length == 0) {
+                    toast.error("No orders selected");
+                    return
+                }
+                axios.post('http://localhost:3001/api/shipment/update', data, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...Autheader()
+                    }
+                })
+                    .then((response) => {
+                        console.log(response.data);
+                        //MASSAGES NEED TO TRIGER
+                        navigate('../');
+                    })
+                    .catch((error) => {
+                        console.error("Error fetching courier details:", error);
+                        toast.error("Something wrong");
+                    });
+                }catch(error){
+                    toast.error("Something wrong");
+                }
         }
         const { values, touched, handleBlur, isSubmitting, setErrors, handleChange, handleSubmit, errors } = useFormik({
             initialValues: initialValues,
@@ -354,146 +403,155 @@ const AddEditShipment = () => {
 
             onSubmit,
         });
+        useEffect(() => {
+            setOrderIds(shipment.Orders.map(order => order.order_id));
+            setChecked(shipment.Orders.map(order => order.order_id));
+            console.log("CHECKED ",checked)
+    }, [shipment])
 
-        return (
-            <><ToastContainer />
-                <Box component="h2" sx={{ margin: '1rem auto', width: '200px' }}>Edit Shipment</Box>
-                <Box component="div" sx={{ display: 'flex', flexDirection: 'row', width: '900px', m: 'auto' }}>
-                    <Box component="div" sx={{ border: '1px solid gray', p: '1rem', m: '1rem 1rem', width: '500px' }}>
-                        <div>
-                            <Formik>
-                                <Form onSubmit={handleSubmit}>
-                                    <table>
-                                        <tr>
-                                            <td>
-                                                <TextField label="BL number" size="small" type='text' name='BLnumber' margin="normal"
-                                                    value={values.BLnumber}
+    return (
+        <><ToastContainer />
+            <Box component="h2" sx={{ margin: '1rem auto', width: '200px' }}>Edit Shipment</Box>
+            <Box component="div" sx={{ display: 'flex', flexDirection: 'row', width: '900px', m: 'auto' }}>
+                <Box component="div" sx={{ border: '1px solid gray', p: '1rem', m: '1rem 1rem', width: '500px' }}>
+                    <div>
+                        <Formik>
+                            <Form onSubmit={handleSubmit}>
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <TextField label="BL number" size="small" type='text' name='BLnumber' margin="normal"
+                                                value={values.BLnumber}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                disabled
+                                                error={touched.BLnumber && Boolean(errors.BLnumber)}
+                                                helperText={touched.BLnumber && errors.BLnumber}
+                                                initialValues={values.BLnumber}
+                                                sx={{ mr: '1rem' }}
+                                            />
+                                        </td>
+                                        <td>
+                                            <FormControl sx={{ marginTop: '0.5rem', minWidth: 170 }}>
+                                                <InputLabel id="demo-simple-select-helper-label">Shipping method</InputLabel>
+                                                <Field
+                                                    disabled
+                                                    as={Select}
+                                                    name="shippingMethod"
+                                                    value={values.shippingMethod || initialValues.shippingMethod}
                                                     onChange={handleChange}
                                                     onBlur={handleBlur}
-                                                    error={touched.BLnumber && Boolean(errors.BLnumber)}
-                                                    helperText={touched.BLnumber && errors.BLnumber}
-                                                    initialValues={values.BLnumber}
-                                                    sx={{ mr: '1rem' }}
-                                                />
-                                            </td>
-                                            <td>
-                                                <FormControl sx={{ marginTop: '0.5rem', minWidth: 170 }}>
-                                                    <InputLabel id="demo-simple-select-helper-label">Shipping method</InputLabel>
-                                                    <Field
-                                                        as={Select}
-                                                        name="shippingMethod"
-                                                        value={values.shippingMethod || initialValues.shippingMethod}
-                                                        onChange={handleChange}
-                                                        onBlur={handleBlur}
-                                                        label="Shipping method"
-                                                        size='small'
-                                                    >
-                                                        <MenuItem value={'Air cargo'}>Air Cargo</MenuItem>
-                                                        <MenuItem value={'Ship cargo'}>Ship Cargo</MenuItem>
-                                                    </Field>
-                                                </FormControl>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <TextField label="Loaded date" size="small" type='date' name='loadedDate' margin="normal"
-                                                    value={values.loadedDate}
-                                                    onChange={handleChange}
-                                                    onBlur={handleBlur}
-                                                    error={touched.loadedDate && Boolean(errors.loadedDate)}
-                                                    helperText={touched.loadedDate && errors.loadedDate}
-                                                    initialValues={values.loadedDate}
-                                                />
-                                            </td>
-                                            <td>
-                                                <TextField label="Arrival date" size="small" type='date' name='arrivalDate' margin="normal"
-                                                    value={values.arrivalDate}
-                                                    onChange={handleChange}
-                                                    onBlur={handleBlur}
-                                                    error={touched.arrivalDate && Boolean(errors.arrivalDate)}
-                                                    helperText={touched.arrivalDate && errors.arrivalDate}
-                                                    initialValues={values.arrivalDate}
-                                                />
-                                            </td>
-                                        </tr><tr>
-                                            <td>
-                                                <TextField label="Displayed arrival date" size="small" type='date' name='displayDate' margin="normal"
-                                                    value={values.displayDate}
-                                                    onChange={handleChange}
-                                                    onBlur={handleBlur}
-                                                    error={touched.displayDate && Boolean(errors.displayDate)}
-                                                    helperText={touched.displayDate && errors.displayDate}
-                                                    initialValues={values.displayDate}
-                                                />
-                                            </td>
-                                            <td></td>
-                                        </tr>
-                                    </table>
-                                    <Box component="div" sx={{}}>
-                                        <Button variant="outlined" sx={{ m: 1, width: '6rem' }} onClick={toBack}>Back</Button>
-                                        <Button variant="contained" type='submit' sx={{ m: 1, width: '6rem' }}>Save</Button>
-                                    </Box>
-                                </Form>
-                            </Formik>
-                        </div>
-                        <Box component="div" >
+                                                    label="Shipping method"
+                                                    size='small'
+                                                >
+                                                    <MenuItem value={'Air cargo'}>Air Cargo</MenuItem>
+                                                    <MenuItem value={'Ship cargo'}>Ship Cargo</MenuItem>
+                                                </Field>
+                                            </FormControl>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <TextField label="Loaded date" size="small" type='date' name='loadedDate' margin="normal"
+                                                value={values.loadedDate}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                disabled={shipment.status === 'completed'}
+                                                error={touched.loadedDate && Boolean(errors.loadedDate)}
+                                                helperText={touched.loadedDate && errors.loadedDate}
+                                                initialValues={values.loadedDate}
+                                            />
+                                        </td>
+                                        <td>
+                                            <TextField label="Arrival date" size="small" type='date' name='arrivalDate' margin="normal"
+                                                value={values.arrivalDate}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                error={touched.arrivalDate && Boolean(errors.arrivalDate)}
+                                                helperText={touched.arrivalDate && errors.arrivalDate}
+                                                initialValues={values.arrivalDate}
+                                            />
+                                        </td>
+                                    </tr><tr>
+                                        <td>
+                                            <TextField label="Displayed arrival date" size="small" type='date' name='displayDate' margin="normal"
+                                                value={values.displayDate}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                error={touched.displayDate && Boolean(errors.displayDate)}
+                                                helperText={touched.displayDate && errors.displayDate}
+                                                initialValues={values.displayDate}
+                                            />
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                                <Box component="div" sx={{}}>
+                                    <Button variant="outlined" sx={{ m: 1, width: '6rem' }} onClick={toBack}>Back</Button>
+                                    <Button variant="contained" type='submit' sx={{ m: 1, width: '6rem' }}>Save</Button>
+                                </Box>
+                            </Form>
+                        </Formik>
+                    </div>
+                    <Box component="div" >
 
-                            <Box
-                                component="div"
-                                sx={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'flex-end',
-                                    height: '100%'
-                                }}
-                            >
+                        <Box
+                            component="div"
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between',
+                                alignItems: 'flex-end',
+                                height: '100%'
+                            }}
+                        >
 
 
-                            </Box>
                         </Box>
+                    </Box>
 
-                    </Box>
-                    <Box component="div" sx={{ m: '1rem 2rem', border: '1px solid gray', p: 2, width: '300px' }}>
-                        <div>Orders assigned to this Shipment,</div>
-                        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                            {orderIds.map((value, index) => {
-                                const labelId = `checkbox-list-label-${value}`;
+                </Box>
+                <Box component="div" sx={{ m: '1rem 2rem', border: '1px solid gray', p: 2, width: '300px' }}>
+                    <div>Orders assigned to this Shipment,</div>
+                    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                        {orderIds.map((value, index) => {
+                            const labelId = `checkbox-list-label-${value}`;
 
-                                return (
-                                    <ListItem
-                                        key={index}
-                                        disablePadding
-                                    >
-                                        <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
-                                            <ListItemIcon>
-                                                <Checkbox
-                                                    edge="start"
-                                                    checked={checked.indexOf(value) !== -1}
-                                                    tabIndex={-1}
-                                                    disableRipple
-                                                    inputProps={{ 'aria-labelledby': labelId }}
-                                                />
-                                            </ListItemIcon>
-                                            <ListItemText id={labelId} primary={value} />
-                                        </ListItemButton>
-                                    </ListItem>
-                                );
-                            })}
-                        </List>
-                    </Box>
-                    <Box
-                        component="div"
-                        sx={{
-                            color: '#3B82F6',
-                            textDecoration: 'underline',
-                        }}
-                    >
-                    </Box>
-                </Box><ToastContainer />
-            </>
-        );
-    }
+                            return (
+                                <ListItem
+                                    key={index}
+                                    disablePadding
+                                >
+                                    <ListItemButton role={undefined} onClick={handleToggle(value)} dense>
+                                        <ListItemIcon>
+                                            <Checkbox
+                                                edge="start"
+                                                checked={checked.indexOf(value) !== -1}
+                                                tabIndex={-1}
+                                                disableRipple
+                                                disabled={shipment.status === 'completed'}
+                                                inputProps={{ 'aria-labelledby': labelId }}
+                                            />
+                                        </ListItemIcon>
+                                        <ListItemText id={labelId} primary={value} />
+                                    </ListItemButton>
+                                </ListItem>
+                            );
+                        })}
+                    </List>
+                </Box>
+                <Box
+                    component="div"
+                    sx={{
+                        color: '#3B82F6',
+                        textDecoration: 'underline',
+                    }}
+                >
+                </Box>
+            </Box><ToastContainer />
+        </>
+    );
+}
 };
 
 export default AddEditShipment;
