@@ -11,13 +11,10 @@ const CourierDetails = () => {
     const [isModalOpen, setModalIsOpen] = useState('false'); //Status of Modal
     const [courierDetails, setCourierDetails] = useState(null); //Coutier details
   const [search, setSearch] = useState('');
-  
+  const [reload, setReload] = useState(true);
     //const [count, setCount] = useState(0);
     //const [reloading, setReloading] = useState(false);
-    const reload = () => {
-        //Not working
-        //console.log("Not worked2")
-    }
+
     const removeCourierFromList = (courierID) => {
         setListOfCourier(prevList => prevList.filter(courier => courier.courier_id !== courierID));
     };
@@ -26,10 +23,13 @@ const CourierDetails = () => {
     };
     const handleEditCourierClick = (cuID) => {
         setModalIsOpen(cuID); // Or setModalIsOpen(true) depending on how you handle the modal state
-        // setCourierDetails({
-        //     name:courierDetails.name,
-        //     tp:courierDetails.tel_number
-        // })
+    };
+    const updateCourierList = (updatedCourier) => {
+        setListOfCourier(prevList => prevList.map(courier => 
+            courier.courier_id === updatedCourier.courier_id ? updatedCourier : courier
+        ));
+        console.log("TIG")
+        setReload(!reload);
     };
     useEffect(() => {
         axios.get("http://localhost:3001/api/courier")
@@ -42,6 +42,15 @@ const CourierDetails = () => {
                 setLoading(false); // Set loading to false in case of error
             });
     }, []);
+    const reloadCouriers = () => {
+        axios.get("http://localhost:3001/api/courier")
+            .then((response) => {
+                setListOfCourier(response.data);
+            })
+            .catch((error) => {
+                console.error("Error fetching courier details:", error);
+            });
+    };
 
 
     useEffect(() => {
@@ -87,7 +96,7 @@ const CourierDetails = () => {
                 ))
 
             )}
-            <AddEditCourierModal open={isModalOpen} onClose={() => setModalIsOpen('false')} courierDetails={courierDetails}/>
+            <AddEditCourierModal open={isModalOpen} onClose={() => setModalIsOpen('false')} courierDetails={courierDetails} reloadCouriers ={reloadCouriers}/>
         </div>
     );
 };

@@ -13,7 +13,7 @@ const CourierDetailsCard = ({ courier, reload, clickEdit,setCourierDetails,remov
       showCancelButton: true,
       confirmButtonColor: "#68DD62",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, Create the order!"
+      confirmButtonText: "Yes, Delete it!"
   }).then(async (result) => {
       if (result.isConfirmed) {
           try {
