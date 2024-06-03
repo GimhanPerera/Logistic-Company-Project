@@ -1,8 +1,9 @@
 import { Box, Button } from '@mui/material';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import Autheader from "../services/Autheader";
 
-export default function AddEditCourierModal({ open, onClose,courierDetails }) {
+export default function AddEditCourierModal({ open, onClose,courierDetails,reloadCouriers  }) {
     const [resp, setResp] = useState();
     const [nameField, setNameField] = useState('');
     const [tpFields, setTpFields] = useState('');
@@ -56,12 +57,13 @@ export default function AddEditCourierModal({ open, onClose,courierDetails }) {
             "tel_number": tpFields
         }, {
             headers: {
-                Authorization: `Bearer ${token}`
+                ...Autheader()
             }
         }).then((response) => {
             setResp(response.data);
             setNameField(''); // Clear the text box
-            setTpFields('')
+            setTpFields('');
+            reloadCouriers();
             onClose();
         }).catch((error) => {
             console.error('Error submitting complain:', error);

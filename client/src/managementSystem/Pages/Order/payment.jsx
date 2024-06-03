@@ -8,13 +8,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const Payment = () => {
     const location = useLocation();
-    const { orderId, payments } = location.state || {};
+    const { orderId, payments, amountDue } = location.state || {};
     //const { id } = useParams();
     const navigate = useNavigate();
     const [orderDetails, setOrderDetails] = useState(null); // Set initial state to null
     const [loading, setLoading] = useState(true); // Loading state
     const [discount, setDiscount] = useState(0);
-    const [subTotal, setSubTotal] = useState(0);
+    const [displayAmountDue, setDisplayAmountDue] = useState(amountDue);
     const componentRef = useRef();
     const [addImage, setaddImage] = useState(true);
     const [image, setImage] = useState(null);
@@ -58,6 +58,8 @@ const Payment = () => {
                 setPaymentList([...paymentList, response.data]);
                 setPaymentValue(0.00); // Reset payment value
                 setPaymentMethod('Cash'); // Reset payment method to default
+                
+        setDisplayAmountDue(displayAmountDue - paymentValue);
             })
             .catch((error) => {
                 console.error("Error adding payment:", error);
@@ -73,7 +75,8 @@ const Payment = () => {
     useEffect(() => {
         //console.log("ID: ", order_id);
         setPaymentList(payments);
-        setLoading(false)
+        setLoading(false);
+
 
     }, [payments]);
 
@@ -90,6 +93,8 @@ const Payment = () => {
         axios.delete(`http://localhost:3001/api/invoice/removePayment/${paymentId}`)
             .then((response) => {
                 setPaymentList(paymentList.filter(payment => payment.payment_id !== paymentId));
+                console.log("PAYMENTC ")
+                setDisplayAmountDue(displayAmountDue + parseFloat(paymentList.filter(payment => payment.payment_id == paymentId)[0].payment));
             })
             .catch((error) => {
                 console.error("Error removing payment:", error);
@@ -99,7 +104,7 @@ const Payment = () => {
 
 
     const totalPaymentsMade = 0;//orderDetails.payment.reduce((sum, payment) => sum + parseFloat(payment.payment) || 0, 0);
-    const amountDue = 0;//orderDetails.invoice.total - totalPaymentsMade;
+    //const amountDue = 0;//orderDetails.invoice.total - totalPaymentsMade;
 
     return (
         <>
@@ -110,7 +115,7 @@ const Payment = () => {
             </div>
             <Box sx={{width:'500px', margin:'auto', display:'flex', flexDirection:'row', justifyContent:'space-between', mb:'1rem' }}>
             <Box component="h3" sx={{}}>Total Payments: {paymentList.reduce((sum, payment) => sum + parseFloat(payment.payment) || 0, 0)}</Box>
-            <Box component="h3" sx={{ mb: 2 }}>Need to pay: {amountDue.toFixed(2)}</Box>
+            <Box component="h3" sx={{ mb: 2 }}>Need to pay: {displayAmountDue}</Box>
             </Box>
             <Box sx={{border: '1px black solid', borderRadius:'10px', width:'350px', p:'1.5rem', margin:'auto'}}>
             <table>

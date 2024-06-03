@@ -60,7 +60,7 @@ const ViewOrder = () => {
 
 
     const toPayment = () => {
-        navigate('./payments', { state: { orderId: orderDetails.order.order_id, payments: orderDetails.payment } });
+        navigate('./payments', { state: { orderId: orderDetails.order.order_id, payments: orderDetails.payment, amountDue: amountDue } });
     }
 
     const toggleReadyStatus = () => {
