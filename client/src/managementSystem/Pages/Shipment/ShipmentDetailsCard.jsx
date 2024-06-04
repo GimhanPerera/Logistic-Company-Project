@@ -8,7 +8,7 @@ const ShipmentDetailsCard = ({ shipment, removeShipmentFromList }) => {
   const navigate = useNavigate();
   const [visible, setVisible] = useState(true);
 
-  const toDetails = () => {
+  const toEdit = () => {
     //const shippingMethod = shipment.shipping_method == 'air' ? 'Air cargo' : 'Ship cargo';
     //console.log("SSSS: ",shipment.shipping_method)
    navigate('./details', { state: { shipment: shipment, shippingMethod: shipment.shipping_method, isNew: false } });
@@ -108,7 +108,7 @@ const ShipmentDetailsCard = ({ shipment, removeShipmentFromList }) => {
             }}
           >
             {shipment.status == 'waiting' ? <a onClick={toScan} style={{ cursor: 'pointer' }}>Scan</a> : ''}
-            <a onClick={toDetails} style={{ marginLeft: '0.75rem', cursor: 'pointer' }}>Edit</a>
+            <a style={{ marginLeft: '0.75rem', cursor: 'pointer' }} onClick={toEdit}>Edit</a>
             {shipment.status == 'waiting' ? <a style={{ marginLeft: '0.75rem', cursor: 'pointer' }} onClick={cancelShipment}>Cancel</a> : ''}
 
           </Box>

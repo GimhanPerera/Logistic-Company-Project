@@ -2,54 +2,32 @@ const { Courier, Order, SpecialNotice } = require('../models');
 const { Op } = require('sequelize');
 
 
-//1. Add notice
-const addNotices = async (req, res) => {
+//1. Add a notice
+const addNotice = async (req, res) => {
     try {
         // Get the last invoice ID
-        const lastPayment = await Payment.findOne({
-            attributes: ['payment_id'],
-            order: [['payment_id', 'DESC']]
+        const lastNotice = await SpecialNotice.findOne({
+            attributes: ['notice_id'],
+            order: [['notice_id', 'DESC']]
         });
 
         // Determine the new invoice ID
-        const newPaymentId = lastPayment ? parseInt(lastPayment.payment_id, 10) + 1 : 10000;
+        const newPaymentId = lastNotice ? parseInt(lastNotice.notice_id, 10) + 1 : 10000;
 
 
-        const payment = await Payment.create({
-            payment_id: newPaymentId,
-            payment_method: req.body.payment_method,
-            payment: req.body.payment,
-            date_time: req.body.date_time,
-            order_id: req.body.order_id,
+        const notice = await SpecialNotice.create({
+            notice_id: newPaymentId,
+            title: req.body.title,
+            description: req.body.description,
+            expire_date: req.body.expireDate,
+            emp_id: req.user.sub
         });
 
-        res.status(200).json(payment);
+        res.status(200).json(notice);
     } catch (error) {
         // Handle error
         console.error("Error fetching customer details:", error);
         res.status(500).json({ error: "Internal server error" });
-    }
-}
-
-const editCourier = async (req, res) => {
-    try {
-        console.table(req.body);
-
-        // Convert tel_number to an integer
-        const telNumber = parseInt(req.body.tel_number);
-
-        // Find the courier by ID
-        const courier = await Courier.findByPk(req.body.courier_id);
-
-        // Update the courier's name and tel_number
-        courier.name = req.body.name;
-        courier.tel_number = telNumber; // Assign the integer tel_number
-        await courier.save();
-
-        res.status(200).json(req.body.courier_id + ' Updated');
-    } catch (error) {
-        console.error('Error updating courier:', error);
-        res.status(500).json({ error: 'Internal server error' });
     }
 }
 
@@ -88,6 +66,34 @@ const getAllPublicNotices = async (req, res) => {
             attributes: ['notice_id', 'title', 'description']
         });
         res.status(200).json(notices);
+    } catch (error) {
+        console.error("Error :", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+const editNotice = async (req, res) => {
+    try {
+        console.log('title ',req.body.title);
+        console.log('description ',req.body.description);
+        console.log('expire_date ',req.body.expire_date);
+        //return
+        // Find the notice by ID
+        const notice = await SpecialNotice.findByPk(req.body.notice_id);
+
+        // Check if the notice exists
+        if (!notice) {
+            return res.status(404).json({ error: "Notice not found" });
+        }
+
+        notice.title = req.body.title;
+        notice.description = req.body.description;
+        notice.expire_date = req.body.expire_date;
+        notice.emp_id = req.user.sub
+
+        await notice.save();
+        console.log('DONE');
+        res.status(200).json(notice);
     } catch (error) {
         console.error("Error :", error);
         res.status(500).json({ error: "Internal server error" });
@@ -178,5 +184,7 @@ const clearCourier = async (req, res) => {
 module.exports = {
     getAllNotices,
     getAllPublicNotices,
-    deleteNotice
+    deleteNotice,
+    editNotice,
+    addNotice
 }

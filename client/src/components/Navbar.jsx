@@ -1,8 +1,30 @@
 import { Box } from '@mui/material';
+import axios from "axios";
 import React from 'react';
-import { FaBars, FaUserCircle } from 'react-icons/fa';
+import { CgProfile } from "react-icons/cg";
+import { FaBars } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import Autheader from "../services/Autheader";
 import './Navbar.css';
+
 const Navbar = ({ sidebarToggle, setSidebarToggle, value }) => {
+
+  const navigate = useNavigate();
+
+  const toProfile = () => {
+    axios.get("http://localhost:3001/api/employee/getForProfile", {
+      headers: {
+        ...Autheader()
+      }
+    })
+      .then((response) => {
+        navigate('./profile', { state: { empData: response.data } });
+      })
+      .catch((error) => {
+        console.error("Error fetching courier details:", error);
+      });
+  };
+
   return (
     <Box component="nav"
       sx={{
@@ -11,7 +33,7 @@ const Navbar = ({ sidebarToggle, setSidebarToggle, value }) => {
         position: 'fixed',
         display: 'flex',
         justifyContent: 'space-between',
-        zIndex:'1',
+        zIndex: '1',
         ...(sidebarToggle ? { width: '100%' } : { width: 'calc(100% - 16rem)' })
       }}
     >
@@ -37,18 +59,9 @@ const Navbar = ({ sidebarToggle, setSidebarToggle, value }) => {
           alignItems: 'center'
         }}
       >
-        <div className='user-info'>
+        <div className='user-info' onClick={toProfile} style={{ cursor: 'pointer' }}>
           <p className='user-greeting'>Welcome, Gimhan</p>
-          <button className='user-button'>
-            <FaUserCircle className='user-icon' />
-            <div className='user-dropdown'>
-              <ul className='dropdown-list'>
-                <li><a href=''>Profile</a></li>
-                <li><a href=''>Setting</a></li>
-                <li><a href=''>Log out</a></li>
-              </ul>
-            </div>
-          </button>
+          <CgProfile className='user-icon' />
         </div>
       </Box>
     </Box>

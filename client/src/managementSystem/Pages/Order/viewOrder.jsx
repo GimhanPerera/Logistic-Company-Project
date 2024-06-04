@@ -6,6 +6,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from 'sweetalert2';
+import SendSmsModal from '../../../Modals/sendSmsModal';
 import Autheader from "../../../services/Autheader";
 
 const ViewOrder = () => {
@@ -21,6 +22,40 @@ const ViewOrder = () => {
     const [addImage, setaddImage] = useState(true);
     const [image, setImage] = useState(null);
     const [printables, setPrintables] = useState([]);
+
+    const [isModalOpen, setModalIsOpen] = useState(false); //Status of Modal
+    const [smsDetails, setSmsDetails] = useState(null);
+    const reloadSms = () =>{
+        try {
+        axios.get(`http://localhost:3001/api/order/allById/${id}`)
+            .then((response) => {
+                setOrderDetails(response.data);
+                //console.log(response.data);
+
+                // Calculate initial subTotal and set discount
+                let initialSubTotal = 0;
+                response.data.packages.forEach((pkg) => {
+                    initialSubTotal += parseFloat(pkg.total) || 0;
+                });
+                setSubTotal(initialSubTotal);
+                console.log("INVOICE ", orderDetails.invoice.discount);
+
+                console.log("SMS ", orderDetails.orderSmsEntries);
+                setDiscount(orderDetails.invoice.discount);
+                //console.log("ID 2 ", orderDetails.priceReq[0].quotation_id);
+                //setLoading(false); // Set loading to false after data is fetched
+            })
+            .catch((error) => {
+                console.error("Error fetching order details:", error);
+                setLoading(false); // Set loading to false if there's an error
+            });
+        } catch (error) {
+            console.error('Error creating order:', error);
+        }
+    }
+    const handleSendSMSClick = () => {
+        setModalIsOpen(true); // Or setModalIsOpen(true) depending on how you handle the modal state
+    };
 
     const toggleAddImage = () => {
         setaddImage(addImage => !addImage);
@@ -55,9 +90,6 @@ const ViewOrder = () => {
         console.log(SMdetails);
         navigate('./shippingMarks', { state: { orderId: id, printables: SMdetails, category: orderDetails.order.category } });
     };
-
-
-
 
     const toPayment = () => {
         navigate('./payments', { state: { orderId: orderDetails.order.order_id, payments: orderDetails.payment, amountDue: amountDue } });
@@ -145,6 +177,18 @@ const ViewOrder = () => {
     const toggleCompleteStatus = () => {
         const oid = orderDetails.order.order_id;
         console.log("oid ", oid);
+        const needToPay = orderDetails.invoice.total - orderDetails.payment.reduce((sum, payment) => sum + parseFloat(payment.payment) || 0, 0);
+        
+        //IF THE PAYMENT IS NOT SETTLED
+        if(needToPay > 0){
+            console.log("NEED TO PAY ",needToPay);
+            Swal.fire({
+                title: `PAYMENT IS NOT SETTLED!\nNeed to pay amount: LKR ${needToPay}`,
+                icon:'error'
+            });
+            return
+        }
+
         Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -242,13 +286,16 @@ const ViewOrder = () => {
             .then((response) => {
                 setOrderDetails(response.data);
                 //console.log(response.data);
-
+                setSmsDetails(id);
                 // Calculate initial subTotal and set discount
                 let initialSubTotal = 0;
                 response.data.packages.forEach((pkg) => {
                     initialSubTotal += parseFloat(pkg.total) || 0;
                 });
                 setSubTotal(initialSubTotal);
+                console.log("INVOICE ", orderDetails.invoice.discount);
+
+                console.log("SMS ", orderDetails.orderSmsEntries);
                 setDiscount(orderDetails.invoice.discount);
                 //console.log("ID 2 ", orderDetails.priceReq[0].quotation_id);
                 //setLoading(false); // Set loading to false after data is fetched
@@ -387,6 +434,11 @@ const ViewOrder = () => {
         <>
             {/* Button section */}
             <Box component="div" sx={{ mb: '1rem' }}>
+            <Button variant="contained"
+                onClick={handleSendSMSClick}
+                sx={{ backgroundColor: '#68DD62', position: 'fixed', right: '2em', top: '5rem' }}>
+                Send SMS
+            </Button>
                 <Button onClick={toBack} sx={{ m: '0 2rem' }}>
                     Back
                 </Button>
@@ -437,11 +489,16 @@ const ViewOrder = () => {
             <Box component="div" sx={{ mt: '1rem' }}>
                 <Box component="h1" sx={{ textAlign: 'center' }}>Order ID: {orderDetails.order.order_id}</Box>
                 <Box component="h2" sx={{ textAlign: 'center' }}>Status: {orderDetails.order.status}</Box>
+                {
+                    orderDetails.order.status == 'FINISH'
+                        ? <Box component="h3" sx={{ textAlign: 'center' }}>Order Closed at: {orderDetails.order.order_close_date.substring(0, 10)} {orderDetails.order.order_close_date.substring(11, 19)}</Box>
+                        : ''
+                }
             </Box>
 
             {/* INVOICE */}
             <Box component="div" sx={{ mt: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
-                <Box component="div" sx={{ width: '1000px', p: '2rem', border: '1px black solid', borderRadius:'10px'}}>
+                <Box component="div" sx={{ width: '1000px', p: '2rem', border: '1px black solid', borderRadius: '10px' }}>
                     <Box component="h3" sx={{ textAlign: 'center' }}>Invoice ID: {orderDetails.invoice.invoice_id}</Box>
                     <Box component="h3" sx={{ textAlign: 'center', mb: '1rem' }}>Order ID: {orderDetails.order.order_id}</Box>
                     <Box component="div" sx={{ mb: '1rem', display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between' }}>
@@ -533,7 +590,7 @@ const ViewOrder = () => {
                             ))}
                         </tbody>
                     </table>
-                    {orderDetails.payment.length == 0 ? <Box component="h4" sx={{ mt: 2, textAlign:'center'}}>No Packages added yet</Box>:''}
+                    {orderDetails.payment.length == 0 ? <Box component="h4" sx={{ mt: 2, textAlign: 'center' }}>No Packages added yet</Box> : ''}
 
                     <Box component="div" sx={{ display: 'flex', justifyContent: 'flex-end', mt: '0.5rem', mr: '1.5rem' }}>
                         <table style={{ width: '220px' }}>
@@ -561,133 +618,165 @@ const ViewOrder = () => {
             </Box>
 
             {/* 2nd section */}
-            <Box component="div" sx={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around', p:'2rem 3rem'}}>
+            <Box component="div" sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', p: '2rem 3rem' }}>
                 {/*Payments section*/}
-            <Box component="div">
-            <Box component="h2" sx={{ mb: 2, textAlign:'center' }}>Payment Details</Box>
-            <Box component="div" sx={{ border: '1px solid gray', borderRadius:'10px', padding: '1rem' }}>
-            <Box component="h3" sx={{}}>Total Payments: {orderDetails.payment.reduce((sum, payment) => sum + parseFloat(payment.payment) || 0, 0)}</Box>
-            <Box component="h3" sx={{ mb: 2 }}>Need to pay: {amountDue.toFixed(2)}</Box>
-            <table style={{ borderCollapse: 'collapse' }}>
-                <thead>
-                    <tr>
-                        <th style={tableCell}>Payment ID</th>
-                        <th style={tableCell}>Payment method</th>
-                        <th style={tableCell}>Payment</th>
-                        <th style={tableCell}>Date time</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {orderDetails.payment.map((payment, index) => (
-                        <tr>
-                            <td style={tableCell}>{payment.payment_id}</td>
-                            <td style={tableCell}>{payment.payment_method}</td>
-                            <td style={tableCell}>{payment.payment}</td>
-                            <td style={tableCell}>{payment.date_time}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-            {orderDetails.payment.length == 0 ? <Box component="h4" sx={{ mt: 2, textAlign:'center'}}>No Payments</Box>:''}
-            </Box>
-            </Box>
-            {/* Price quotation details*/}
-            <Box component="div"
-                sx={{ display: 'flex', justifyContent: 'space-around' }}>
                 <Box component="div">
-                <Box component="h2" sx={{ mb: 2, textAlign:'center' }}>Price quotation details</Box>
-                    <table style={{ border: '1px solid gray', borderRadius:'10px', padding: '1rem' }}>
-                        <tr>
-                            <td>Items:</td>
-                            <td>{orderDetails.priceReq[0].items}</td>
-                        </tr>
-                        <tr>
-                            <td>No of packages:</td>
-                            <td>{orderDetails.priceReq[0].no_of_packages}</td>
-                        </tr>
-                        <tr>
-                            <td>Rough weight(Kg):</td>
-                            <td>{orderDetails.priceReq[0].raugh_weight}</td>
-                        </tr>
-                        <tr>
-                            <td>No of packages:</td>
-                            <td>{orderDetails.priceReq[0].no_of_packages}</td>
-                        </tr>
-                        <tr>
-                            <td>description</td>
-                            <td>{orderDetails.priceReq[0].description}</td>
-                        </tr>
-                        <tr>
-                            <td>Quotation(LKR)</td>
-                            <td>{orderDetails.priceReq[0].quotation}</td>
-                        </tr>
-                        <tr>
-                            <td>Shipping method:</td>
-                            <td>{orderDetails.priceReq[0].shipping_method}</td>
-                        </tr>
-                        <tr>
-                            <td>status:</td>
-                            <td>{orderDetails.priceReq[0].status}</td>
-                        </tr>
-                        <tr>
-                            <td><label for="invoice">Image :</label></td>
-                            <td>
-                                {addImage ? (
-                                    <div>
-                                        {image && (
-                                            <div style={{ marginTop: '10px' }}>
-                                                <img
-                                                    src={image}
-                                                    alt="Preview"
-                                                    style={{ width: '200px', borderRadius: '5px' }}
-                                                />
-                                            </div>
-                                        )}
-                                        <Box component="p" onClick={downloadImage} style={{ cursor: 'pointer', color: 'blue' }}>
-                                            Download
-                                        </Box>
-                                        {/* <Box component="p"onClick={toggleAddImage} style={{ cursor: 'pointer', color: 'blue' }}>
+                    <Box component="h2" sx={{ mb: 2, textAlign: 'center' }}>Payment Details</Box>
+                    <Box component="div" sx={{ border: '1px solid gray', borderRadius: '10px', padding: '1rem' }}>
+                        <Box component="h3" sx={{}}>Total Payments: {orderDetails.payment.reduce((sum, payment) => sum + parseFloat(payment.payment) || 0, 0)}</Box>
+                        <Box component="h3" sx={{ mb: 2 }}>Need to pay: {amountDue.toFixed(2)}</Box>
+                        <table style={{ borderCollapse: 'collapse' }}>
+                            <thead>
+                                <tr>
+                                    <th style={tableCell}>Payment ID</th>
+                                    <th style={tableCell}>Payment method</th>
+                                    <th style={tableCell}>Payment</th>
+                                    <th style={tableCell}>Date time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {orderDetails.payment.map((payment, index) => (
+                                    <tr>
+                                        <td style={tableCell}>{payment.payment_id}</td>
+                                        <td style={tableCell}>{payment.payment_method}</td>
+                                        <td style={tableCell}>{payment.payment}</td>
+                                        <td style={tableCell}>{payment.date_time}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        {orderDetails.payment.length == 0 ? <Box component="h4" sx={{ mt: 2, textAlign: 'center' }}>No Payments</Box> : ''}
+                    </Box>
+                </Box>
+                {/* Price quotation details*/}
+                <Box component="div"
+                    sx={{ display: 'flex', justifyContent: 'space-around' }}>
+                    <Box component="div">
+                        <Box component="h2" sx={{ mb: 2, textAlign: 'center' }}>Price quotation details</Box>
+                        <table style={{ border: '1px solid gray', borderRadius: '10px', padding: '1rem' }}>
+                            <tr>
+                                <td>Items:</td>
+                                <td>{orderDetails.priceReq[0].items}</td>
+                            </tr>
+                            <tr>
+                                <td>No of packages:</td>
+                                <td>{orderDetails.priceReq[0].no_of_packages}</td>
+                            </tr>
+                            <tr>
+                                <td>Rough weight(Kg):</td>
+                                <td>{orderDetails.priceReq[0].raugh_weight}</td>
+                            </tr>
+                            <tr>
+                                <td>No of packages:</td>
+                                <td>{orderDetails.priceReq[0].no_of_packages}</td>
+                            </tr>
+                            <tr>
+                                <td>description</td>
+                                <td>{orderDetails.priceReq[0].description}</td>
+                            </tr>
+                            <tr>
+                                <td>Quotation(LKR)</td>
+                                <td>{orderDetails.priceReq[0].quotation}</td>
+                            </tr>
+                            <tr>
+                                <td>Shipping method:</td>
+                                <td>{orderDetails.priceReq[0].shipping_method}</td>
+                            </tr>
+                            <tr>
+                                <td>status:</td>
+                                <td>{orderDetails.priceReq[0].status}</td>
+                            </tr>
+                            <tr>
+                                <td><label for="invoice">Image :</label></td>
+                                <td>
+                                    {addImage ? (
+                                        <div>
+                                            {image && (
+                                                <div style={{ marginTop: '10px' }}>
+                                                    <img
+                                                        src={image}
+                                                        alt="Preview"
+                                                        style={{ width: '200px', borderRadius: '5px' }}
+                                                    />
+                                                </div>
+                                            )}
+                                            <Box component="p" onClick={downloadImage} style={{ cursor: 'pointer', color: 'blue' }}>
+                                                Download
+                                            </Box>
+                                            {/* <Box component="p"onClick={toggleAddImage} style={{ cursor: 'pointer', color: 'blue' }}>
                                                         add new image
                                                     </Box> */}
-                                    </div>
-                                ) : (
-                                    <div>
-                                        <Field
-                                            type="file"
-                                            id="image"
-                                            name="image"
-                                            onChange={handleImageChange}
-                                            accept="image/*"
-                                            style={{
-                                                border: '1px solid #ccc',
-                                                padding: '10px',
-                                                borderRadius: '5px',
-                                                marginTop: '10px',
-                                                width: '200px',
-                                            }}
-                                        />
-                                        {/* <Box component="p" onClick={toggleAddImage} style={{ cursor: 'pointer', color: 'blue' }}>
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            <Field
+                                                type="file"
+                                                id="image"
+                                                name="image"
+                                                onChange={handleImageChange}
+                                                accept="image/*"
+                                                style={{
+                                                    border: '1px solid #ccc',
+                                                    padding: '10px',
+                                                    borderRadius: '5px',
+                                                    marginTop: '10px',
+                                                    width: '200px',
+                                                }}
+                                            />
+                                            {/* <Box component="p" onClick={toggleAddImage} style={{ cursor: 'pointer', color: 'blue' }}>
                                             cancel
                                         </Box> */}
-                                    </div>
-                                )}
+                                        </div>
+                                    )}
 
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><label for="invoice">Performa invoice :</label></td>
-                            <td>
-                                <Box component="p" onClick={(e) => downloadInvoice(e)}>Download</Box>
-                            </td>
-                        </tr>
-                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="invoice">Performa invoice :</label></td>
+                                <td>
+                                    <Box component="p" onClick={(e) => downloadInvoice(e)}>Download</Box>
+                                </td>
+                            </tr>
+                        </table>
+                    </Box>
                 </Box>
             </Box>
-            </Box>
-            
 
-            
-            
+            {/*SMS History section*/}
+            <Box component="div">
+                <Box component="h2" sx={{ mb: 2, textAlign: 'center' }}>SMS History</Box>
+                <Box component="div" sx={{ border: '1px solid gray', borderRadius: '10px', padding: '1rem', margin: '0 auto 2rem auto', maxWidth: '900px' }}>
+                    <table style={{ borderCollapse: 'collapse', margin: 'auto' }}>
+                        <thead>
+                            <tr>
+                                <th style={tableCell}>SMS ID</th>
+                                <th style={{ ...tableCell, width: '500px' }}>Massage</th>
+                                <th style={{ ...tableCell, width: '1Z0px' }}>Date time</th>
+                                <th style={tableCell}>Send by</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {orderDetails.orderSmsEntries.length > 0 ? (
+                                orderDetails.orderSmsEntries.map((sms, index) => (
+                                    <tr key={index}>
+                                        <td style={tableCell}>{sms.sms_id}</td>
+                                        <td style={tableCell}>{sms.Sm.massage}</td>
+                                        <td style={tableCell}>{sms.Sm.Date_time.substring(0, 10)} {sms.Sm.Date_time.substring(11, 19)}</td>
+                                        <td style={tableCell}>{sms.Sm.emp_id}</td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td style={{ ...tableCell, textAlign: 'center', padding: '1rem', fontWeight: '900' }} colSpan="4">No SMS</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                    {orderDetails.payment.length == 0 ? <Box component="h4" sx={{ mt: 2, textAlign: 'center' }}>No Payments</Box> : ''}
+                </Box>
+            </Box>
+
+<SendSmsModal open={isModalOpen} onClose={() => setModalIsOpen(false)} smsDetails={smsDetails} reloadSms={reloadSms} ></SendSmsModal>
         </>
     )
 }

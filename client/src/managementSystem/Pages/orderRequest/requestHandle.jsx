@@ -204,7 +204,6 @@ const RequestHandle = () => {
                 } catch (error) {
                     console.error('Error creating order:', error);
                 }
-
             }
         });
 

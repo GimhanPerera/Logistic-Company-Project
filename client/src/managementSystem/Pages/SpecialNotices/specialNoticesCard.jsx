@@ -5,13 +5,15 @@ import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from 'sweetalert2';
 
-const SpecialNoticesCard = ({ notice }) => {
+const SpecialNoticesCard = ({ notice, reload, clickEdit, setNoticeDetails }) => {
 
     const [visible, setVisible] = useState(true);
     const navigate = useNavigate();
 
     const toEditNotices = () => {
-        navigate('./addEdit', { state: {notice:notice, isNew:false}});
+        setNoticeDetails(notice);
+        clickEdit(notice.notice_id);
+        //navigate('./addEdit', { state: { notice: notice, isNew: false } });
     }
 
     const deleteNotice = () => {
@@ -41,7 +43,8 @@ const SpecialNoticesCard = ({ notice }) => {
             }
         });
     }
-    if(!visible) return null;
+
+    if (!visible) return null;
     return (
         <Box component="div"
             sx={{
@@ -53,13 +56,13 @@ const SpecialNoticesCard = ({ notice }) => {
                 display: 'flex',
                 justifyContent: 'space-between'
             }}>
-            <Box component="div" sx={{position:'relative'}}>
-                <Box component="p" sx={{marginBottom:'0.2rem'}}>ID: {notice.notice_id}{notice.isLive ?<span style={{marginBottom:'0.2rem', color:'#03fe21', marginLeft:'1rem'}}>  Live</span>: ''}</Box>
-                <Box component="p" sx={{marginBottom:'0.2rem'}}>Title: {notice.title}</Box>
-                <Box component="p" sx={{marginBottom:'0.2rem'}}>Description: {notice.description}</Box>
-                <Box component="p" sx={{marginBottom:'0.2rem'}}>Expire Date: {notice.expire_date}</Box>
-                <Box component="p" sx={{marginBottom:'0.2rem'}}>Created by: {notice.emp_id}</Box>
-                
+            <Box component="div" sx={{ position: 'relative' }}>
+                <Box component="p" sx={{ marginBottom: '0.2rem' }}>ID: {notice.notice_id}{notice.isLive ? <span style={{ marginBottom: '0.2rem', color: '#03fe21', marginLeft: '1rem' }}>  Live</span> : ''}</Box>
+                <Box component="p" sx={{ marginBottom: '0.2rem' }}>Title: {notice.title}</Box>
+                <Box component="p" sx={{ marginBottom: '0.2rem' }}>Description: {notice.description}</Box>
+                <Box component="p" sx={{ marginBottom: '0.2rem' }}>Expire Date: {notice.expire_date}</Box>
+                <Box component="p" sx={{ marginBottom: '0.2rem' }}>Created by: {notice.emp_id}</Box>
+
             </Box>
             <Box component="div"
                 sx={{
