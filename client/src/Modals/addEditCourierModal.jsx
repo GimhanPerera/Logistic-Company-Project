@@ -17,6 +17,7 @@ export default function AddEditCourierModal({ open, onClose,courierDetails,reloa
         if (e.target.id === 'container') {
             setNameField(''); // Clear the text box
             setTpFields('')
+            reloadCouriers();
             onClose();
         }
     }

@@ -54,6 +54,9 @@ app.use("/api/dashboard",dashboardRouter);
 const reportRouter = require('./routes/reportRouter');
 app.use("/api/report",reportRouter);
 
+const employeeRouter = require('./routes/employeeRouter');
+app.use("/api/employee",employeeRouter);
+
 db.sequelize.sync().then(() => {
     app.listen(3001, () => {
         console.log("Server running on port 3001");

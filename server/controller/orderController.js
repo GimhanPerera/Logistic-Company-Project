@@ -1,7 +1,8 @@
-const { Order, Customer, Shipment, Price_quotation, Package,Invoice, Payment,Courier } = require('../models');
+const { Order, Customer,Sms, Shipment,Order_sms, Price_quotation, Package,Invoice, Payment,Courier } = require('../models');
 const Sequelize = require('sequelize');
 const { Op } = require('sequelize');
 const { sendNormalSMS } = require('../middleware/smsGateway');
+const { getCurrentSriLankanDateTime } = require('../middleware/dateTime');
 
 const newOrder = async (req, res) => {//Add a order
     try {
@@ -191,21 +192,21 @@ const generateUniqueTrackingNumber = (existingTrackingNumbers) => {
     return trackingNumber;
 };
 
-const getCurrentSriLankanDateTime = () => {
+// const getCurrentSriLankanDateTime = () => {
     
-    const currentDate = new Date();
-    //const time = currentDate.toLocaleTimeString();//This give the GMT time. Need to add 5.30hours to convert to Sri Lankan time
-    currentDate.setHours(currentDate.getHours() + 5);
-    currentDate.setMinutes(currentDate.getMinutes() + 30);
-    const updatedTime = currentDate.toLocaleTimeString(); //Sri lankan time
+//     const currentDate = new Date();
+//     //const time = currentDate.toLocaleTimeString();//This give the GMT time. Need to add 5.30hours to convert to Sri Lankan time
+//     currentDate.setHours(currentDate.getHours() + 5);
+//     currentDate.setMinutes(currentDate.getMinutes() + 30);
+//     const updatedTime = currentDate.toLocaleTimeString(); //Sri lankan time
 
-    const year = currentDate.getFullYear();
-    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-    const day = String(currentDate.getDate()).padStart(2, '0');
+//     const year = currentDate.getFullYear();
+//     const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+//     const day = String(currentDate.getDate()).padStart(2, '0');
 
-    const formattedDate = `${year}-${month}-${day} ${updatedTime}`;
-    return formattedDate;
-};
+//     const formattedDate = `${year}-${month}-${day} ${updatedTime}`;
+//     return formattedDate;
+// };
 
 // 2. Get all Courier
 const getCourierAndOrder = async (req, res) => {
@@ -401,6 +402,10 @@ const getAllDetailsOfAOrder = async (req, res) => {
         });
         //res.status(200).json(responseData);
         //--------------------------------------------
+        const orderSmsEntries = await Order_sms.findAll({
+            where: { order_id: orderId },
+            include: Sms
+        });
 
         const respond = {
             order: order,
@@ -409,7 +414,8 @@ const getAllDetailsOfAOrder = async (req, res) => {
             invoice: invoice,
             priceReq: priceReq,
             payment: payment,
-            courier: courier
+            courier: courier,
+            orderSmsEntries: orderSmsEntries,
         }
         res.status(200).json(respond)
     }catch (error) {
@@ -518,6 +524,11 @@ const deleteOrderJOstate = async (req, res) => {
             },
         });
         const quotation = await Price_quotation.destroy({
+            where: {
+                order_id: req.params.orderID,
+            },
+        });
+        const order_sms = await Order_sms.destroy({
             where: {
                 order_id: req.params.orderID,
             },

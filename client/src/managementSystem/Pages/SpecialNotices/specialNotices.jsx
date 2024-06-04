@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { AddEditSpecialNoticeModal } from '../../../Modals/addEditSpecialNoticeModal';
 import SearchBar from "../../../components/SearchBar";
 import nodataImg from './../../../assets/nodata.png';
 import SpecialNoticesCard from './specialNoticesCard';
@@ -11,25 +12,39 @@ import SpecialNoticesCard from './specialNoticesCard';
 export const SpecialNotices = () => {
     const [listOfNotices, setListOfNotices] = useState([]);
     const [loading, setLoading] = useState(true); // State to track loading status
-    const [orderIds, setOrderIds] = useState([]);
     const [search, setSearch] = useState('');
+
+    const [reload, setReload] = useState(true);
     //const [liveNoticesCount, setLiveNoticesCount] = useState(0);
+
+    const [isModalOpen, setModalIsOpen] = useState(false); //Status of Modal
+    const [noticeDetails, setNoticeDetails] = useState(null);
+    const reloadNotices = () => {
+        axios.get("http://localhost:3001/api/noitces")
+            .then((response) => {
+                setListOfNotices(response.data);
+            })
+            .catch((error) => {
+                console.error("Error fetching noitces details:", error);
+                setLoading(false);
+            });
+    };
+    const handleEditCourierClick = () => {
+        setModalIsOpen(true); // Or setModalIsOpen(true) depending on how you handle the modal state
+    };
+
     const navigate = useNavigate();
     useEffect(() => {
         axios.get("http://localhost:3001/api/noitces")
             .then((response) => {
                 setListOfNotices(response.data);
                 setLoading(false); // Set loading to false once data is fetched
-                //console.log("HELLO")
-                //setLiveNoticesCount(response.data.filter(listOfNotices => listOfNotices.isLive).length)
             })
             .catch((error) => {
-                console.error("Error fetching courier details:", error);
+                console.error("Error fetching noitces details:", error);
                 setLoading(false); // Set loading to false in case of error
             });
     }, []);
-
-
 
     const toNewNotices = () => {
         axios.get("http://localhost:3001/api/noitces")
@@ -43,7 +58,7 @@ export const SpecialNotices = () => {
                     toast.error("Max 3 notices can display in the website");
                     return
                 }
-                navigate('./addEdit', { state: { notice: [], isNew: true } });
+                navigate('./addEdit'); //, { state: { notice: [], isNew: true } }
             })
             .catch((error) => {
                 console.error("Error fetching courier details:", error);
@@ -89,9 +104,11 @@ export const SpecialNotices = () => {
                             alignItems: 'center'
                         }}
                     >
-                        <SpecialNoticesCard notice={notice} />
+                        <SpecialNoticesCard notice={notice} reload={reload} clickEdit={handleEditCourierClick} setNoticeDetails={setNoticeDetails} />
                     </Box>
                 ))}
+                <AddEditSpecialNoticeModal open={isModalOpen} onClose={() => setModalIsOpen(false)} noticeDetails={noticeDetails} reloadNotices={reloadNotices} />
+                {/*isModalOpen,setModalIsOpen,courierDetails, reloadCouriers*/}
                 <ToastContainer />
             </div>
         );

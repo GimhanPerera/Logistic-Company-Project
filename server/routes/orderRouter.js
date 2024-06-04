@@ -25,7 +25,7 @@ router.get("/", orderController.getAllOrderDetailsForOrderCard)
 
 router.post("/",loginController.authenticateToken, upload.fields([{ name: 'image', maxCount: 1 }, { name: 'invoice', maxCount: 1 }]), orderController.newOrder);
 
-router.post("/requestconfirm", orderController.confirmOrder);
+router.post("/requestconfirm",loginController.authenticateToken, orderController.confirmOrder);
 
 //In the website, After custoemr login
 router.get("/myTrackingDetails",loginController.authenticateToken, orderController.trackingDetailsOfACustomer)//

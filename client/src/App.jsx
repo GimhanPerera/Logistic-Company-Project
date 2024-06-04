@@ -18,10 +18,11 @@ import ViewOrder from './managementSystem/Pages/Order/viewOrder';
 import Reports from './managementSystem/Pages/Reports/Reports';
 import AddEditShipment from './managementSystem/Pages/Shipment/addEditShipment';
 import { ShipmentDetails } from './managementSystem/Pages/Shipment/shipmentDetails';
-import { AddEditSpecialNotices } from './managementSystem/Pages/SpecialNotices/addEditSpecialNotices';
+import { AddSpecialNotices } from './managementSystem/Pages/SpecialNotices/addSpecialNotices';
 import { SpecialNotices } from './managementSystem/Pages/SpecialNotices/specialNotices';
 import OrderRequest from './managementSystem/Pages/orderRequest/orderRequest';
 import RequestHandle from './managementSystem/Pages/orderRequest/requestHandle';
+import { ProfilePage } from './managementSystem/Pages/profilePage';
 import ManagmentSystem from './managementSystem/managmentSystem';
 import { TestFile } from './testfile';
 import { StaffLogin } from './website/StaffLogin';
@@ -89,9 +90,10 @@ useEffect(() => {
             </Route>
             <Route path="SpecialNotices">
               <Route index element={<SpecialNotices/>} />
-              <Route path="addEdit" element={<AddEditSpecialNotices/> }/>
+              <Route path="addEdit" element={<AddSpecialNotices/> }/>
             </Route>
             <Route path="reports" element={<Reports />} />
+            <Route path="profile" element={<ProfilePage />} />
 
             <Route path="neworder" element={<NewOrder />} />
 

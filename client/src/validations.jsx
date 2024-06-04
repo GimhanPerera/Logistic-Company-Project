@@ -97,6 +97,23 @@ export const addSupplier = Yup.object({
     description: Yup.string().min(3).required("Please Enter name"),
 })
 
+export const employeeFormValidation = Yup.object({
+    f_name: Yup.string()
+        .min(3, "First name must be at least 3 characters")
+        .required("Please enter first name"),
+    l_name: Yup.string()
+        .min(3, "Last name must be at least 3 characters")
+        .required("Please enter last name"),
+    nic: Yup.string()
+        .required("Please enter NIC"),
+    email: Yup.string()
+        .email("Invalid email address")
+        .required("Please enter email"),
+    tel_number: Yup.string()
+        .matches(/^\d{9}$/, "Phone number must be exactly 10 digits")
+        .required("Please enter phone number"),
+})
+
 // export const testValication = Yup.object({
 //     name: Yup.string().min(3).required("Please Enter name"),
 //     email: Yup.string().email("Please Enter Valid email").required("Please Enter Email"),

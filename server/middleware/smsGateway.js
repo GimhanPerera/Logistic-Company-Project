@@ -24,6 +24,19 @@ const testRUNS = async () => {
     }
 };
 
+//In order view section. To specific order
+const sendSMSToOrder = async (req, res) => {
+    try {
+        console.log(req.body.msg, req.user.sub, req.body.oid);
+        sendNormalSMS(req.body.oid, req.body.msg, req.user.sub);
+
+        res.status(200).json("SEND");
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
 const insertSmsRecord = async (massage, emp_id, oid) => {
     try {
         // Check if the table is empty
@@ -66,7 +79,7 @@ const sendNormalSMS = async (oid, msg, empID) => {
             attributes: ['customer_id']
         });
         if (!order) {
-            throw new Error('Order not found');
+            throw new Error('Order not found ');
         }
         const customer_id = order.customer_id;
 
@@ -105,5 +118,6 @@ const sendSMS = ( async (tp, msg)=>{
 module.exports = {
     sendTestSMS,
     testRUNS,
-    sendNormalSMS
+    sendNormalSMS,
+    sendSMSToOrder,
 }
