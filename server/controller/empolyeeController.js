@@ -1,6 +1,7 @@
 const { Employee } = require('../models');
 const bcrypt = require('bcrypt');
-
+const { sendOPT, checkOPT } = require('./../middleware/opt');
+const { Op } = require('sequelize');
 
 //1. Add a complain
 const addAComplain = async (req, res) => {
@@ -26,20 +27,33 @@ const addAComplain = async (req, res) => {
     }
 }
 
-// 2. Get all Courier
-const getAllCourier = async (req, res) => {
-    //const customer = await Customer.findByPk(id) //ID eken one nan
-    const courier = await Courier.findAll({}) //{} : pass empty obj
-    res.status(200).json(courier)
+//Get all Employee
+const getAllEmployee = async (req, res) => {
+    try {
+        const employees = await Employee.findAll({
+            attributes: { 
+                exclude: ['password', 'wrong_attempts', 'last_attempt_date_time']
+            },
+            where: {
+                position: {
+                    [Op.ne]: 'ADMIN'
+                }
+            }
+        });
+        res.status(200).json(employees);
+    } catch (error) {
+        console.error("Error fetching employees:", error);
+        res.status(500).json({ error: "An error occurred while fetching employees" });
+    }
 }
 
 // Get Emp Data for Profile
 const getEmployeeDataForProfile = async (req, res) => {
     try {
-        const employee = await Employee.findByPk(req.user.sub,{
-            attributes: ['emp_id','f_name', 'l_name', 'email', 'nic', 'position', 'tel_number']
+        const employee = await Employee.findByPk(req.user.sub, {
+            attributes: ['emp_id', 'f_name', 'l_name', 'email', 'nic', 'position', 'tel_number']
         });
-        
+
         res.status(200).json(employee);
     } catch (error) {
         res.status(500).json({ error: "Internal server error" });
@@ -86,8 +100,8 @@ const changePwd = async (req, res) => {
 
         //Check the password is correct
         const isMatch = await bcrypt.compare(req.body.oldPwd, employee.password);
-        console.log("isMatch: ",isMatch)
-        if(!isMatch){
+        console.log("isMatch: ", isMatch)
+        if (!isMatch) {
             res.status(401).json("Wrong password");
             return
         }
@@ -103,12 +117,49 @@ const changePwd = async (req, res) => {
     }
 }
 
-const test = async (req, res) => {
-    res.status(200).json("TESTING DATA")
+const sendOpt = async (req, res) => {
+    try {
+        sendOPT(req.user.sub);
+        res.status(200).json("Sent");
+    } catch (error) {
+        console.error("Error :", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+const editByID = async (req, res) => {
+    try {
+        // Find the Customer by ID
+        const employee = await Employee.findByPk(req.body.emp_id);
+
+        // Check if the notice exists
+        if (!employee) {
+            console.log("ID not found: ",req.body.emp_id)
+            return res.status(404).json({ error: "Employee not found" });
+        }
+
+        employee.f_name = req.body.f_name;
+        employee.l_name = req.body.l_name;
+        employee.nic = req.body.nic;
+        employee.position = req.body.position;
+        employee.tel_number = req.body.tel_number;
+        employee.status = req.body.status;
+
+        await employee.save();
+        
+        res.status(200).json(employee.dataValues);
+
+    } catch (error) {
+        console.error("Error :", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
 }
 
 module.exports = {
     getEmployeeDataForProfile,
     setFromProfile,
-    changePwd
+    changePwd,
+    sendOpt,
+    getAllEmployee,
+    editByID
 }

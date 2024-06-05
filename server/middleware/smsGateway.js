@@ -24,6 +24,12 @@ const testRUNS = async () => {
     }
 };
 
+const sendOPTSMS = async (tp,msg) => {
+    //sendSMS(tp,msg);
+    console.log("----------------------------------------------------------------------------------------------\nOPT SEND SUCCESSFULLY: ",msg)
+
+}
+
 //In order view section. To specific order
 const sendSMSToOrder = async (req, res) => {
     try {
@@ -120,4 +126,5 @@ module.exports = {
     testRUNS,
     sendNormalSMS,
     sendSMSToOrder,
+    sendOPTSMS
 }

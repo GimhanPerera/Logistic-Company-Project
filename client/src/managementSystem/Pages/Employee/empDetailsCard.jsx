@@ -3,12 +3,12 @@ import Paper from '@mui/material/Paper';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const CustomerDetailsCard = ({ customer }) => {
+const EmpDetailsCard = ({ employee }) => {
 
   const navigate = useNavigate();
 
   const toView = () => {
-    navigate('./view', { state: { cusData: customer } });
+    navigate('./view', { state: { empData: employee } });
   };
 
 
@@ -24,10 +24,10 @@ const CustomerDetailsCard = ({ customer }) => {
         justifyContent: 'space-between'
       }}>
       <div>
-        <div className="">Customer ID: {customer.customer_id}</div>
-        <div className="">Name: {customer.f_name} {customer.l_name}</div>
-        <div className="">Tel number: 0{customer.tel_number}</div>
-        {customer.status == 'active' ? <div>Status: {customer.status}</div> : <div style={{color:'red'}}>Status: {customer.status}</div>}
+        <div className="">Employee ID: {employee.emp_id}</div>
+        <div className="">Name: {employee.f_name} {employee.l_name}</div>
+        <div className="">Tel number: 0{employee.tel_number}</div>
+        {employee.status == 'active' ? <div>Status: {employee.status}</div> : <div style={{color:'red'}}>Status: {employee.status}</div>}
       </div>
       <Box component="div"
         sx={{
@@ -38,7 +38,6 @@ const CustomerDetailsCard = ({ customer }) => {
           cursor: 'pointer'
         }}
       >
-        {customer.order_count} active order
       </Box>
       <div>
         <Box component="div"
@@ -62,4 +61,4 @@ const CustomerDetailsCard = ({ customer }) => {
   )
 }
 
-export default CustomerDetailsCard
+export default EmpDetailsCard
