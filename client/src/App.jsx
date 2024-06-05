@@ -3,7 +3,10 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import './App.css';
 import CourierDetails from './managementSystem/Pages/Courier/courierDetails';
 import CustomersDetails from './managementSystem/Pages/Customer/customersDetails';
+import { EditCustomer } from './managementSystem/Pages/Customer/editCustomer';
 import Dashboard from './managementSystem/Pages/Dashboard/Dashboard';
+import { EditEmployee } from './managementSystem/Pages/Employee/editEmployee';
+import EmpDetails from './managementSystem/Pages/Employee/empDetails';
 import AddCourierToOrder from './managementSystem/Pages/Order/addCourierToOrder';
 import DisplayShippingMark from './managementSystem/Pages/Order/displayShippingMarks';
 import InvoicePage from './managementSystem/Pages/Order/invoicePage';
@@ -65,7 +68,14 @@ useEffect(() => {
           {['ADMIN', 'MANAGER', 'EMP'].includes(currentUser) && (
           <Route path="cmsystem" element={<ManagmentSystem />}>
             <Route index element={<Dashboard />} />
-            <Route path="customers" element={<CustomersDetails />} />
+            <Route path="customers" >
+            <Route index element={<CustomersDetails />} />
+            <Route path="view" element={<EditCustomer />} />
+            </Route>
+            <Route path="employee" >
+            <Route index element={<EmpDetails />} />
+            <Route path="view" element={<EditEmployee />} />
+            </Route>
             <Route path="requests">
               <Route index element={<OrderRequest />} />
               <Route path=":priceQ" element={<RequestHandle />} />

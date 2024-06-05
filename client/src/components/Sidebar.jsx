@@ -1,6 +1,7 @@
 import { Box } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { FaHome } from 'react-icons/fa';
+import { FaPeopleRoof } from "react-icons/fa6";
 import { GoListOrdered } from "react-icons/go";
 import { GrDeliver } from "react-icons/gr";
 import { IoIosPeople } from "react-icons/io";
@@ -120,6 +121,20 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
                         <a href='' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
                             <IoIosPeople style={{ marginRight: '0.6rem' }}></IoIosPeople >
                             Customers
+                        </a>
+                    </li>
+                </NavLink>
+                <NavLink to="/cmsystem/employee" onClick={() => handleClick('Employees')}>
+                    <li
+                        style={{
+                            marginBottom: '1rem',
+                            color: 'white',
+                            listStyleType: 'none' // Remove bullet points
+                        }}
+                    >
+                        <a href='' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
+                            <FaPeopleRoof style={{ marginRight: '0.6rem' }}></FaPeopleRoof>
+                            Employees
                         </a>
                     </li>
                 </NavLink>
