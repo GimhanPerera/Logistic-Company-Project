@@ -21,37 +21,38 @@ const ViewOrder = () => {
     const componentRef = useRef();
     const [addImage, setaddImage] = useState(true);
     const [image, setImage] = useState(null);
-    const [printables, setPrintables] = useState([]);
+    const [reload, setReload] = useState(true);
 
     const [isModalOpen, setModalIsOpen] = useState(false); //Status of Modal
     const [smsDetails, setSmsDetails] = useState(null);
     const reloadSms = () =>{
-        try {
-        axios.get(`http://localhost:3001/api/order/allById/${id}`)
-            .then((response) => {
-                setOrderDetails(response.data);
-                //console.log(response.data);
+        setReload(!reload);
+        // try {
+        // axios.get(`http://localhost:3001/api/order/allById/${id}`)
+        //     .then((response) => {
+        //         setOrderDetails(response.data);
+        //         //console.log(response.data);
 
-                // Calculate initial subTotal and set discount
-                let initialSubTotal = 0;
-                response.data.packages.forEach((pkg) => {
-                    initialSubTotal += parseFloat(pkg.total) || 0;
-                });
-                setSubTotal(initialSubTotal);
-                console.log("INVOICE ", orderDetails.invoice.discount);
+        //         // Calculate initial subTotal and set discount
+        //         let initialSubTotal = 0;
+        //         response.data.packages.forEach((pkg) => {
+        //             initialSubTotal += parseFloat(pkg.total) || 0;
+        //         });
+        //         setSubTotal(initialSubTotal);
+        //         console.log("INVOICE ", orderDetails.invoice.discount);
 
-                console.log("SMS ", orderDetails.orderSmsEntries);
-                setDiscount(orderDetails.invoice.discount);
-                //console.log("ID 2 ", orderDetails.priceReq[0].quotation_id);
-                //setLoading(false); // Set loading to false after data is fetched
-            })
-            .catch((error) => {
-                console.error("Error fetching order details:", error);
-                setLoading(false); // Set loading to false if there's an error
-            });
-        } catch (error) {
-            console.error('Error creating order:', error);
-        }
+        //         console.log("SMS ", orderDetails.orderSmsEntries);
+        //         setDiscount(orderDetails.invoice.discount);
+        //         //console.log("ID 2 ", orderDetails.priceReq[0].quotation_id);
+        //         //setLoading(false); // Set loading to false after data is fetched
+        //     })
+        //     .catch((error) => {
+        //         console.error("Error fetching order details:", error);
+        //         setLoading(false); // Set loading to false if there's an error
+        //     });
+        // } catch (error) {
+        //     console.error('Error creating order:', error);
+        // }
     }
     const handleSendSMSClick = () => {
         setModalIsOpen(true); // Or setModalIsOpen(true) depending on how you handle the modal state
@@ -247,7 +248,7 @@ const ViewOrder = () => {
                     ) {
                         axios.post('http://localhost:3001/api/order/completeOrder', {
                             oid: oid,
-                            sendSMS: true
+                            sendSMS: false
                         }, {
                             headers: {
                                 ...Autheader()
@@ -270,6 +271,7 @@ const ViewOrder = () => {
                             // text: "Your imaginary file is safe :)",
                             icon: "success"
                         });
+                        setReload(!reload);
                     }
                 });
             }
@@ -336,7 +338,7 @@ const ViewOrder = () => {
         } catch (error) {
             console.error('Error creating order:', error);
         }
-    }, []);
+    }, [reload]);
 
     if (loading) {
         return <div>Loading...</div>; // Show loading indicator while fetching data
@@ -486,14 +488,17 @@ const ViewOrder = () => {
                     : ''}
             </Box>
 
+            
+
             <Box component="div" sx={{ mt: '1rem' }}>
                 <Box component="h1" sx={{ textAlign: 'center' }}>Order ID: {orderDetails.order.order_id}</Box>
                 <Box component="h2" sx={{ textAlign: 'center' }}>Status: {orderDetails.order.status}</Box>
                 {
-                    orderDetails.order.status == 'FINISH'
-                        ? <Box component="h3" sx={{ textAlign: 'center' }}>Order Closed at: {orderDetails.order.order_close_date.substring(0, 10)} {orderDetails.order.order_close_date.substring(11, 19)}</Box>
+                    orderDetails.order.status == 'FINISH' || orderDetails.order.order_close_date != null
+                        ? <Box component="h3" sx={{ textAlign: 'center' }}>Order Closed at: {orderDetails.order.order_close_date}</Box> 
                         : ''
                 }
+                {/*{orderDetails.order.order_close_date.substring(0, 10)} {orderDetails.order.order_close_date.substring(11, 19)}*/}
             </Box>
 
             {/* INVOICE */}
@@ -590,7 +595,7 @@ const ViewOrder = () => {
                             ))}
                         </tbody>
                     </table>
-                    {orderDetails.payment.length == 0 ? <Box component="h4" sx={{ mt: 2, textAlign: 'center' }}>No Packages added yet</Box> : ''}
+                    {orderDetails.packages.length == 0 ? <Box component="h4" sx={{ mt: 2, textAlign: 'center' }}>No Packages added yet</Box> : ''}
 
                     <Box component="div" sx={{ display: 'flex', justifyContent: 'flex-end', mt: '0.5rem', mr: '1.5rem' }}>
                         <table style={{ width: '220px' }}>
@@ -603,10 +608,12 @@ const ViewOrder = () => {
                                     <td style={{ textAlign: 'left', paddingTop: '0.3rem' }}><Box component="h4">Discount</Box></td>
                                     <td style={{ textAlign: 'right', paddingTop: '0.3rem' }}><Box component="h4">{orderDetails.invoice.discount}</Box></td>
                                 </tr>
-                                {/* <tr>
-                                    <td style={{ textAlign: 'left' }}><Box component="h4">Total Tax</Box></td>
-                                    <td style={{ textAlign: 'right' }}><Box component="h4">000</Box></td>
-                                </tr> */}
+                                {orderDetails.invoice.damage_fine != 0.00 ?
+                                <tr>
+                                    <td style={{ textAlign: 'left', paddingTop: '0.3rem' }}><Box component="h4">Damage Fine</Box></td>
+                                    <td style={{ textAlign: 'right', paddingTop: '0.3rem' }}><Box component="h4">{orderDetails.invoice.damage_fine}</Box></td>
+                                </tr>
+                                :''}
                                 <tr>
                                     <td style={{ textAlign: 'left', paddingTop: '0.3rem' }}><Box component="h3">Total</Box></td>
                                     <td style={{ textAlign: 'right', paddingTop: '0.3rem' }}><Box component="h3">LKR {orderDetails.invoice.total}</Box></td>
@@ -772,7 +779,6 @@ const ViewOrder = () => {
                             )}
                         </tbody>
                     </table>
-                    {orderDetails.payment.length == 0 ? <Box component="h4" sx={{ mt: 2, textAlign: 'center' }}>No Payments</Box> : ''}
                 </Box>
             </Box>
 

@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import Autheader from "../../../services/Autheader";
 //import { employeeFormValidation } from '../../validations';
+import Swal from 'sweetalert2';
 
 export const EditEmployee = () => {
     const location = useLocation();
@@ -19,6 +20,7 @@ export const EditEmployee = () => {
         f_name: empData.f_name,
         l_name: empData.l_name,
         nic: empData.nic,
+        email: empData.email,
         tel_number: empData.tel_number,
         status: empData.status,
         position: empData.position,
@@ -28,11 +30,19 @@ export const EditEmployee = () => {
 
     const onSubmit = async (values, actions) => {
         console.log("Submitted");
-        axios.post("http://localhost:3001/api/employee/edit", {
+        { empData.emp_id == '' ? 'Add' : 'Save Changes' }
+        let url = 'edit';
+        let msg = `Employee ${empData.emp_id} Updated`;
+        if (empData.emp_id == '') {
+            url = 'new';
+            msg = 'New employee added';
+        }
+        axios.post(`http://localhost:3001/api/employee/${url}`, {
             "emp_id": empData.emp_id,
             "f_name": values.f_name,
             "l_name": values.l_name,
             "nic": values.nic,
+            "email": values.email,
             "tel_number": values.tel_number,
             "status": values.status,
             "position": values.position,
@@ -42,7 +52,23 @@ export const EditEmployee = () => {
             }
         })
             .then((response) => {
-                console.log("SAVED");
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: "success",
+                    title: msg
+                });
+
+                navigate('../.');
             })
             .catch((error) => {
                 console.error("Error :", error.message);
@@ -62,7 +88,7 @@ export const EditEmployee = () => {
 
     return (
         <>
-            <Box component='h2' sx={{ textAlign: 'center' }}>Employee ID: {empData.emp_id}</Box>
+            <Box component='h2' sx={{ textAlign: 'center' }}>{empData.emp_id == '' ? 'New Employee' : `Employee ID: ${empData.emp_id}`}</Box>
             <Box component='div' sx={{ mt: '2rem' }}>
                 <div className="relative">
                     <Formik>
@@ -120,7 +146,19 @@ export const EditEmployee = () => {
                                             </tr>
                                             <tr>
                                                 <td>
-                                                <FormControl sx={{ m: 1, minWidth: 170 }}>
+                                                    <TextField label="Email" size="small" type='text' name='email' margin="normal"
+                                                        value={values.email}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                        error={touched.email && Boolean(errors.email)}
+                                                        helperText={touched.email && errors.email}
+                                                        initialValues={values.email}
+                                                    />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <FormControl sx={{ m: 1, minWidth: 170 }}>
                                                         <InputLabel>Position</InputLabel>
                                                         <Field
                                                             as={Select}
@@ -170,7 +208,7 @@ export const EditEmployee = () => {
                                         <Button variant="contained"
                                             type="submit"
                                             sx={{ backgroundColor: '#68DD62', ml: '1rem' }}>
-                                            Save Changes
+                                            {empData.emp_id == '' ? 'Add' : 'Save Changes'}
                                         </Button>
                                     </Box>
                                 </Box>

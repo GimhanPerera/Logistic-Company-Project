@@ -16,12 +16,11 @@ console.log("feedOrder ID: "+req.body.order_id)
         order.rating = req.body.rating;
         order.feedback_des = req.body.feedback;
         await order.save();
-
-        return { success: true, message: 'Order rating and feedback updated successfully' };
+        res.status(200).json("Order rating and feedback submitted");
     } catch (error) {
         // Handle error
-        console.error('Error inserting complain:', error);
-        throw error; 
+        console.error("Error fetching order details:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
 }
 

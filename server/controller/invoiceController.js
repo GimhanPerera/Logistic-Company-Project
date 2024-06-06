@@ -64,6 +64,7 @@ const setInvoiceDetails = async (req, res) => {
     try {
 
         await Invoice.update({
+            damage_fine: req.body.invoice.damage_fine,
             discount: req.body.invoice.discount,
             total: req.body.invoice.total,
         }, {

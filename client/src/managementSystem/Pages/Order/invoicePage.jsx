@@ -1,5 +1,7 @@
 import PrintIcon from '@mui/icons-material/Print';
 import { Box, Button, TextField } from '@mui/material';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import axios from "axios";
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -16,6 +18,34 @@ const InvoicePage = () => {
     const [discount, setDiscount] = useState(0);
     const [subTotal, setSubTotal] = useState(0);
     const componentRef = useRef();
+    const [isChecked, setIsChecked] = useState(false);
+    const [damageFine, setDamageFine] = useState(0);
+
+    const handleCheckboxChange = (event) => {
+        setIsChecked(event.target.checked);
+        if (!event.target.checked) {
+            const newTotal = parseFloat(subTotal) - parseFloat(discount);
+            setOrderDetails({
+                ...orderDetails,
+                invoice: {
+                    ...orderDetails.invoice,
+                    damage_fine: 0.00,
+                    total: newTotal
+                }
+            });
+        }
+        else{
+            const newTotal = parseFloat(subTotal) - parseFloat(discount) - parseFloat(damageFine);
+            setOrderDetails({
+                ...orderDetails,
+                invoice: {
+                    ...orderDetails.invoice,
+                    damage_fine: damageFine,
+                    total: newTotal
+                }
+            });
+        }
+    };
 
     useEffect(() => {
         console.log("GET INVOICE OF ID: ", id)
@@ -31,7 +61,9 @@ const InvoicePage = () => {
                 });
                 setSubTotal(initialSubTotal);
                 setDiscount(response.data.invoice.discount || 0);
+                setDamageFine(response.data.invoice.damage_fine || 0);
                 setLoading(false); // Set loading to false after data is fetched
+                setIsChecked(response.data.invoice.damage_fine == 0.00 ? false : true)
             })
             .catch((error) => {
                 console.error("Error fetching order details:", error);
@@ -68,16 +100,16 @@ const InvoicePage = () => {
     }
 
     const toBack = () => {
-        navigate('./..', { state: { id: id} });
+        navigate('./..', { state: { id: id } });
     }
-    
+
 
     return (
         <>
-        <ToastContainer />
+            <ToastContainer />
             <div>
-            <Button variant="contained"
-                    sx={{ }}
+                <Button variant="contained"
+                    sx={{}}
                     onClick={toBack}>
                     Back
                 </Button>
@@ -102,8 +134,15 @@ const InvoicePage = () => {
                     fileName="shipping_marks.pdf" // Set the default save name here
                 />
 
+                <FormControlLabel
+                    control={<Checkbox />}
+                    checked={isChecked}
+                    onChange={handleCheckboxChange}
+                    label="Damage packages"
+                />
+
                 {/* INVOICE */}
-                <Box component="div"  ref={componentRef} sx={{ width: '1000px', p: '2rem', border: '1px black solid' }}>
+                <Box component="div" ref={componentRef} sx={{ width: '1000px', p: '2rem', border: '1px black solid' }}>
                     <Box component="p">Invoice ID: {orderDetails.invoice.invoice_id}</Box>
                     <Box component="p">Order ID: {orderDetails.order.order_id}</Box>
                     <Box component="p">Customer ID: {orderDetails.customer.customer_id}</Box>
@@ -294,12 +333,42 @@ const InvoicePage = () => {
                                                 }
                                             });
                                         }}
-                                    /></Box></td>
+                                    />
+                                    </Box>
+                                    </td>
                                 </tr>
-                                {/* <tr>
-                                    <td style={{ textAlign: 'left' }}><Box component="h4">Total Tax</Box></td>
-                                    <td style={{ textAlign: 'right' }}><Box component="h4">000</Box></td>
-                                </tr> */}
+                                {isChecked ?
+                                    <tr>
+                                        <td style={{ textAlign: 'left' }}><Box component="h4">Damage Fine</Box></td>
+                                        <td style={{ textAlign: 'right' }}><Box component="h4"><TextField
+                                            type="number"
+                                            variant="outlined"
+                                            size="small"
+                                            value={damageFine}
+                                            defaultValue={orderDetails.invoice.damage_fine}
+                                            sx={{ ml: '2rem' }}
+                                            onChange={(e) => {
+                                                const newFine = parseFloat(e.target.value) || 0;
+                                                setDamageFine(newFine);
+
+                                                // Recalculate total with the new fine
+                                                const newTotal = subTotal - newFine;
+
+                                                // Update orderDetails state to reflect the new discount and total
+                                                setOrderDetails({
+                                                    ...orderDetails,
+                                                    invoice: {
+                                                        ...orderDetails.invoice,
+                                                        damage_fine: newFine,
+                                                        total: newTotal
+                                                    }
+                                                });
+                                            }}
+                                        />
+                                        </Box>
+                                        </td>
+                                    </tr>
+                                    : ''}
                                 <tr>
                                     <td style={{ textAlign: 'left' }}><Box component="h3">Total</Box></td>
                                     <td style={{ textAlign: 'right' }}><Box component="h3">{orderDetails.invoice.total}</Box></td>

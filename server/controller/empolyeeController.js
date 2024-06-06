@@ -2,36 +2,16 @@ const { Employee } = require('../models');
 const bcrypt = require('bcrypt');
 const { sendOPT, checkOPT } = require('./../middleware/opt');
 const { Op } = require('sequelize');
-
-//1. Add a complain
-const addAComplain = async (req, res) => {
-    try {
-        //NEED TO VALIDATE: order id is actualy this customer's order
-        console.log("Complain: " + req.body);
-        //if(!req.body.complain) return res.status(400).json({"error": "Complain no found"});
-        const complainData = {
-            complain: req.body.complain,
-            status: "pending",
-            order_id: req.body.order_id
-        };
-        await Complain.create(complainData);
-        const respondData = {
-            order_id: req.body.order_id,
-            status: "success",
-        };
-        res.status(200).json(respondData);
-    } catch (error) {
-        // Handle error
-        console.error('Error inserting complain:', error);
-        throw error; // Rethrow the error for handling in the caller function
-    }
-}
+const axios = require('axios');
+const { generatePassword } = require('./customerController')
+require('dotenv').config()
+const { sendDirectSMS } = require('../middleware/smsGateway');
 
 //Get all Employee
 const getAllEmployee = async (req, res) => {
     try {
         const employees = await Employee.findAll({
-            attributes: { 
+            attributes: {
                 exclude: ['password', 'wrong_attempts', 'last_attempt_date_time']
             },
             where: {
@@ -106,7 +86,9 @@ const changePwd = async (req, res) => {
             return
         }
 
-        employee.password = req.body.newPwd;
+        const password = req.body.newPwd;
+        const hashPassword = await bcrypt.hash(password, process.env.HASH);//convert password to hash
+        employee.password = hashPassword;
 
         await employee.save();
         res.status(200).json(employee.dataValues);
@@ -134,24 +116,84 @@ const editByID = async (req, res) => {
 
         // Check if the notice exists
         if (!employee) {
-            console.log("ID not found: ",req.body.emp_id)
+            console.log("ID not found: ", req.body.emp_id)
             return res.status(404).json({ error: "Employee not found" });
         }
 
         employee.f_name = req.body.f_name;
         employee.l_name = req.body.l_name;
         employee.nic = req.body.nic;
+        employee.email = req.body.email;
         employee.position = req.body.position;
         employee.tel_number = req.body.tel_number;
         employee.status = req.body.status;
 
         await employee.save();
-        
+
         res.status(200).json(employee.dataValues);
 
     } catch (error) {
         console.error("Error :", error);
         res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+const addEmployee = async (req, res) => {
+    try {
+        // Retrieve the last inserted primary key
+        const lastEmployee = await Employee.findOne({
+            order: [['emp_id', 'DESC']]
+        });
+
+        // Generate the new primary key
+        let newEmpId = 'EMP02';
+        if (lastEmployee) {
+            const lastEmpId = lastEmployee.emp_id;
+            const empNumber = parseInt(lastEmpId.substring(3));
+            newEmpId = `EMP${(empNumber + 1).toString().padStart(2, '0')}`;
+        }
+
+        const passcode = await generatePassword();
+        const hashPassword = await bcrypt.hash(passcode, process.env.HASH);//convert password to hash
+
+        // Create a new employee
+        const newEmployee = await Employee.create({
+            emp_id: newEmpId,
+            f_name: req.body.f_name,
+            l_name: req.body.l_name,
+            nic: req.body.nic,
+            email: req.body.email,
+            password: hashPassword, // Ensure password is hashed before saving
+            tel_number: req.body.tel_number,
+            status: req.body.status,
+            position: req.body.position,
+            last_attempt_date_time: new Date(), // Set initial date/time
+            wrong_attempts: 0 // Initialize wrong attempts
+        });
+        console.log("PASSCODE: ",passcode)
+        const message = `Hello ${req.body.f_name},\nWelcome to the company. Use following credentials to log to the system.\nemail: ${req.body.email}\nTemporary pwd: ${passcode}`
+        sendDirectSMS(req.body.tel_number, message, req.user.sub);//send sms
+
+        res.status(201).json(newEmployee);
+    } catch (error) {
+        console.error("Error in addEmployee:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+const textSms = async (req, res) => {
+    try {
+        const response = await axios.post('https://app.notify.lk/api/v1/send', {
+            "user_id": '27270',
+            "api_key": 'sFMdHDUeJUD9ZKcuEj4Y',
+            "sender_id": 'NotifyDEMO',
+            "to": '94778652698',
+            "message": 'Hello this is the first test message',
+        });
+
+        res.status(200).json(response.data);
+    } catch (error) {
+        res.status(500).json( `Error sending SMS: ${error.message}` );
     }
 }
 
@@ -161,5 +203,7 @@ module.exports = {
     changePwd,
     sendOpt,
     getAllEmployee,
-    editByID
+    editByID,
+    textSms,
+    addEmployee
 }

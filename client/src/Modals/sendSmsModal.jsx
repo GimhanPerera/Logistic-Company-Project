@@ -3,7 +3,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import Autheader from "../services/Autheader";
 
-export default function SendSmsModal({ open, onClose,smsDetails,reloadSms  }) {
+export default function SendSmsModal({ open, onClose,smsDetails, reloadSms  }) {
     const [sms, setSMS] = useState('');
 
     useEffect(()=>{

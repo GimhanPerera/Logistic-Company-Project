@@ -32,6 +32,7 @@ export const ShipmentDetails = () => {
     useEffect(() => {
         filterItems();
     }, [selectedFilters]);
+    
     const filterItems = () => {
         if (selectedFilters.length > 0) {
             let tempItems = selectedFilters.map((selectedCategory) => {

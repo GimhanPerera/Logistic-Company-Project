@@ -20,19 +20,21 @@ export const StaffLogin = () => {
                 "email": values.email,
                 "password": values.password
             });
-            console.log("Valid: ",response.data.isValid)
             if (response.data.isValid) {
                 localStorage.setItem('user', JSON.stringify(response.data));
                 console.log("TOKENS ",response.data);
                 navigate('../cmsystem');
                 window.location.reload();
-            } else {
+            }
+            else {
                 toast.error("Invalid email or password");
             }
-            
-
         } catch (error) {
-            toast.error("Invalid email or password2");
+            if (error.response && error.response.data && error.response.data.error) {
+                toast.error(error.response.data.error);
+            } else {
+                toast.error("An unexpected error occurred. Please try again.");
+            }
         }
 
     }

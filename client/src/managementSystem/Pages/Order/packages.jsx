@@ -114,29 +114,7 @@ export const Packages = () => {
     navigate('../');
   }
 
-  const [rows, setRows] = useState([
-    // {
-    //   "id": "1",
-    //   "package_count": "1",
-    //   "items": "Phone covers",
-    //   "supplier": "C001-Chanli china",
-    //   "length": "23",
-    //   "height": "23",
-    //   "width": "12",
-    //   "volume_metric_weight": "123.4",
-    //   "gross_weight": "1233",
-    // }, {
-    //   "id": "2",
-    //   "package_count": "2",
-    //   "items": "Toys",
-    //   "supplier": "C001-Chanli china",
-    //   "length": "42",
-    //   "height": "12",
-    //   "width": "65",
-    //   "volume_metric_weight": "633.4",
-    //   "gross_weight": "222",
-    // }
-  ]);
+  const [rows, setRows] = useState([]);
 
   const [rowModesModel, setRowModesModel] = useState({});
   const [listOfSuppliers, setListOfSuppliers] = useState([]);
