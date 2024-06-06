@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import './App.css';
+import ComplainDetails from './managementSystem/Pages/Complain/complainDetails';
 import CourierDetails from './managementSystem/Pages/Courier/courierDetails';
 import CustomersDetails from './managementSystem/Pages/Customer/customersDetails';
 import { EditCustomer } from './managementSystem/Pages/Customer/editCustomer';
@@ -79,7 +80,7 @@ useEffect(() => {
             <Route path="requests">
               <Route index element={<OrderRequest />} />
               <Route path=":priceQ" element={<RequestHandle />} />
-            </Route>{/*need to update*/}
+            </Route>
             <Route path="courier" element={<CourierDetails />} />
             <Route path="order">
               <Route index element={<OrderDetails />} />
@@ -101,6 +102,9 @@ useEffect(() => {
             <Route path="SpecialNotices">
               <Route index element={<SpecialNotices/>} />
               <Route path="addEdit" element={<AddSpecialNotices/> }/>
+            </Route>
+            <Route path="complain">
+              <Route index element={<ComplainDetails/>} />
             </Route>
             <Route path="reports" element={<Reports />} />
             <Route path="profile" element={<ProfilePage />} />

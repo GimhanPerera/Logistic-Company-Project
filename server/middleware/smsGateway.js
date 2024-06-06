@@ -47,10 +47,12 @@ const insertSmsRecord = async (massage, emp_id, oid) => {
             Date_time: dateTime,
             emp_id: emp_id ? emp_id : 'EMP02'
         });
-        await Order_sms.create({
-            order_id: oid,
-            sms_id: newId
-        });
+        if (oid != '') {
+            await Order_sms.create({
+                order_id: oid,
+                sms_id: newId
+            });
+        }
 
         console.log(`New SMS record inserted with id ${newId}`);
     } catch (error) {
@@ -92,6 +94,20 @@ const sendNormalSMS = async (oid, msg, empID) => {
     }
 };
 
+const sendDirectSMS = async (to, msg, empID) => {
+    try {
+        console.log("----------------------------------------------------------------------------------------------\nMSG SEND SUCCESSFULLY: ", msg)
+        //twilioSMSGateway(customer_tp,msg); //free gateway
+        notifySMSGateway(to, msg); //Paid gateway
+        insertSmsRecord(msg, empID, '');
+
+        //res.status(200).json("SEND");
+    } catch (error) {
+        console.error("Error:", error);
+        //res.status(500).json({ error: "Internal server error" });
+    }
+};
+
 const twilioSMSGateway = (async (tp, msg) => {
     const client = new twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
     return client.messages
@@ -115,13 +131,13 @@ const notifySMSGateway = async (to, message) => {
             "api_key": process.env.NOTIFY_API_KEY,
             "sender_id": process.env.NOTIFY_SENDER_ID,
             "to": process.env.MY_NUMBER, //`94${to}`,
-            "message": message,
+            "message": `Creative Freightway Logistics Pvt Ltd\n\n${message}`,
         });
-        console.log("PAID SMS ENDED------------------To ",process.env.MY_NUMBER)
+        console.log(`PAID SMS SEND------------------To: 94${to}`)
 
         return response.data;
     } catch (error) {
-        console.log("ERROR ",error)
+        console.log("ERROR ", error)
         return "Error";
         //throw new Error(`Error sending SMS: ${error.message}`);
     }
@@ -131,5 +147,6 @@ const notifySMSGateway = async (to, message) => {
 module.exports = {
     sendNormalSMS,
     sendSMSToOrder,
-    sendOPTSMS
+    sendOPTSMS,
+    sendDirectSMS,
 }

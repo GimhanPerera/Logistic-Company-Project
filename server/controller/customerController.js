@@ -21,7 +21,7 @@ const addCustomer = async (req, res) => {
             "tel_number": req.body.tel_number,
             "address": req.body.address,
             "nic": req.body.nic,
-            "status": "New",
+            "status": "active",
             "wrong_attempts": 0,
             "last_attempt_date_time": '2024-03-02 03:03:44',
             "nicFront": nicFrontImg,
@@ -178,10 +178,42 @@ const editProfile = async (req, res) => {
     }
 }
 
+const changePwd = async (req, res) => {
+    try {
+        // Find the Employee by ID
+        const customer = await Customer.findByPk(req.user.sub);
+
+        // Check if the notice exists
+        if (!customer) {
+            return res.status(404).json({ error: "Customer not found" });
+        }
+
+        //Check the password is correct
+        const isMatch = await bcrypt.compare(req.body.oldPwd, customer.passcode);
+        console.log("isMatch: ", isMatch)
+        if (!isMatch) {
+            res.status(401).json("Wrong password");
+            return
+        }
+        const passcode = req.body.newPwd;
+        const hashPassword = await bcrypt.hash(passcode, process.env.HASH);//convert password to hash
+        customer.passcode = hashPassword;
+        await customer.save();
+        console.log("NEW PWD: ",passcode);
+        res.status(200).json("Success");
+
+    } catch (error) {
+        console.error("Error :", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
 module.exports = {
     addCustomer,
     getAllCustomers,
     searchCustomerByID,
     searchCustomerByQuotationID,
-    editProfile
+    editProfile,
+    generatePassword,
+    changePwd
 }

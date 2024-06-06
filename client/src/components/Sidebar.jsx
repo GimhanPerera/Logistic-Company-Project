@@ -168,6 +168,20 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
                     </li>
                 </NavLink>
                 )}
+                <NavLink to="/cmsystem/complain" onClick={() => handleClick('Complains')}>
+                    <li
+                        style={{
+                            marginBottom: '1rem',
+                            color: 'white',
+                            listStyleType: 'none' // Remove bullet points
+                        }}
+                    >
+                        <a href='' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
+                            <GoListOrdered style={{ marginRight: '0.6rem' }}></GoListOrdered>
+                            Complains
+                        </a>
+                    </li>
+                </NavLink>
                 <NavLink to="/cmsystem/reports" onClick={() => handleClick('Reports')}>
                     <li
                         style={{

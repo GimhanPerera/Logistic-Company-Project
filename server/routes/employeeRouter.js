@@ -16,7 +16,10 @@ router.post("/changePwd",loginController.authenticateToken, empolyeeController.c
 router.get("/", empolyeeController.getAllEmployee);
 
 //edit employee details
-router.post("/edit", empolyeeController.editByID);
+router.post("/edit",loginController.authenticateToken, empolyeeController.editByID);
+
+//edit employee details
+router.post("/new",loginController.authenticateToken, empolyeeController.addEmployee);
 
 //Test the paid sms gateway
 router.get("/testingSms", empolyeeController.textSms);

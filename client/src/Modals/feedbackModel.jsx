@@ -1,10 +1,10 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import Swal from 'sweetalert2';
 import Autheader from "../services/Autheader";
 import './feedbackModal.css';
 
 export default function FeedbackModel({ open, onClose, ordId }) {
-    const [resp, setResp] = useState();
     const [feedbackText, setFeedbackText] = useState('');
     const token = localStorage.getItem('token');
     const [rateValue, setRateValue] = useState(4);
@@ -56,26 +56,29 @@ export default function FeedbackModel({ open, onClose, ordId }) {
     };
 
     const submitComplain = async () => {
-        console.log("Feedback send");
-        await axios.post("http://localhost:3001/api/feedback", {
-            "order_id": ordId,
-            "rating": rateValue,
-            "feedback": feedbackText
-        }, {
-            headers: {
-                ...Autheader()
-            }
-        }).then((response) => {
-            setResp(response.data); // Check if response.data is what you expect
-            console.log("T2");
-            clickCloseBtn(); // Check if this function is implemented correctly
-        }).catch((error) => {
-            console.error('Error submitting complain:', error);
-            console.log("T3");
-        });
+        try {
+            
+            const response = await axios.post("http://localhost:3001/api/feedback", {
+                "order_id": ordId,
+                "rating": rateValue,
+                "feedback": feedbackText
+            }, {
+                headers: {
+                    ...Autheader()
+                }
+            });
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: response.data,
+                showConfirmButton: false,
+                timer: 1500
+              });
+            onClose();
+        } catch (error) {
+            console.error('Error submitting complain:', error.response ? error.response.data : error.message);
+        }
     };
-    
-
 
     if (!open) return null;
     return (

@@ -16,31 +16,24 @@ const customerLogin = async (req, res) => {
                 }
             }
         });
-        //const customer = Customer.findOne(u => u.customer_id === req.body.cus_id);
+
         if (!customer) {
             console.error("Wrong username or password");
-            res.status(401).json("Wrong username or password");
-            return
+            return res.status(401).json({ error: "Wrong username or password" });
         }
-        else if (customer.status=='blocked') {
-            console.error("Your account temporary blocked. Please contact the company");
-            res.status(403).json("Your account temporary blocked. Please contact the company");
-            return
-        }
-
+        
         const password = req.body.pwd;
-        //const hash = "$2b$10$ktnOLONWJPnPkcrrwU0XguWDJbvEG/dLZsrbhLJNEW4CSZuLdt2jm"//await bcrypt.genSalt(10);
-        //const hashPassword = await bcrypt.hash(password, hash);//convert password to hash
-        console.log("Password ", password);
-        //console.log("Hash Passord ", hashPassword);
-        console.log("Password in database: ", customer.passcode);
 
         //Check the password is correct
         const isMatch = await bcrypt.compare(password, customer.passcode);
         console.log("isMatch: ",isMatch)
         if(!isMatch){
-            res.status(401).json("Wrong username or password");
-            return
+            console.error("Wrong username or password");
+            return res.status(401).json({ error: "Wrong username or password" });
+        }
+        if (customer.status === 'blocked') {
+            console.error("Your account is temporarily blocked. Please contact the company.");
+            return res.status(403).json({ error: "Your account is temporarily blocked. Please contact the company." });
         }
         
         //Set the user
@@ -69,25 +62,25 @@ const stuffLogin = async (req, res) => {
     try {
         // Authentication
         const userFromDB = await Employee.findOne({
-            where: { email: req.body.email }
+            where: { email: req.body.email,
+                status: {
+                    [Op.or]: ['active', 'blocked']
+                } }
         });
         if (!userFromDB) {
-            console.log("User not found");
-            const user = {
-                sub: '0',
-                role: ''
-            };
-            res.json({
-                isValid: false,
-            });
-            return
+            console.error("Wrong username or password");
+            return res.status(401).json({ error: "Wrong username or password" });
         }
         const isMatch = await bcrypt.compare(req.body.password, userFromDB.password);
         console.log("isMatch: ",isMatch)
 
         if(!isMatch){
-            res.status(401).json("Wrong username or password");
-            return
+            console.error("Wrong username or password");
+            return res.status(401).json({ error: "Wrong username or password" });
+        }
+        if (userFromDB.status === 'blocked') {
+            console.error("Your account is temporarily blocked. Please contact the company.");
+            return res.status(403).json({ error: "Your account is temporarily blocked. Please contact the company." });
         }
 
         //if (userFromDB) {
@@ -108,19 +101,6 @@ const stuffLogin = async (req, res) => {
                 accessToken,
                 refreshToken,
             });
-        // } else {
-        //     console.log("User not found");
-        //     const user = {
-        //         sub: '0',
-        //         role: ''
-        //     };
-        //     //const accessToken = createAccessToken(user, "1m"); // Create the access token
-        //     //const refreshToken = createRefreshToken(user, "6h"); // Create the access token
-        //     //.log("Access token: " + accessToken);
-        //     res.json({
-        //         isValid: false,
-        //     });
-        // }
     } catch (error) {
         console.error("Error in stuffLogin:", error);
         res.status(500).json({ error: "Internal server error" });
@@ -139,7 +119,7 @@ const getData = async (req, res) => {
 
 //Middleware to authenticate the token
 const authenticateToken = async (req, res, next) => {
-    console.log("REQ:", req)
+    //console.log("REQ:", req)
     const authHeader = req.headers['x-auth-token']//req.headers['authorization']
     const token = authHeader//authHeader && authHeader.split(' ')[1]
     if (token == null) return res.sendStatus(401)

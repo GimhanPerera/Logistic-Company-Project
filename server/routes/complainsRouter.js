@@ -6,5 +6,10 @@ const loginController = require('../controller/loginContraller') //import contra
 //Complain Url and Controllor
 router.post("/", complainContraller.addAComplain)
 
+//Get all complains
+router.get("/", complainContraller.getAllComplains)
+
+//Get all complains
+router.post("/reviewed", complainContraller.setAsReviewed)
 
 module.exports = router;

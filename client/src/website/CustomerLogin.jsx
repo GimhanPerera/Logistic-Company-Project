@@ -44,27 +44,23 @@ export const CustomerLogin = () => {
     },
     validationSchema: customerLoginValidation,
     onSubmit: async (values, actions) => {
-      try {
-        const response = await axios.post("http://localhost:3001/api/login/customer", {
-          "cus_id": values.customerID,
-          "pwd": values.password
-        });
-        if (response.data.isValid) {
-          localStorage.setItem('user', JSON.stringify(response.data));
-          navigate('./myorders');
-        } else {
-  
+        try {
+            const response = await axios.post("http://localhost:3001/api/login/customer", {
+                "cus_id": values.customerID,
+                "pwd": values.password
+            });
+
+            if (response.data.isValid) {
+                localStorage.setItem('user', JSON.stringify(response.data));
+                navigate('./myorders');
+            }
+        } catch (error) {
+            if (error.response && error.response.data && error.response.data.error) {
+                toast.error(error.response.data.error);
+            } else {
+                toast.error("An unexpected error occurred. Please try again.");
+            }
         }
-      } catch (error) {
-        if (error.response && error.response.data) {
-          //setErrorMessage(error.response.data);
-          toast.error("Wrong username or password");
-        } else {
-          //setErrorMessage("An unexpected error occurred. Please try again.");
-          toast.error("Wrong username or password");
-        }
-        toast.error(errorMessage);
-      }
     },
 });
 

@@ -1,12 +1,11 @@
 const { Complain } = require('../models');
 
 
-
-//1. Add a complain
+//Add a complain
 const addAComplain = async (req, res) => {
     try {
         //NEED TO VALIDATE: order id is actualy this customer's order
-        console.log("Complain: "+req.body);
+        console.log("Complain: " + req.body);
         //if(!req.body.complain) return res.status(400).json({"error": "Complain no found"});
         const complainData = {
             complain: req.body.complain,
@@ -20,35 +19,32 @@ const addAComplain = async (req, res) => {
         };
         res.status(200).json(respondData);
     } catch (error) {
-        // Handle error
-        console.error('Error inserting complain:', error);
-        throw error; // Rethrow the error for handling in the caller function
+        res.status(400).json("Server error");
     }
 }
 
-// 2. Get all Courier
-const getAllCourier = async (req, res) => {
-    //const customer = await Customer.findByPk(id) //ID eken one nan
-    const courier = await Courier.findAll({}) //{} : pass empty obj
-    res.status(200).json(courier)
+// Get all Complains
+const getAllComplains = async (req, res) => {
+    const complains = await Complain.findAll({});
+
+    res.status(200).json(complains)
 }
 
-// 2. Get all Courier
-const getCourierAndOrder = async (req, res) => {
-    //const customer = await Customer.findByPK(id) //ID eken one nan
-    const courier = await Courier.findAll({
-        include: [{
-            model: Courier
-        }],
-        where: {courier_id: '1000'}
-    })
-    res.status(200).json(customer)
-}
+const setAsReviewed = async (req, res) => {
+    try {
+        const complain = await Complain.findByPk(req.body.complain_id);
+        complain.status = req.body.status;
 
-const test = async (req, res) => {
-    res.status(200).json("TESTING DATA")
+        await complain.save();
+        res.status(200).json(complain);
+
+    } catch (error) {
+        res.status(400).json("Server error");
+    }
 }
 
 module.exports = {
     addAComplain,
+    getAllComplains,
+    setAsReviewed
 }

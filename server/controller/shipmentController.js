@@ -203,7 +203,7 @@ const saveScanUpdates = async (req, res) => {
             attributes: ['BL_no'],
             where: { order_id: orderIdsToUpdate[0] }
         });
-        //console.log("ID 1: ",orderIdsToUpdate[0])
+        console.log("ID 1: ",orderIdsToUpdate[0],BL_no)
 
         //Update shipment
         if (allCompleted) {

@@ -2,7 +2,7 @@ import { Box, Button, TextField } from '@mui/material';
 import axios from "axios";
 import { Form, Formik, useFormik } from 'formik';
 import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import Autheader from "../../services/Autheader";
 import { employeeFormValidation } from '../../validations';
@@ -28,37 +28,6 @@ export const ProfilePage = () => {
         nic: empData.nic,
         tel_number: empData.tel_number,
         email: empData.email
-    }
-
-
-
-    const navigate = useNavigate();
-
-    const addShipment = async () => {
-        //Get ready to ship order ids
-        await axios.get("http://localhost:3001/api/order/readyToShipOrderIDs")
-            .then((response) => {
-                setOrderIds(response.data);
-                const shipment = {
-                    BL_no: '',
-                    shipping_method: '',
-                    loaded_date: '',
-                    arrival_date: '',
-                    desplayed_arriveal_date: '',
-                    Orders: response.data,
-                }
-                //console.log(orderIds)
-                if (response.data == []) {
-                    console.log("No orders available for shipments");
-                    return;
-                }
-                //console.log(response.data);
-                navigate('./details', { state: { shipment: shipment, shippingMethod: 'Air cargo', isNew: true } });
-            })
-            .catch((error) => {
-                console.error("Error fetching courier details:", error);
-            });
-
     }
 
     const changePWD = () =>{
