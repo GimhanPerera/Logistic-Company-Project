@@ -16,10 +16,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BIGINT,
             allowNull: false
         },
-        description: {
-            type: DataTypes.STRING(100),
-            allowNull: true
-        },
     }, {
         timestamps: false
     });

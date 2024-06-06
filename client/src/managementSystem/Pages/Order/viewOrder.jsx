@@ -279,7 +279,7 @@ const ViewOrder = () => {
     }
 
     const addCourier = () => {
-        navigate('./couriers', { state: { orderId: orderDetails.order.order_id, courierId: orderDetails.order.courier_id } });
+        navigate('./couriers', { state: { orderId: orderDetails.order.order_id, courierId: orderDetails.order.courier_id, courier_tracking_number: orderDetails.order.courier_tracking_number, issue_date: orderDetails.order.issue_date } });
     }
 
     useEffect(() => {

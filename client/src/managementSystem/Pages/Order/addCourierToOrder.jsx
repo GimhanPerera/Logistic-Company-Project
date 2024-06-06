@@ -1,21 +1,42 @@
 import { Box, Button, FormControl, MenuItem, Select, TextField } from '@mui/material';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 
 const AddCourierToOrder = () => {
     const location = useLocation();
-    const { orderId, courierId } = location.state || {};
+    const { orderId, courierId,courier_tracking_number,issue_date } = location.state || {};
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [listOfCourier, setListOfCourier] = useState(null);
 
     const [selectCourier, setSelectCourier] = useState(null);
-    const [courierTN, setCourierTN] = useState('');
-    const [issueDate, setIssueDate] = useState('');
+    const [courierTN, setCourierTN] = useState(courier_tracking_number);
+    const [issueDate, setIssueDate] = useState(issue_date);
+    const [checked, setChecked] = useState(false);
+
+    const handleCheckboxChange = (event) => {
+        setChecked(event.target.checked);
+    };
 
     const handleChange = (event) => {
         setSelectCourier(event.target.value);
+    };
+    const handleChangeTN = (event) => {
+        setCourierTN(event.target.value);
+    };
+    const handleChangeDate = (event) => {
+        setIssueDate(event.target.value);
+    };
+
+    const getDate = () => {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        const dd = String(today.getDate() ).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
     };
 
 
@@ -41,7 +62,9 @@ const AddCourierToOrder = () => {
     const assignCourier = () => {
         axios.post("http://localhost:3001/api/courier/assign", {
             orderId: orderId,
-            selectCourier: selectCourier
+            selectCourier: selectCourier,
+            courier_tracking_number: checked? courierTN : '',
+            issue_date: checked? issueDate : '',
         })
             .then((response) => {
                 navigate('./..', { state: { id: orderId } });
@@ -52,6 +75,10 @@ const AddCourierToOrder = () => {
     }
 
     useEffect(() => {
+        if(issueDate==null)
+            setIssueDate(getDate());
+        else
+            setChecked(true)
         axios.get("http://localhost:3001/api/courier")
             .then((response) => {
                 setListOfCourier(response.data);
@@ -99,15 +126,22 @@ const AddCourierToOrder = () => {
                     </FormControl>
                 </Box>
                 <Box>
-                    <TextField label="Courier Tracking Number" size="small" type='number' name='Courier Tracking Number' margin="normal"
+                    <TextField label="Courier Tracking Number" size="small" type='text' name='Courier Tracking Number' margin="normal"
                         value={courierTN}
-                        onChange={setCourierTN}
+                        onChange={handleChangeTN}
+                        disabled={!checked}
                     />
                     <TextField label="Issue date" size="small" type='date' name='issueDate' margin="normal"
                         value={issueDate}
-                        onChange={setIssueDate}
+                        onChange={handleChangeDate}
+                        defaultValue={issueDate}
+                        disabled={!checked}
                     />
                 </Box>
+                <Box component="div" sx={{ position: 'absolute', right: '8rem', bottom: '8.5rem', display: 'flex', flexDirection: 'column' }}>
+                            
+                            <FormControlLabel control={<Checkbox checked={checked} onChange={handleCheckboxChange} />} label="Issue the packages" />
+                        </Box>
 
             </div>
         </>
