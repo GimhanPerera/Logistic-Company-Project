@@ -12,10 +12,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             allowNull: true
         },
-        issue_date_time: {
-            type: DataTypes.DATE,
-            allowNull: true
-        },
         supplier_loc: {
             type: DataTypes.STRING(20),
             allowNull: false

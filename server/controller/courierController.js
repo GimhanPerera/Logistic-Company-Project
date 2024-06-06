@@ -105,7 +105,10 @@ const test = async (req, res) => {
 const assignCourier = async (req, res) => {
     try {
         const order = await Order.update({
-            courier_id: req.body.selectCourier
+            courier_id: req.body.selectCourier,
+            courier_tracking_number: req.body.courier_tracking_number ==''? null :req.body.courier_tracking_number,
+            issue_date: req.body.issue_date ==''? null : req.body.issue_date,
+
         }, {
             where: { order_id: req.body.orderId }
         }

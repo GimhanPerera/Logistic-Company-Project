@@ -32,7 +32,6 @@ const initialVslues = {
   packages: '',
   shippingmethod: '',
   quotation: '',
-  description: '',
   supplierLoc: '',
   cusID: '',
   name: '',
@@ -127,7 +126,6 @@ export const Packages = () => {
   const [name, setName] = useState("");
   //const [country, setCountry] = useState("");
   const [tel, setTel] = useState("");
-  const [des, setDes] = useState("");
 
   //get suppliers data
   useEffect(() => {
@@ -365,7 +363,6 @@ export const Packages = () => {
         name: name,
         country: selectedCountry.label,
         tel: tel,
-        des: des
       });
       console.log('Supplier added successfully:', response.data.new_supplier);
       toast.success("Supplier " + response.data.new_supplier + " added");
@@ -378,7 +375,6 @@ export const Packages = () => {
       setName('');
       setSelectedCountry(Countries.find((country) => country.label === 'China'));
       setTel('');
-      setDes('');
 
     } catch (error) {
       console.error('Error creating order:', error);
@@ -523,16 +519,6 @@ export const Packages = () => {
                   name="tp"
                   value={tel}
                   onChange={(e) => setTel(e.target.value)}
-                  className="border-solid border-2 border-blue-800" />
-                </td>
-              </tr>
-              <tr>
-                <td><label for="description">Description :</label></td>
-                <td><Field type="text"
-                  id="description"
-                  name="description"
-                  value={des}
-                  onChange={(e) => setDes(e.target.value)}
                   className="border-solid border-2 border-blue-800" />
                 </td>
               </tr>

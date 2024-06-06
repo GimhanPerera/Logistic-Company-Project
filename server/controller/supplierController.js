@@ -59,7 +59,6 @@ const addSupplier = async (req, res) => {
         "name": req.body.name,
         "country": req.body.country,
         "tel_number": req.body.tel,
-        "description": req.body.des,
     })
     //console.log("OK: "+req.body.name)
     //await Supplier.create(newSupplier);
