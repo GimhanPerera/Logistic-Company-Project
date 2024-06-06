@@ -53,7 +53,7 @@ const OrderDetails = () => {
   };
 
   return (
-    <div className="relative">
+    <div>
       <SearchBar label='Search by order id' search={search} setSearch={setSearch}/>
       <Button variant="contained"
         sx={{ backgroundColor: '#68DD62', position: 'fixed', right: '2em', top: '4.7rem' }}
