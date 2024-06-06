@@ -29,6 +29,7 @@ const OrderDetailsCard = ({ order,removeOrderFromList }) => {
     const id = order.order_id;
     navigate('./updatetracking', { state: { orderId: order.order_id, fullname: order.Customer.f_name + " " + order.Customer.l_name, status: order.status, tel_number: order.Customer.tel_number, main_tracking_number: order.main_tracking_number } });
   }
+
   const toDeleteOrder = () => {
     const orderID = order.order_id;
     console.log("DD: ", orderID)
@@ -60,7 +61,9 @@ const OrderDetailsCard = ({ order,removeOrderFromList }) => {
     });
 
   }
+
   if (!visible) return null;
+
   return (
     <Box component="div"
       sx={{
@@ -71,7 +74,8 @@ const OrderDetailsCard = ({ order,removeOrderFromList }) => {
         padding: '0.5rem',
         display: 'flex',
         justifyContent: 'space-between'
-      }}>
+      }}
+      >
       <div>
         <div>Order number: {order.order_id}</div>
         <div>Customer ID: {order.Customer.customer_id}</div>

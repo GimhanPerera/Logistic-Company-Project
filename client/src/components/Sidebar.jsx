@@ -124,20 +124,22 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
                         </a>
                     </li>
                 </NavLink>
-                <NavLink to="/cmsystem/employee" onClick={() => handleClick('Employees')}>
-                    <li
-                        style={{
-                            marginBottom: '1rem',
-                            color: 'white',
-                            listStyleType: 'none' // Remove bullet points
-                        }}
-                    >
-                        <a href='' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
-                            <FaPeopleRoof style={{ marginRight: '0.6rem' }}></FaPeopleRoof>
-                            Employees
-                        </a>
-                    </li>
-                </NavLink>
+                {['ADMIN', 'MANAGER'].includes(currentUser) && (
+                    <NavLink to="/cmsystem/employee" onClick={() => handleClick('Employees')}>
+                        <li
+                            style={{
+                                marginBottom: '1rem',
+                                color: 'white',
+                                listStyleType: 'none' // Remove bullet points
+                            }}
+                        >
+                            <a href='' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
+                                <FaPeopleRoof style={{ marginRight: '0.6rem' }}></FaPeopleRoof>
+                                Employees
+                            </a>
+                        </li>
+                    </NavLink>
+                )}
                 <NavLink to="/cmsystem/courier" onClick={() => handleClick('Courier services')}>
                     <li
                         style={{
@@ -153,49 +155,54 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
                     </li>
                 </NavLink>
                 {currentUser == 'ADMIN' && (
-                <NavLink to="/cmsystem/SpecialNotices" onClick={() => handleClick('Special Notices')}>
-                    <li
-                        style={{
-                            marginBottom: '1rem',
-                            color: 'white',
-                            listStyleType: 'none' // Remove bullet points
-                        }}
-                    >
-                        <a href='' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
-                            <RiStickyNoteFill style={{ marginRight: '0.6rem' }}></RiStickyNoteFill>
-                            Special Notices
-                        </a>
-                    </li>
-                </NavLink>
+                    <NavLink to="/cmsystem/SpecialNotices" onClick={() => handleClick('Special Notices')}>
+                        <li
+                            style={{
+                                marginBottom: '1rem',
+                                color: 'white',
+                                listStyleType: 'none' // Remove bullet points
+                            }}
+                        >
+                            <a href='' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
+                                <RiStickyNoteFill style={{ marginRight: '0.6rem' }}></RiStickyNoteFill>
+                                Special Notices
+                            </a>
+                        </li>
+                    </NavLink>
                 )}
-                <NavLink to="/cmsystem/complain" onClick={() => handleClick('Complains')}>
-                    <li
-                        style={{
-                            marginBottom: '1rem',
-                            color: 'white',
-                            listStyleType: 'none' // Remove bullet points
-                        }}
-                    >
-                        <a href='' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
-                            <GoListOrdered style={{ marginRight: '0.6rem' }}></GoListOrdered>
-                            Complains
-                        </a>
-                    </li>
-                </NavLink>
-                <NavLink to="/cmsystem/reports" onClick={() => handleClick('Reports')}>
-                    <li
-                        style={{
-                            marginBottom: '1rem',
-                            color: 'white',
-                            listStyleType: 'none' // Remove bullet points
-                        }}
-                    >
-                        <a href='' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
-                            <TbReportAnalytics style={{ marginRight: '0.6rem' }}></TbReportAnalytics>
-                            Reports
-                        </a>
-                    </li>
-                </NavLink>
+                {['ADMIN', 'MANAGER'].includes(currentUser) && (
+                    <>
+                        <NavLink to="/cmsystem/complain" onClick={() => handleClick('Complains')}>
+                            <li
+                                style={{
+                                    marginBottom: '1rem',
+                                    color: 'white',
+                                    listStyleType: 'none' // Remove bullet points
+                                }}
+                            >
+                                <a href='' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
+                                    <GoListOrdered style={{ marginRight: '0.6rem' }}></GoListOrdered>
+                                    Complains
+                                </a>
+                            </li>
+                        </NavLink>
+
+                        <NavLink to="/cmsystem/reports" onClick={() => handleClick('Reports')}>
+                            <li
+                                style={{
+                                    marginBottom: '1rem',
+                                    color: 'white',
+                                    listStyleType: 'none' // Remove bullet points
+                                }}
+                            >
+                                <a href='' style={{ color: 'white', textDecoration: 'none', fontSize: '1.1rem' }} >
+                                    <TbReportAnalytics style={{ marginRight: '0.6rem' }}></TbReportAnalytics>
+                                    Reports
+                                </a>
+                            </li>
+                        </NavLink>
+                    </>
+                )}
                 <NavLink to="/" onClick={() => {
                     localStorage.removeItem('user');
                 }}>

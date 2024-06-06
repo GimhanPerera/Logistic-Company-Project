@@ -38,16 +38,16 @@ import { OrderTrackingDetailsValidated } from './website/orderTrackingDetailsVal
 import { Website } from './website/website';
 
 function App() {
-const [currentUser, setCurrentUser] = useState(undefined);
-useEffect(() => {
-  const userRole = localStorage.getItem("user");
-  if (userRole) {
-    const parsedUserRole = JSON.parse(userRole); // Parse the string into an object
-    setCurrentUser(parsedUserRole.role);
-  }
-  console.log("userChecked", userRole);
-  console.log("ROLE: ", currentUser); // Log the role correctly
-}, []);
+  const [currentUser, setCurrentUser] = useState(undefined);
+  useEffect(() => {
+    const userRole = localStorage.getItem("user");
+    if (userRole) {
+      const parsedUserRole = JSON.parse(userRole); // Parse the string into an object
+      setCurrentUser(parsedUserRole.role);
+    }
+    console.log("userChecked", userRole);
+    console.log("ROLE: ", currentUser); // Log the role correctly
+  }, []);
 
   return (
     <Router>
@@ -67,51 +67,59 @@ useEffect(() => {
             </Route>
           </Route>
           {['ADMIN', 'MANAGER', 'EMP'].includes(currentUser) && (
-          <Route path="cmsystem" element={<ManagmentSystem />}>
-            <Route index element={<Dashboard />} />
-            <Route path="customers" >
-            <Route index element={<CustomersDetails />} />
-            <Route path="view" element={<EditCustomer />} />
-            </Route>
-            <Route path="employee" >
-            <Route index element={<EmpDetails />} />
-            <Route path="view" element={<EditEmployee />} />
-            </Route>
-            <Route path="requests">
-              <Route index element={<OrderRequest />} />
-              <Route path=":priceQ" element={<RequestHandle />} />
-            </Route>
-            <Route path="courier" element={<CourierDetails />} />
-            <Route path="order">
-              <Route index element={<OrderDetails />} />
-              <Route path=":id" element={<Packages />} />
-              <Route path="updatetracking" element={<UpdateTracking />} />
-              <Route path="view">
-                <Route index element={<ViewOrder />} />
-                <Route path=":id" element={<InvoicePage />} />
-                <Route path="payments" element={<Payment />} />
-                <Route path="couriers" element={<AddCourierToOrder />} />
-                <Route path="shippingMarks" element={<DisplayShippingMark />} />
+            <Route path="cmsystem" element={<ManagmentSystem />}>
+              <Route index element={<Dashboard />} />
+              <Route path="customers" >
+                <Route index element={<CustomersDetails />} />
+                <Route path="view" element={<EditCustomer />} />
               </Route>
-            </Route>
-            <Route path="shipment">
-              <Route index element={<ShipmentDetails />} />
-              <Route path="details" element={<AddEditShipment />} />
-              <Route path="scan" element={<ScanAndUpdate />} />
-            </Route>
-            <Route path="SpecialNotices">
-              <Route index element={<SpecialNotices/>} />
-              <Route path="addEdit" element={<AddSpecialNotices/> }/>
-            </Route>
-            <Route path="complain">
-              <Route index element={<ComplainDetails/>} />
-            </Route>
-            <Route path="reports" element={<Reports />} />
-            <Route path="profile" element={<ProfilePage />} />
+              {['ADMIN', 'MANAGER'].includes(currentUser) && (
+              <Route path="employee" >
+                <Route index element={<EmpDetails />} />
+                <Route path="view" element={<EditEmployee />} />
+              </Route>
+              )}
+              <Route path="requests">
+                <Route index element={<OrderRequest />} />
+                <Route path=":priceQ" element={<RequestHandle />} />
+              </Route>
+              <Route path="courier" element={<CourierDetails />} />
+              <Route path="order">
+                <Route index element={<OrderDetails />} />
+                <Route path=":id" element={<Packages />} />
+                <Route path="updatetracking" element={<UpdateTracking />} />
+                <Route path="view">
+                  <Route index element={<ViewOrder />} />
+                  <Route path=":id" element={<InvoicePage />} />
+                  <Route path="payments" element={<Payment />} />
+                  <Route path="couriers" element={<AddCourierToOrder />} />
+                  <Route path="shippingMarks" element={<DisplayShippingMark />} />
+                </Route>
+              </Route>
+              <Route path="shipment">
+                <Route index element={<ShipmentDetails />} />
+                <Route path="details" element={<AddEditShipment />} />
+                <Route path="scan" element={<ScanAndUpdate />} />
+              </Route>
+              {['ADMIN'].includes(currentUser) && (
+                <Route path="SpecialNotices">
+                  <Route index element={<SpecialNotices />} />
+                  <Route path="addEdit" element={<AddSpecialNotices />} />
+                </Route>
+              )}
+              {['ADMIN', 'MANAGER'].includes(currentUser) && (
+                <>
+                  <Route path="complain">
+                    <Route index element={<ComplainDetails />} />
+                  </Route>
+                  <Route path="reports" element={<Reports />} />
+                </>
+              )}
+              <Route path="profile" element={<ProfilePage />} />
 
-            <Route path="neworder" element={<NewOrder />} />
+              <Route path="neworder" element={<NewOrder />} />
 
-          </Route>
+            </Route>
           )}
         </Route>
         {/* <Route path="*" element={<h1>NO ROUTE</h1>} /> */}
