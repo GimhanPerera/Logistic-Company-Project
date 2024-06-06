@@ -12,7 +12,7 @@ const getAllEmployee = async (req, res) => {
     try {
         const employees = await Employee.findAll({
             attributes: {
-                exclude: ['password', 'wrong_attempts', 'last_attempt_date_time']
+                exclude: ['password', 'wrong_attempts']
             },
             where: {
                 position: {
@@ -127,6 +127,10 @@ const editByID = async (req, res) => {
         employee.position = req.body.position;
         employee.tel_number = req.body.tel_number;
         employee.status = req.body.status;
+        
+        if(req.body.status == 'active'){
+            employee.wrong_attempts = 0;
+        }
 
         await employee.save();
 

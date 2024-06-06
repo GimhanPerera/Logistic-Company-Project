@@ -1,6 +1,8 @@
 require('dotenv').config()
 const { Op } = require('sequelize');
 
+const { getCurrentSriLankanDateTime } = require('./../middleware/dateTime');
+
 const { Courier, Employee, Customer } = require('../models');
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt');
@@ -23,11 +25,18 @@ const customerLogin = async (req, res) => {
         }
         
         const password = req.body.pwd;
+        
+        customer.last_attempt_date_time = getCurrentSriLankanDateTime(); //Set attempt date time
 
         //Check the password is correct
         const isMatch = await bcrypt.compare(password, customer.passcode);
         console.log("isMatch: ",isMatch)
         if(!isMatch){
+            customer.wrong_attempts++;
+            if(customer.wrong_attempts >= 3){
+                customer.status = 'blocked';
+            }
+            await customer.save();
             console.error("Wrong username or password");
             return res.status(401).json({ error: "Wrong username or password" });
         }
@@ -35,6 +44,8 @@ const customerLogin = async (req, res) => {
             console.error("Your account is temporarily blocked. Please contact the company.");
             return res.status(403).json({ error: "Your account is temporarily blocked. Please contact the company." });
         }
+        customer.wrong_attempts = 0;
+        await customer.save();
         
         //Set the user
         const user = {
@@ -71,10 +82,18 @@ const stuffLogin = async (req, res) => {
             console.error("Wrong username or password");
             return res.status(401).json({ error: "Wrong username or password" });
         }
+
+        userFromDB.last_attempt_date_time = getCurrentSriLankanDateTime(); //Set attempt date time
+
         const isMatch = await bcrypt.compare(req.body.password, userFromDB.password);
         console.log("isMatch: ",isMatch)
 
         if(!isMatch){
+            userFromDB.wrong_attempts++;
+            if(userFromDB.wrong_attempts >= 3){
+                userFromDB.status = 'blocked';
+            }
+            await userFromDB.save();
             console.error("Wrong username or password");
             return res.status(401).json({ error: "Wrong username or password" });
         }
@@ -82,6 +101,9 @@ const stuffLogin = async (req, res) => {
             console.error("Your account is temporarily blocked. Please contact the company.");
             return res.status(403).json({ error: "Your account is temporarily blocked. Please contact the company." });
         }
+
+        userFromDB.wrong_attempts = 0;
+        await userFromDB.save();
 
         //if (userFromDB) {
             // If user is found

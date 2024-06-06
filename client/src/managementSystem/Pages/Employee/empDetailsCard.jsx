@@ -28,6 +28,7 @@ const EmpDetailsCard = ({ employee }) => {
         <div className="">Name: {employee.f_name} {employee.l_name}</div>
         <div className="">Tel number: 0{employee.tel_number}</div>
         {employee.status == 'active' ? <div>Status: {employee.status}</div> : <div style={{color:'red'}}>Status: {employee.status}</div>}
+        <div className="">Last login: {employee.last_attempt_date_time}</div>
       </div>
       <Box component="div"
         sx={{

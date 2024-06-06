@@ -136,16 +136,68 @@ const getTotalPriceQuotationsOfYear = async (currentYear) => {
 };
 
 
-const getReportData = async (req, res) => {
+const getYearReport = async (req, res) => {
     try {
+        let  { year} = req.query;
+
+        // Validate the year parameters if necessary
+        if (!year) {
+            return res.status(400).json({ error: "Year is required" });
+        }
+
+        // Convert year and month to integers
+        year = parseInt(year, 10);
+
         const currentYear = new Date().getFullYear();
         console.log("currentYear: ", currentYear);
-        const monthlyIncome = await getMonthlyIncome(currentYear);
-        const monthlyOrders = await getMonthlyOrders(currentYear);
+        const monthlyIncome = await getMonthlyIncome(year); //(currentYear);
+        const monthlyOrders = await getMonthlyOrders(year);
         const mostIncome = await getMostIncomeMonth();
         const lessIncome = await getLeastIncomeMonth();
-        const totalIncomeOfYear = await getTotalIncomeOfYear(currentYear);
-        const totalPriceQuotationsOfYear = await getTotalPriceQuotationsOfYear(currentYear);
+        const totalIncomeOfYear = await getTotalIncomeOfYear(year);
+        const totalPriceQuotationsOfYear = await getTotalPriceQuotationsOfYear(year);
+
+        const monthTable = monthlyIncome.map((incomeData, index) => ({
+            month: incomeData.month,
+            totalIncome: incomeData.totalIncome,
+            totalOrders: monthlyOrders[index].totalOrders
+        }));
+
+        res.status(200).json({
+            monthTable,
+            mostIncome,
+            lessIncome,
+            totalIncomeOfYear,
+            totalPriceQuotationsOfYear
+        });
+
+    } catch (error) {
+        console.error('Error calculating report data:', error);
+        res.status(500).json({ error: 'An error occurred while generating the report' });
+    }
+}
+
+const getMonthReport = async (req, res) => {
+    try {
+        let  { year, month } = req.query;
+
+        // Validate the year and month parameters if necessary
+        if (!year || !month) {
+            return res.status(400).json({ error: "Year and month are required" });
+        }
+
+        // Convert year and month to integers
+        year = parseInt(year, 10);
+        month = parseInt(month, 10);
+
+        const currentYear = new Date().getFullYear();
+        console.log("currentYear: ", currentYear);
+        const monthlyIncome = await getMonthlyIncome(year); //(currentYear);
+        const monthlyOrders = await getMonthlyOrders(year);
+        const mostIncome = await getMostIncomeMonth();
+        const lessIncome = await getLeastIncomeMonth();
+        const totalIncomeOfYear = await getTotalIncomeOfYear(year);
+        const totalPriceQuotationsOfYear = await getTotalPriceQuotationsOfYear(year);
 
         const combinedReport = monthlyIncome.map((incomeData, index) => ({
             month: incomeData.month,
@@ -168,7 +220,7 @@ const getReportData = async (req, res) => {
 }
 
 module.exports = {
-    getReportData,
+    getYearReport,
     getMostIncomeMonth,
     getLeastIncomeMonth,
     getTotalIncomeOfYear,
