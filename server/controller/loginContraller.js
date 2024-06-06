@@ -1,4 +1,6 @@
 require('dotenv').config()
+const { Op } = require('sequelize');
+
 const { Courier, Employee, Customer } = require('../models');
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt');
@@ -8,12 +10,21 @@ const customerLogin = async (req, res) => {
     try {
         //Authentication
         const customer = await Customer.findOne({
-            where: { customer_id: req.body.cus_id}
+            where: { customer_id: req.body.cus_id,
+                status: {
+                    [Op.or]: ['active', 'blocked']
+                }
+            }
         });
         //const customer = Customer.findOne(u => u.customer_id === req.body.cus_id);
         if (!customer) {
             console.error("Wrong username or password");
             res.status(401).json("Wrong username or password");
+            return
+        }
+        else if (customer.status=='blocked') {
+            console.error("Your account temporary blocked. Please contact the company");
+            res.status(403).json("Your account temporary blocked. Please contact the company");
             return
         }
 

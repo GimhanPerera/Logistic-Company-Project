@@ -2,6 +2,7 @@ const { Employee } = require('../models');
 const bcrypt = require('bcrypt');
 const { sendOPT, checkOPT } = require('./../middleware/opt');
 const { Op } = require('sequelize');
+const axios = require('axios');
 
 //1. Add a complain
 const addAComplain = async (req, res) => {
@@ -31,7 +32,7 @@ const addAComplain = async (req, res) => {
 const getAllEmployee = async (req, res) => {
     try {
         const employees = await Employee.findAll({
-            attributes: { 
+            attributes: {
                 exclude: ['password', 'wrong_attempts', 'last_attempt_date_time']
             },
             where: {
@@ -134,7 +135,7 @@ const editByID = async (req, res) => {
 
         // Check if the notice exists
         if (!employee) {
-            console.log("ID not found: ",req.body.emp_id)
+            console.log("ID not found: ", req.body.emp_id)
             return res.status(404).json({ error: "Employee not found" });
         }
 
@@ -146,12 +147,28 @@ const editByID = async (req, res) => {
         employee.status = req.body.status;
 
         await employee.save();
-        
+
         res.status(200).json(employee.dataValues);
 
     } catch (error) {
         console.error("Error :", error);
         res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+const textSms = async (req, res) => {
+    try {
+        const response = await axios.post('https://app.notify.lk/api/v1/send', {
+            "user_id": '27270',
+            "api_key": 'sFMdHDUeJUD9ZKcuEj4Y',
+            "sender_id": 'NotifyDEMO',
+            "to": '94778652698',
+            "message": 'Hello this is the first test message',
+        });
+
+        res.status(200).json(response.data);
+    } catch (error) {
+        res.status(500).json( `Error sending SMS: ${error.message}` );
     }
 }
 
@@ -161,5 +178,6 @@ module.exports = {
     changePwd,
     sendOpt,
     getAllEmployee,
-    editByID
+    editByID,
+    textSms
 }

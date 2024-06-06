@@ -68,16 +68,16 @@ const InvoicePage = () => {
     }
 
     const toBack = () => {
-        navigate('./..', { state: { id: id} });
+        navigate('./..', { state: { id: id } });
     }
-    
+
 
     return (
         <>
-        <ToastContainer />
+            <ToastContainer />
             <div>
-            <Button variant="contained"
-                    sx={{ }}
+                <Button variant="contained"
+                    sx={{}}
                     onClick={toBack}>
                     Back
                 </Button>
@@ -103,7 +103,7 @@ const InvoicePage = () => {
                 />
 
                 {/* INVOICE */}
-                <Box component="div"  ref={componentRef} sx={{ width: '1000px', p: '2rem', border: '1px black solid' }}>
+                <Box component="div" ref={componentRef} sx={{ width: '1000px', p: '2rem', border: '1px black solid' }}>
                     <Box component="p">Invoice ID: {orderDetails.invoice.invoice_id}</Box>
                     <Box component="p">Order ID: {orderDetails.order.order_id}</Box>
                     <Box component="p">Customer ID: {orderDetails.customer.customer_id}</Box>
@@ -294,7 +294,9 @@ const InvoicePage = () => {
                                                 }
                                             });
                                         }}
-                                    /></Box></td>
+                                    />
+                                    </Box>
+                                    </td>
                                 </tr>
                                 {/* <tr>
                                     <td style={{ textAlign: 'left' }}><Box component="h4">Total Tax</Box></td>

@@ -1,4 +1,6 @@
 import { Box, Button } from '@mui/material';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import axios from "axios";
 import FileSaver from 'file-saver';
 import FileDownload from "js-file-download";
@@ -22,6 +24,13 @@ const ViewOrder = () => {
     const [addImage, setaddImage] = useState(true);
     const [image, setImage] = useState(null);
     const [printables, setPrintables] = useState([]);
+    const [isChecked, setIsChecked] = useState(false);
+    const [damageFine, setDamageFine] = useState(0);
+
+    const handleCheckboxChange = (event) => {
+        setIsChecked(event.target.checked);
+        console.log(event.target.checked);
+    };
 
     const [isModalOpen, setModalIsOpen] = useState(false); //Status of Modal
     const [smsDetails, setSmsDetails] = useState(null);
@@ -485,6 +494,13 @@ const ViewOrder = () => {
                     </Button>
                     : ''}
             </Box>
+
+            <FormControlLabel
+                    control={<Checkbox />}
+                    checked={isChecked}
+                    onChange={handleCheckboxChange}
+                    label="Damage packages"
+                />
 
             <Box component="div" sx={{ mt: '1rem' }}>
                 <Box component="h1" sx={{ textAlign: 'center' }}>Order ID: {orderDetails.order.order_id}</Box>

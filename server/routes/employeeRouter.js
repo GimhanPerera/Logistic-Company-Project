@@ -18,4 +18,7 @@ router.get("/", empolyeeController.getAllEmployee);
 //edit employee details
 router.post("/edit", empolyeeController.editByID);
 
+//Test the paid sms gateway
+router.get("/testingSms", empolyeeController.textSms);
+
 module.exports = router;
