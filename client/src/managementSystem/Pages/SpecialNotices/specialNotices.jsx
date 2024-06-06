@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AddEditSpecialNoticeModal } from '../../../Modals/addEditSpecialNoticeModal';
+import NoDataComponent from '../../../components/NoData';
 import SearchBar from "../../../components/SearchBar";
-import nodataImg from './../../../assets/nodata.png';
 import SpecialNoticesCard from './specialNoticesCard';
 
 export const SpecialNotices = () => {
@@ -44,7 +44,7 @@ export const SpecialNotices = () => {
                 console.error("Error fetching noitces details:", error);
                 setLoading(false); // Set loading to false in case of error
             });
-    }, []);
+    }, [reload]);
 
     const toNewNotices = () => {
         axios.get("http://localhost:3001/api/noitces")
@@ -67,22 +67,22 @@ export const SpecialNotices = () => {
 
     }
 
-    if (listOfNotices.length == 0) return (
-        <>
-            <SearchBar label='Search by id' search={search} setSearch={setSearch} />
-            <Button variant="contained"
-                sx={{ backgroundColor: '#68DD62', position: 'fixed', right: '2em', top: '4.7rem' }}
-                onClick={toNewNotices}
-            >
-                New Notice
-            </Button>
+    // if (listOfNotices.length == 0) return (
+    //     <>
+    //         <SearchBar label='Search by id' search={search} setSearch={setSearch} />
+    //         <Button variant="contained"
+    //             sx={{ backgroundColor: '#68DD62', position: 'fixed', right: '2em', top: '4.7rem' }}
+    //             onClick={toNewNotices}
+    //         >
+    //             New Notice
+    //         </Button>
 
-            <Box component="div" sx={{ width: '100%' }}>
-                <img src={nodataImg} alt='empty image' style={{ margin: 'auto', width: '26rem', marginLeft: '300px' }} />
-                <Box component="p" sx={{ width: '100px', margin: 'auto', fontSize: '20px', fontWeight: '600' }}>No Data</Box>
-            </Box>
-        </>)
-    else
+    //         <Box component="div" sx={{ width: '100%' }}>
+    //             <img src={nodataImg} alt='empty image' style={{ margin: 'auto', width: '26rem', marginLeft: '300px' }} />
+    //             <Box component="p" sx={{ width: '100px', margin: 'auto', fontSize: '20px', fontWeight: '600' }}>No Data</Box>
+    //         </Box>
+    //     </>)
+    // else
         return (
             <div>
                 <SearchBar label='Search by id' search={search} setSearch={setSearch} />
@@ -92,21 +92,24 @@ export const SpecialNotices = () => {
                 >
                     New Notice
                 </Button>
-                {listOfNotices.filter((item) => {
-                    return search.toLowerCase() === ''
-                        ? item
-                        : item.id.toLowerCase().includes(search);
-                }).map((notice, index) => (
-                    <Box component="div" key={index}
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center'
-                        }}
-                    >
-                        <SpecialNoticesCard notice={notice} reload={reload} clickEdit={handleEditCourierClick} setNoticeDetails={setNoticeDetails} />
-                    </Box>
-                ))}
+                {listOfNotices.length == 0 ? (
+                    <NoDataComponent message="No Special Notices" />
+                ) : (
+                    listOfNotices.filter((item) => {
+                        return search.toLowerCase() === ''
+                            ? item
+                            : item.id.toLowerCase().includes(search);
+                    }).map((notice, index) => (
+                        <Box component="div" key={index}
+                            sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center'
+                            }}
+                        >
+                            <SpecialNoticesCard notice={notice} reload={() => setReload(!reload)} clickEdit={handleEditCourierClick} setNoticeDetails={setNoticeDetails} />
+                        </Box>
+                    )))}
                 <AddEditSpecialNoticeModal open={isModalOpen} onClose={() => setModalIsOpen(false)} noticeDetails={noticeDetails} reloadNotices={reloadNotices} />
                 {/*isModalOpen,setModalIsOpen,courierDetails, reloadCouriers*/}
                 <ToastContainer />

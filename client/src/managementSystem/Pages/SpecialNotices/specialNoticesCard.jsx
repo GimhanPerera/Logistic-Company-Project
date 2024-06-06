@@ -36,6 +36,7 @@ const SpecialNoticesCard = ({ notice, reload, clickEdit, setNoticeDetails }) => 
                             icon: "success"
                         });
                         setVisible(false);
+                        reload();
                     })
                     .catch((error) => {
                         console.error("Error fetching courier details:", error);

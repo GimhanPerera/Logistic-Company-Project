@@ -1,8 +1,8 @@
 import { Box } from '@mui/material';
 import axios from "axios";
 import React, { useEffect, useState } from 'react';
+import NoDataComponent from '../../../components/NoData';
 import SearchBar from "../../../components/SearchBar";
-import nodataImg from './../../../assets/nodata.png';
 import OrderRequestCard from './orderRequestCard';
 const OrderRequest = () => {
 
@@ -18,11 +18,7 @@ const OrderRequest = () => {
   if (listOfpriceQ.length == 0) return (
     <>
       <SearchBar label='Search by quotation id' search={search} setSearch={setSearch}/>
-      <Box component="div" sx={{margin:'auto',display: 'flex', justifyContent: 'center'}}>
-        <img src={nodataImg} alt='empty image' style={{ width: '25rem'}} />
-        </Box>
-        <Box component="p" sx={{width:'100px', margin:'auto', fontSize:'20px', fontWeight:'600'}}>No Data</Box>
-      
+      <NoDataComponent message="No Data"/>
     </>)
   else
     return (
