@@ -28,6 +28,7 @@ const CustomerDetailsCard = ({ customer }) => {
         <div className="">Name: {customer.f_name} {customer.l_name}</div>
         <div className="">Tel number: 0{customer.tel_number}</div>
         {customer.status == 'active' ? <div>Status: {customer.status}</div> : <div style={{color:'red'}}>Status: {customer.status}</div>}
+        <div className="">Last login: {customer.last_attempt_date_time}</div>
       </div>
       <Box component="div"
         sx={{

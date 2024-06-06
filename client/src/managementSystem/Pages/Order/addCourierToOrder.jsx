@@ -1,7 +1,4 @@
-import { Box, Button } from '@mui/material';
-import FormControl from '@mui/material/FormControl';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
+import { Box, Button, FormControl, MenuItem, Select, TextField } from '@mui/material';
 import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
@@ -13,7 +10,9 @@ const AddCourierToOrder = () => {
     const [loading, setLoading] = useState(true);
     const [listOfCourier, setListOfCourier] = useState(null);
 
-    const [selectCourier, setSelectCourier] =useState( null);
+    const [selectCourier, setSelectCourier] = useState(null);
+    const [courierTN, setCourierTN] = useState('');
+    const [issueDate, setIssueDate] = useState('');
 
     const handleChange = (event) => {
         setSelectCourier(event.target.value);
@@ -21,31 +20,31 @@ const AddCourierToOrder = () => {
 
 
     const toBack = () => {
-        navigate('./..', { state: { id: orderId} });
+        navigate('./..', { state: { id: orderId } });
     }
     const toClear = () => {
 
-        navigate('./..', { state: { id: orderId} });
+        navigate('./..', { state: { id: orderId } });
     }
     const clearCourier = () => {
-        axios.post("http://localhost:3001/api/courier/clear",{
+        axios.post("http://localhost:3001/api/courier/clear", {
             orderId: orderId,
             selectCourier: '0'
         })
             .then((response) => {
-                navigate('./..', { state: { id: orderId} });
+                navigate('./..', { state: { id: orderId } });
             })
             .catch((error) => {
                 console.error("Error fetching courier details:", error);
             });
     }
     const assignCourier = () => {
-        axios.post("http://localhost:3001/api/courier/assign",{
+        axios.post("http://localhost:3001/api/courier/assign", {
             orderId: orderId,
             selectCourier: selectCourier
         })
             .then((response) => {
-                navigate('./..', { state: { id: orderId} });
+                navigate('./..', { state: { id: orderId } });
             })
             .catch((error) => {
                 console.error("Error fetching courier details:", error);
@@ -56,7 +55,7 @@ const AddCourierToOrder = () => {
         axios.get("http://localhost:3001/api/courier")
             .then((response) => {
                 setListOfCourier(response.data);
-                setSelectCourier(courierId!=null ? courierId: response.data[0].courier_id)
+                setSelectCourier(courierId != null ? courierId : response.data[0].courier_id)
                 setLoading(false); // Set loading to false once data is fetched
             })
             .catch((error) => {
@@ -69,30 +68,6 @@ const AddCourierToOrder = () => {
     if (loading) {
         return <div>Loading...</div>; // Show loading indicator while fetching data
     }
-
-
-    // const couriers = [
-    //     {
-    //         "courier_id": 1000,
-    //         "name": "Nuwan Perera",
-    //         "tel_number": 775843239
-    //     },
-    //     {
-    //         "courier_id": 1001,
-    //         "name": "Nuwan Perera",
-    //         "tel_number": 775843239
-    //     },
-    //     {
-    //         "courier_id": 1002,
-    //         "name": "Nuwan Perera",
-    //         "tel_number": 775843239
-    //     },
-    //     {
-    //         "courier_id": 1003,
-    //         "name": "Nuwan Perera",
-    //         "tel_number": 775843239
-    //     }
-    // ];
 
     return (
         <>
@@ -122,6 +97,16 @@ const AddCourierToOrder = () => {
                             ))}
                         </Select>
                     </FormControl>
+                </Box>
+                <Box>
+                    <TextField label="Courier Tracking Number" size="small" type='number' name='Courier Tracking Number' margin="normal"
+                        value={courierTN}
+                        onChange={setCourierTN}
+                    />
+                    <TextField label="Issue date" size="small" type='date' name='issueDate' margin="normal"
+                        value={issueDate}
+                        onChange={setIssueDate}
+                    />
                 </Box>
 
             </div>

@@ -167,6 +167,9 @@ const editProfile = async (req, res) => {
         customer.address = req.body.address;
         customer.tel_number = req.body.tel_number;
         customer.status = req.body.status;
+        if(req.body.status == 'active'){
+            customer.wrong_attempts = 0;
+        }
 
         await customer.save();
         console.log("SAVED", customer)
