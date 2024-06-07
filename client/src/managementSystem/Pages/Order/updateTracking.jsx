@@ -82,6 +82,7 @@ const UpdateTracking = () => {
     const [rowModesModel, setRowModesModel] = useState({});
     const [displayMasks, setDisplayMasks] = useState(false);
     const [readyToShip, setReadyToShip] = useState(false);
+    const [blockAll, setBlockAll] = useState(false);
 
     //check all packages are Received
     useEffect(() => {
@@ -114,8 +115,12 @@ const UpdateTracking = () => {
                 setRows(dataWithIds);
                 setMainTracking(response.data.tracking_number);
                 console.log(mainTracking);
-                if (response.data.status == "Ready" || response.data.status == "Deliverd") {
+                if (status == "Ready" || status == "Deliverd") {
                     setlocalTrackingEditable(true)
+                }
+                if(status == "onhand"){
+                    setBlockAll(true);
+                    console.log("blockAll ",blockAll)
                 }
             })
             .catch((error) => {
@@ -184,7 +189,7 @@ const UpdateTracking = () => {
         {
             field: 'shipping_mark',
             headerName: 'Shipping mark',
-            width: 170,
+            width: 200,
             editable: false,
         },
         {
@@ -197,14 +202,14 @@ const UpdateTracking = () => {
             field: 'status',
             headerName: 'Status',
             width: 140,
-            editable: tracking != 'Waiting' ? false : true,
+            editable: (tracking != 'Waiting' ? false : true) || !blockAll,
             type: 'singleSelect',
             valueOptions: ['not received', 'received'],
         },
         {
             field: 'warehouse_tracking_number',
             headerName: 'warehouse_tracking_number',
-            width: 200,
+            width: 230,
             editable: true,
         },
         {
@@ -347,10 +352,11 @@ const UpdateTracking = () => {
                                 />
                             </td>
                             <td>
+                                {tracking=='onhand' ? '' : 
                                 <FormControl sx={{ m: 1, minWidth: 120 }}>
                                     <InputLabel id="demo-select-small-label">Received Status</InputLabel>
                                     <Select
-                                        disabled={!readyToShip}
+                                        disabled={!readyToShip || blockAll}
                                         value={tracking}
                                         label="Received Status"
                                         onChange={handleTracking}
@@ -364,18 +370,19 @@ const UpdateTracking = () => {
                                         <MenuItem value="Deliverd">Deliverd</MenuItem> */}
                                     </Select>
                                 </FormControl>
+                                }
                             </td>
                             <td>
                             </td>
                         </tr>
                         <tr>
                             <td>
-                                <Button variant="contained" onClick={reloadPage}>
+                                <Button variant="contained" onClick={reloadPage} disabled={blockAll}>
                                     Undo all changes
                                 </Button>
                             </td>
                             <td style={{ paddingTop: '0.7rem' }}>
-                                <Button variant="contained" onClick={setAllReceived}>
+                                <Button variant="contained" onClick={setAllReceived} disabled={blockAll}>
                                     Set all packages as Received
                                 </Button>
                             </td>
@@ -389,7 +396,7 @@ const UpdateTracking = () => {
 
             {/*Table*/}
             <Container>
-                <Box sx={{ height: 400, width: '90%' }}>
+                <Box sx={{ height: 400, width: 850, m:'0 auto' }}>
                     <StyledDataGrid sx={{ border: '1px solid gray' }}
                         rows={rows}
                         columns={columns}

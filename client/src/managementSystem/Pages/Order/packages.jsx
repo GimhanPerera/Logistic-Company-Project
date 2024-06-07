@@ -16,7 +16,7 @@ import {
   GridToolbarContainer,
 } from '@mui/x-data-grid';
 import axios from "axios";
-import { Field, Form, Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import ReactToPrint from 'react-to-print';
@@ -469,7 +469,8 @@ export const Packages = () => {
             <table className="border-solid border-2 border-black m-2" style={{ border: 'solid 1px gray', margin: '1rem', padding: '1rem' }}>
               <tr>
                 <td><label for="name">Name :</label></td>
-                <td><Field type="text"
+                <td><TextField type="text"
+                  size='small'
                   name="name"
                   id="name"
                   value={name}
@@ -513,8 +514,10 @@ export const Packages = () => {
                 </td>
               </tr>
               <tr>
-                <td><label for="tp">Tel. Number :</label></td>
-                <td><Field type="text"
+                <td><label for="tp" style={{marginRight:'1rem'}}>Tel. Number :</label></td>
+                <td>
+                  <TextField type="number"
+                  size='small'
                   id="tp"
                   name="tp"
                   value={tel}
@@ -523,13 +526,13 @@ export const Packages = () => {
                 </td>
               </tr>
               <tr>
-                <td style={{ paddingTop: '0.7rem' }}>
+                <td style={{ paddingTop: '1rem' }}>
                   <Button variant="text"
                     sx={{ ml: '20px' }}
                   >
                     Cancel
                   </Button>
-                </td><td>
+                </td><td style={{ paddingTop: '1rem' }}>
                   <Button variant="contained"
                     sx={{ ml: '20px' }}
                     onClick={addSupplier}
@@ -546,7 +549,7 @@ export const Packages = () => {
         <Button variant="outlined" onClick={toBack} sx={{ position: 'fixed', right: '11rem', top: '5rem' }}>Back</Button>
 
         <Container>
-          <Box sx={{ height: 400, width: '90%' }}>
+          <Box sx={{ height: 400, width: '1100px' }}>
             <StyledDataGrid sx={{ border: '1px solid gray' }}
               rows={rows}
               columns={columns}

@@ -61,8 +61,8 @@ const getMonthlyOrders = async (currentYear) => {
     return monthlyOrders;
 };
 
-const getMostIncomeMonth = async () => {
-    const currentYear = new Date().getFullYear();
+const getMostIncomeMonth = async (currentYear) => {
+    //const currentYear = new Date().getFullYear();
     const monthlyIncome = await getMonthlyIncome(currentYear);
 
     let mostIncomeMonth = monthlyIncome[0];
@@ -75,8 +75,8 @@ const getMostIncomeMonth = async () => {
     return mostIncomeMonth;
 };
 
-const getLeastIncomeMonth = async () => {
-    const currentYear = new Date().getFullYear();
+const getLeastIncomeMonth = async (currentYear) => {
+    //const currentYear = new Date().getFullYear();
     const monthlyIncome = await getMonthlyIncome(currentYear);
 
     let leastIncomeMonth = monthlyIncome[0];
@@ -135,9 +135,55 @@ const getTotalPriceQuotationsOfYear = async (currentYear) => {
     return total || 0;
 };
 
+//---------------------------------
+//Total income of a given month
+const getTotalIncomeOfMonth = async (year, month) => {
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 0, 23, 59, 59);
+
+    const result = await Payment.findOne({
+        attributes: [[fn('SUM', col('payment')), 'totalIncome']],
+        where: {
+            date_time: {
+                [Op.gte]: startDate,
+                [Op.lt]: endDate
+            }
+        }
+    });
+
+    return parseFloat(result.getDataValue('totalIncome')) || 0;
+};
+
+//get total income of each day of a given month
+const getTotalIncomeOfEachDay = async (year, month) => {
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 0, 23, 59, 59);
+
+    const results = await Payment.findAll({
+        attributes: [
+            [fn('DATE', col('date_time')), 'date'],
+            [fn('SUM', col('payment')), 'totalIncome']
+        ],
+        where: {
+            date_time: {
+                [Op.gte]: startDate,
+                [Op.lt]: endDate
+            }
+        },
+        group: [fn('DATE', col('date_time'))],
+        order: [[fn('DATE', col('date_time')), 'ASC']]
+    });
+
+    return results.map(result => ({
+        date: result.getDataValue('date'),
+        totalIncome: parseFloat(result.getDataValue('totalIncome'))
+    }));
+};
+//---------------------------------
 
 const getYearReport = async (req, res) => {
     try {
+
         let  { year} = req.query;
 
         // Validate the year parameters if necessary
@@ -148,12 +194,12 @@ const getYearReport = async (req, res) => {
         // Convert year and month to integers
         year = parseInt(year, 10);
 
-        const currentYear = new Date().getFullYear();
-        console.log("currentYear: ", currentYear);
+        //const currentYear = new Date().getFullYear();
+        //console.log("currentYear: ", currentYear);
         const monthlyIncome = await getMonthlyIncome(year); //(currentYear);
         const monthlyOrders = await getMonthlyOrders(year);
-        const mostIncome = await getMostIncomeMonth();
-        const lessIncome = await getLeastIncomeMonth();
+        const mostIncome = await getMostIncomeMonth(year);
+        const lessIncome = await getLeastIncomeMonth(year);
         const totalIncomeOfYear = await getTotalIncomeOfYear(year);
         const totalPriceQuotationsOfYear = await getTotalPriceQuotationsOfYear(year);
 
@@ -168,7 +214,7 @@ const getYearReport = async (req, res) => {
             mostIncome,
             lessIncome,
             totalIncomeOfYear,
-            totalPriceQuotationsOfYear
+            totalPriceQuotationsOfYear,
         });
 
     } catch (error) {
@@ -180,37 +226,12 @@ const getYearReport = async (req, res) => {
 const getMonthReport = async (req, res) => {
     try {
         let  { year, month } = req.query;
-
-        // Validate the year and month parameters if necessary
-        if (!year || !month) {
-            return res.status(400).json({ error: "Year and month are required" });
-        }
-
-        // Convert year and month to integers
-        year = parseInt(year, 10);
-        month = parseInt(month, 10);
-
-        const currentYear = new Date().getFullYear();
-        console.log("currentYear: ", currentYear);
-        const monthlyIncome = await getMonthlyIncome(year); //(currentYear);
-        const monthlyOrders = await getMonthlyOrders(year);
-        const mostIncome = await getMostIncomeMonth();
-        const lessIncome = await getLeastIncomeMonth();
-        const totalIncomeOfYear = await getTotalIncomeOfYear(year);
-        const totalPriceQuotationsOfYear = await getTotalPriceQuotationsOfYear(year);
-
-        const combinedReport = monthlyIncome.map((incomeData, index) => ({
-            month: incomeData.month,
-            totalIncome: incomeData.totalIncome,
-            totalOrders: monthlyOrders[index].totalOrders
-        }));
+        const totalIncomeOfMonth = await getTotalIncomeOfMonth(year, month);
+        const totalIncomeOfEachDay = await getTotalIncomeOfEachDay(year, month);
 
         res.status(200).json({
-            combinedReport,
-            mostIncome,
-            lessIncome,
-            totalIncomeOfYear,
-            totalPriceQuotationsOfYear
+            totalIncomeOfMonth,
+            totalIncomeOfEachDay
         });
 
     } catch (error) {
@@ -221,8 +242,5 @@ const getMonthReport = async (req, res) => {
 
 module.exports = {
     getYearReport,
-    getMostIncomeMonth,
-    getLeastIncomeMonth,
-    getTotalIncomeOfYear,
-    getTotalPriceQuotationsOfYear
+    getMonthReport
 };

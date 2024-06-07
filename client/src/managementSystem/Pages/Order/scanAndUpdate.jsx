@@ -255,8 +255,6 @@ const ScanAndUpdate = () => {
             });
     }
 
-
-
     const columns = [
         { field: 'id', headerName: 'ID', width: 80, editable: false },
         {
@@ -319,15 +317,33 @@ const ScanAndUpdate = () => {
 
     return (
         <>
+            <Box
+                component='div'
+                sx={{
+                    width: '100%',
+                    position: 'relative',
+                    height: {
+                        xs: '50px', // height 50px when the width is 600px or below
+                        sm: 'auto' // auto height for larger screens
+                    }
+                }}
+            >
+                {/* Back button */}
+                <Button variant='outlined' onClick={toBack} sx={{ position: 'absolute', ml: '50px' }} size='large'>Back</Button>
+                {/* Save button */}
+                <Button variant="contained" onClick={saveInDatabase} sx={{ position: 'absolute', right: '0', mr: '50px' }} size='large'>Save</Button>
+            </Box>
             <Box component="div" sx={{}}>
                 <div>
-                    <Box component="h1">Scan QR code</Box>
-                    <Box component="h4">Total packages: {totalPackages}</Box>
-                    <Box component="h4">Total collected count: {totalCollected}</Box>
+                    <Box component="h1" sx={{ textAlign: 'center' }}>Scan QR code</Box>
+                    <Box component="h4" sx={{ textAlign: 'center' }}>Total packages: {totalPackages}</Box>
+                    <Box component="h4" sx={{ textAlign: 'center' }}>Total collected count: {totalCollected}</Box>
 
-                    <Box component="div" sx={{ width: '400px' }}>
+                    {/* Button section and Scan section */}
+                    <Box component="div" sx={{ width: '400px', margin: 'auto', padding: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <div id='reader'></div>
                     </Box>
+
                     {scanResults.length > 0 && (
                         <Box component="div">
                             <Box component="h2">Scan Results:</Box>
@@ -338,18 +354,20 @@ const ScanAndUpdate = () => {
                             </ul>
                         </Box>
                     )}
-                    <Button onClick={toScanAgain}>
-                        {scanToggle ? 'Stop Scanner' : 'Start Scanning'}
-                    </Button>
-                    <Button onClick={toBack}>Back</Button>
-                    <br />
-                    <Button onClick={setAsAllCollected}>All collect</Button>
-                    <Button variant="contained" onClick={saveInDatabase}>Save</Button>
+                    <Box component='div' sx={{ width: '200px', margin: 'auto', padding: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <Button variant='outlined' onClick={toScanAgain}>
+                            {scanToggle ? 'Stop Scanner' : 'Start Scanning'}
+                        </Button>
+                        <br />
+                        <Button variant='outlined' onClick={setAsAllCollected}>All collect</Button>
+                    </Box>
                 </div>
             </Box>
             <Container>
-                <Box sx={{ height: 400, width: '90%' }}>
-                    <StyledDataGrid sx={{ border: '1px solid gray' }}
+
+                {/* Table section */}
+                <Box sx={{ height: 400, mb:'2rem'}}>
+                    <StyledDataGrid sx={{ border: '1px solid gray', maxWidth:'600px', margin:'auto' }}
                         rows={rows}
                         columns={columns}
                         editMode="row"

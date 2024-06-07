@@ -124,7 +124,9 @@ const assignCourier = async (req, res) => {
 const clearCourier = async (req, res) => {
     try {
         const order = await Order.update({
-            courier_id: null
+            courier_id: null,
+            courier_tracking_number: null,
+            issue_date: null
         }, {
             where: { order_id: req.body.orderId }
         }
