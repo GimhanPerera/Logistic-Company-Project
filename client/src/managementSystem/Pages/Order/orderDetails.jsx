@@ -87,12 +87,13 @@ const OrderDetails = () => {
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center'
+            alignItems: 'center',
           }}
         >
           <OrderDetailsCard order={order} removeOrderFromList={removeOrderFromList}/>
         </Box>
       ))}
+      <div style={{ marginBottom:'1rem' }}></div>
       </div>
     </div>
   )

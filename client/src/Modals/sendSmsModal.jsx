@@ -1,4 +1,4 @@
-import { Box, Button } from '@mui/material';
+import { Box, Button, TextField } from '@mui/material';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import Autheader from "../services/Autheader";
@@ -53,7 +53,8 @@ export default function SendSmsModal({ open, onClose,smsDetails, reloadSms  }) {
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
                     backgroundColor: 'white',
-                    padding: '2rem',
+                    p: '2rem',
+                    width:'450px',
                     zIndex: 50
                 }}
             >
@@ -72,16 +73,19 @@ export default function SendSmsModal({ open, onClose,smsDetails, reloadSms  }) {
                     }}
                 ></Box>
                 <div>
-                    <p>SMS: </p>
-                    <Box component="input"
-                        sx={{
-                            border: '1px solid black',
-                            width: '24rem',
-                            padding: '0.25rem'
-                        }}
+                    <Box component='p' sx={{fontSize:'1.4rem', mt:'1.3rem'}}>SMS: </Box>
+                    <TextField
+                        fullWidth
+                        variant="outlined"
                         value={sms}
                         onChange={(e) => setSMS(e.target.value)}
-                    ></Box>
+                        inputProps={{ maxLength: 200 }}
+                        multiline
+                        rows={4}
+                        sx={{
+                            marginBottom: '1rem'
+                        }}
+                    />
                     <div>
                         <Button onClick={sendSMS} fullWidth variant="contained" sx={{ mt: 3, mb: 1, border: '1px solid #1E90FF' }}>Send</Button><br />
                         <Button onClick={clickCloseBtn} fullWidth variant="contained" sx={{ mt: 0, mb: 2, border: '1px solid #1E90FF', color: '#1E90FF', backgroundColor: 'white' }}>Cancel</Button>

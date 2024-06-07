@@ -115,7 +115,8 @@ const OrderDetailsCard = ({ order,removeOrderFromList }) => {
           {order.status == 'Just opened' && (
             <Box component="p" onClick={toPackages} sx={{ cursor: 'pointer' }}>add packages</Box>
           )}
-          <Box className='p' onClick={toUpdateTracking} sx={{ cursor: 'pointer' }} >Update tracking</Box>
+          {order.status == 'Just opened' || order.status == 'FINISH' ? '':
+          <Box className='p' onClick={toUpdateTracking} sx={{ cursor: 'pointer' }} >Update tracking</Box> }
           {order.status == 'Just opened' ?
             <Box className='p' onClick={toDeleteOrder} sx={{ cursor: 'pointer' }} >Cancel the order</Box> : <p></p>}
         </Box>
