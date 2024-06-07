@@ -1,4 +1,4 @@
-const { Payment, Shipment, Order,Price_quotation } = require('../models');
+const { Payment, Shipment, Order,Price_quotation,Complain,Customer,Employee } = require('../models');
 const { getCurrentSriLankanDate, getCurrentSriLankanDateTime, getCurrentSriLankanTime } = require('../middleware/dateTime');
 const { Op, fn, col, literal } = require('sequelize');
 //const orderCount = await Order.count({ where: { customer_id: customer.customer_id, status: { [Op.ne]: 'FINISH' } } });
@@ -9,7 +9,6 @@ const { Op, fn, col, literal } = require('sequelize');
 //     }],
 //     where: {customer_id: 'CFL610'}
 // });
-
 
 const getDashboardData = async (req, res) => {
     const currentYear = new Date().getFullYear();
@@ -112,12 +111,35 @@ const getDashboardData = async (req, res) => {
             orderCount: parseInt(item.get('orderCount'), 10)
         }));
 
+        const totalPendingComplains = await Complain.count({
+            where: {
+                status: 'pending'
+            }
+        });
+        //Total customer count
+        const totalCustomerCount = await Customer.count();
+        //Status vise customer counts
+        const statusViseCustomerCounts = await Customer.findAll({
+            attributes: [
+                'status',
+                [fn('COUNT', col('status')), 'count']
+            ],
+            group: 'status'
+        });
+        //Total customer count
+        const totalEmpCount = await Employee.count();
+        //Status vise customer counts
+        const statusViseEmpCounts = await Employee.findAll({
+            attributes: [
+                'status',
+                [fn('COUNT', col('status')), 'count']
+            ],
+            group: 'status'
+        });
+
         //return { totalMonth, totalYear };
         //const customer = await Customer.findByPk(id) //ID eken one nan
         //const courier = await Courier.findAll({}) //{} : pass empty obj
-        const date = getCurrentSriLankanDate();
-        const datetime = getCurrentSriLankanDateTime();
-        const time = getCurrentSriLankanTime();
 
         const respond = {
             totalIncomeThisMonth: totalIncomeThisMonth == null ? 0 : totalIncomeThisMonth,
@@ -126,7 +148,13 @@ const getDashboardData = async (req, res) => {
             activeOrderCount,
             PriceRequestCount,
             monthlyIncomeForChat,
-            orderCountforEachCategory
+            orderCountforEachCategory,
+            //
+            totalPendingComplains,
+            totalCustomerCount,
+            statusViseCustomerCounts,
+            totalEmpCount,
+            statusViseEmpCounts
         }
 
         res.status(200).json(respond)
