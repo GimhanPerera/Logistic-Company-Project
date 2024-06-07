@@ -8,6 +8,14 @@ const CustomersDetails = () => {
   
   const [listOfCustomers, setListOfCustomers] = useState([]);
   const [search, setSearch] = useState('');
+  const [currentUser, setCurrentUser] = useState(undefined);
+  useEffect(() => {
+    const userRole = localStorage.getItem("user");
+    if (userRole) {
+      const parsedUserRole = JSON.parse(userRole); // Parse the string into an object
+      setCurrentUser(parsedUserRole.role);
+    }
+  }, []);
 
     useEffect(() => {
         axios.get("http://localhost:3001/api/customers").then((response)=>{
