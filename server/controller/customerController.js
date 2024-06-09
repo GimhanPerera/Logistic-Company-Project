@@ -89,16 +89,25 @@ const getAllCustomers = async (req, res) => {
     //const customer = await Customer.findByPk(id) //ID eken one nan
     const customers = await Customer.findAll({}) //{} : pass empty obj
 
-    // For each customer, get the order count
-    const customersWithOrderCount = await Promise.all(customers.map(async (customer) => {
-        const orderCount = await Order.count({ where: { customer_id: customer.customer_id, status: { [Op.ne]: 'FINISH' } } });
+    // For each customer, get the order count and order IDs
+    const customersWithOrderDetails = await Promise.all(customers.map(async (customer) => {
+        // Retrieve orders where the status is not 'FINISH'
+        const orders = await Order.findAll({
+            where: { customer_id: customer.customer_id, status: { [Op.ne]: 'FINISH' } },
+            attributes: ['order_id'] // Only select the order ID
+        });
+
+        // Extract order IDs
+        const orderIds = orders.map(order => order.order_id);
+
         return {
             ...customer.dataValues, // Spread the customer's data values
-            order_count: orderCount, // Add the order_count attribute
+            order_count: orders.length, // Add the order_count attribute
+            order_ids: orderIds // Add the order_ids attribute
         };
     }));
 
-    res.status(200).json(customersWithOrderCount)
+    res.status(200).json(customersWithOrderDetails)
 }
 
 // 2. Get all Customers

@@ -4,9 +4,9 @@ import { Field, Form, Formik, useFormik } from 'formik';
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
-import Autheader from "../../../services/Autheader";
-//import { employeeFormValidation } from '../../validations';
 import Swal from 'sweetalert2';
+import Autheader from "../../../services/Autheader";
+import { employeeFormValidation } from '../../../validations';
 
 export const EditEmployee = () => {
     const location = useLocation();
@@ -81,7 +81,7 @@ export const EditEmployee = () => {
 
     const { values, touched, handleBlur, isSubmitting, setErrors, handleChange, handleSubmit, errors } = useFormik({
         initialValues: initialValues,
-        //validationSchema: employeeFormValidation,
+        validationSchema: employeeFormValidation,
 
         onSubmit,
     });
@@ -199,7 +199,7 @@ export const EditEmployee = () => {
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <Box component="div" sx={{}}>
+                                    <Box component="div" sx={{mt:'1rem'}}>
                                         <Button variant="outlined"
                                             onClick={toBack}
                                         >

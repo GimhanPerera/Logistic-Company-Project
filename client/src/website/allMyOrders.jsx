@@ -16,10 +16,16 @@ export const AllMyOrders = () => {
   const [newPwd, setNewPwd] = useState('');
   const [newPwdC, setNewPwdC] = useState('');
   const [showPwdBox, setShowPwdBox] = useState(false);
+
+  const [oldPwdError, setOldPwdError] = useState('');
+  const [newPwdError, setNewPwdError] = useState('');
+  const [newPwdCError, setNewPwdCError] = useState('');
+
   const toBack = () => {
     localStorage.removeItem('user')
     navigate('../');
   }
+
   const orderRequest = () => {
     console.log("REQ COUNT:" + reqCount)
     if (reqCount < 2) {
@@ -29,15 +35,55 @@ export const AllMyOrders = () => {
     toast.error("Maximum of 2 orders requests can be send at once");
 
   }
+
   const [listOfOrders, setListOfOrders] = useState([]);
+
   const togglePwdBox = () => {
     setShowPwdBox(!showPwdBox);
     setOldPwd('');
     setNewPwd('');
     setNewPwdC('');
+    // Reset error messages
+    setOldPwdError('');
+    setNewPwdError('');
+    setNewPwdCError('');
   }
 
   const changePWD = () => {
+    // Reset error messages
+    setOldPwdError('');
+    setNewPwdError('');
+    setNewPwdCError('');
+
+    // Basic validations
+    let valid = true;
+
+    if (!oldPwd) {
+      setOldPwdError('Old Password is required');
+      valid = false;
+    }
+
+    if (!newPwd) {
+      setNewPwdError('New Password is required');
+      valid = false;
+    } else if (newPwd.length < 6) {
+      setNewPwdError('New Password must be at least 6 characters long');
+      valid = false;
+    }
+
+    if (!newPwdC) {
+      setNewPwdCError('Please confirm the new password');
+      valid = false;
+    } else if (newPwd !== newPwdC) {
+      setNewPwdCError('Passwords do not match');
+      valid = false;
+    }
+
+    if (!valid) {
+      return;
+    }
+    // END-Basic validations
+
     axios.post("http://localhost:3001/api/customers/changePwd", {
       "oldPwd": oldPwd,
       "newPwd": newPwd,
@@ -101,7 +147,7 @@ export const AllMyOrders = () => {
       </Button>
       <Button variant="outlined"
         onClick={togglePwdBox} sx={{ position: 'fixed', mt: '20px', right: '70px', p: '10px' }}>
-        {showPwdBox? 'Close password box' : 'Change Password'}
+        {showPwdBox ? 'Close password box' : 'Change Password'}
       </Button>
       <Box component="div"
         sx={{
@@ -121,45 +167,61 @@ export const AllMyOrders = () => {
           </Box>
         ))}
       </Box>
-      {showPwdBox? 
-      <>
-      {/* Change Password */}
-      <Box component="div" style={{ border: '1px solid gray', padding: '1rem', width: '250px', position:'fixed', right:'5rem', top:'10rem' }}>
-        <Box component="h3" sx={{ mb: 2, textAlign: 'center' }}>Change Password</Box>
-        <table>
-          <tr>
-            <td>
-              <TextField label="Old Password" size="small" type='password' name='oldPwd'
-                value={oldPwd}
-                onChange={(e) => setOldPwd(e.target.value)}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <TextField label="New Password" size="small" type='password' name='newPwd' margin="normal"
-                value={newPwd}
-                onChange={(e) => setNewPwd(e.target.value)}
-                sx={{ mb: 2 }}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <TextField label="Confirm New Password" size="small" type='password' name='tp'
-                value={newPwdC}
-                onChange={(e) => setNewPwdC(e.target.value)}
-              />
-            </td>
-          </tr>
-        </table>
-        <Button variant="contained" onClick={changePWD}
-          sx={{ backgroundColor: '#68DD62', ml: '40px', mt: '1rem' }}>
-          Change password
-        </Button>
-      </Box>
-      </>
-      :''}
+      {showPwdBox ?
+        <>
+          {/* Change Password */}
+          <Box component="div" style={{ border: '1px solid gray', padding: '1rem', width: '250px', position: 'fixed', right: '5rem', top: '10rem' }}>
+            <Box component="h3" sx={{ mb: 2, textAlign: 'center' }}>Change Password</Box>
+            <table>
+              <tr>
+                <td>
+                  <TextField label="Old Password" size="small" type='password' name='oldPwd'
+                    value={oldPwd}
+                    onChange={(e) => {
+                      setOldPwdError('');
+                      setOldPwd(e.target.value);
+                    }}
+                    error={!!oldPwdError}
+                    helperText={oldPwdError}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <TextField label="New Password" size="small" type='password' name='newPwd' margin="normal"
+                    value={newPwd}
+                    onChange={(e) => {
+                      setNewPwdError('');
+                      setNewPwd(e.target.value);
+                    }}
+                    error={!!newPwdError}
+                    helperText={newPwdError}
+                    sx={{ mb: 2 }}
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <TextField label="Confirm New Password" size="small" type='password' name='tp'
+                    value={newPwdC}
+                    onChange={(e) => {
+                      setNewPwdCError('');
+                      setNewPwdC(e.target.value);
+
+                    }}
+                    error={!!newPwdCError}
+                    helperText={newPwdCError}
+                  />
+                </td>
+              </tr>
+            </table>
+            <Button variant="contained" onClick={changePWD}
+              sx={{ backgroundColor: '#68DD62', ml: '40px', mt: '1rem' }}>
+              Change password
+            </Button>
+          </Box>
+        </>
+        : ''}
     </>
   )
 

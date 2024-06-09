@@ -11,9 +11,8 @@ import Navbar from './navbar';
 export const CustomerLogin = () => {
   const [show, setShow] = useState(true);
   const [trackingNumber, setTrackingNumber] = useState("");
-  const [customerID, setCustomerID] = useState("");
+  const [trackingNumberError, setTrackingNumberError] = useState("");
   const [pwd, setPwd] = useState("");
-  const [errorMessage, setErrorMessage] = useState(null);
   const navigate = useNavigate();
 
   const checkTrackingNumber = async (e) => {
@@ -25,13 +24,13 @@ export const CustomerLogin = () => {
       if (response.data.isValid) {
         navigate(`./${trackingNumber}`);
       } else {
-
+        setTrackingNumberError("Wrong tracking number");
       }
     } catch (error) {
       if (error.response && error.response.data) {
-        setErrorMessage(error.response.data);
+        toast.error(error.response.data);
       } else {
-        setErrorMessage("An unexpected error occurred. Please try again.");
+        toast.error("An unexpected error occurred. Please try again.");
       }
     }
   };
@@ -67,7 +66,6 @@ export const CustomerLogin = () => {
   return (
     <div>
       <Navbar />
-      {errorMessage && <div style={{ color: "red" }}>{errorMessage}</div>}{" "}
       <Box component="section" sx={{ backgroundColor: '#e0f0f3', height:'88vh',marginTop:'0rem' }}>
         <Box component="div"
           sx={{
@@ -91,7 +89,7 @@ export const CustomerLogin = () => {
               padding: 0
             }}>
             <div>
-              <Button variant="text" onClick={() => setShow(true)} sx={{ width: "50%", border: '1px solid', borderRadius: 0, borderBottom: show ? 'none' : '1px solid', borderRight: show ? 'none' : '1px solid' }}>By customer ID</Button>
+              <Button variant="text" onClick={() => {setTrackingNumberError("");setTrackingNumber("");setShow(true);}} sx={{ width: "50%", border: '1px solid', borderRadius: 0, borderBottom: show ? 'none' : '1px solid', borderRight: show ? 'none' : '1px solid' }}>By customer ID</Button>
               <Button variant="text" onClick={() => setShow(false)} sx={{ width: "50%", border: '1px solid', borderRadius: 0, borderBottom: show ? '1px solid' : 'none', borderLeft: show ? '1px solid' : 'none' }}>By tracking number</Button>
             </div>
             {/*Login by customer ID form*/}
@@ -211,7 +209,10 @@ export const CustomerLogin = () => {
                       id="trNumber"
                       placeholder="Tracking number"
                       value={trackingNumber}
-                      onChange={(e) => setTrackingNumber(e.target.value)}
+                      onChange={(e) => {
+                        setTrackingNumberError("");
+                        setTrackingNumber(e.target.value)
+                      }}
                       required
                       sx={{
                         border: '1px solid #D1D5DB',
@@ -223,13 +224,14 @@ export const CustomerLogin = () => {
                         display: 'block',
                         width: '100%',
                         padding: '0.625rem',
-                        mb: '1rem',
+                        marginBottom: '0.5rem',
                         '&:focus': {
                           borderColor: '#2563EB',
                           boxShadow: '0 0 0 0.125rem rgba(66, 153, 225, 0.5)'
                         }
                       }}
                     />
+                  <p style={{fontSize:'0.8rem', color:'red', marginBottom: '0.5rem',marginLeft:'1rem'}}>{trackingNumberError}</p>
                   </div>
                   <div className="flex-div">
                     <Box component="p" sx={{ color: '#1E90FF', fontSize: '0.875rem', fontWeight: 'medium', cursor: 'pointer' }} underline="always">Forgot tracking number?</Box>

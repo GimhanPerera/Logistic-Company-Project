@@ -2,16 +2,18 @@ import { Box, Button } from '@mui/material';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import Autheader from "../services/Autheader";
+import { courierFormValidation } from './../validations';
 
-export default function AddEditCourierModal({ open, onClose,courierDetails,reloadCouriers  }) {
+export default function AddEditCourierModal({ open, onClose, courierDetails, reloadCouriers }) {
     const [resp, setResp] = useState();
     const [nameField, setNameField] = useState('');
     const [tpFields, setTpFields] = useState('');
+    const [errors, setErrors] = useState({});
     const token = localStorage.getItem('token');
-    useEffect(()=>{
-        setNameField(courierDetails? courierDetails.name : '');
-        setTpFields(courierDetails? `0${courierDetails.tel_number}` : '');
-    },[courierDetails])
+    useEffect(() => {
+        setNameField(courierDetails ? courierDetails.name : '');
+        setTpFields(courierDetails ? `0${courierDetails.tel_number}` : '');
+    }, [courierDetails])
 
     const handleClose = (e) => {
         if (e.target.id === 'container') {
@@ -19,57 +21,83 @@ export default function AddEditCourierModal({ open, onClose,courierDetails,reloa
             setTpFields('')
             reloadCouriers();
             onClose();
+            setErrors({});
         }
     }
     const clickCloseBtn = () => {
         setNameField(''); // Clear the text box
         setTpFields('')
         onClose();
+        setErrors({});
     }
 
     const addCourier = () => {
 
-        //VALIDATION SHOULD DONE HERE
-        //alert(tpFields + " Adding " + nameField)
-        axios.post("http://localhost:3001/api/courier", {
-            name: nameField,
-            tel_number: tpFields
-        }, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        }).then((response) => {
-            setResp(response.data);
-            setNameField(''); // Clear the text box
-            setTpFields('')
-            onClose();
-        }).catch((error) => {
-            console.error('Error submitting complain:', error);
-        });
+        courierFormValidation
+            .validate({ nameField, tpFields }, { abortEarly: false })
+            .then(() => {
+                setErrors({});
+                console.log("DIDDDD")
+                //alert(tpFields + " Adding " + nameField)
+                axios.post("http://localhost:3001/api/courier", {
+                    name: nameField,
+                    tel_number: tpFields
+                }, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }).then((response) => {
+                    setResp(response.data);
+                    setNameField(''); // Clear the text box
+                    setTpFields('')
+                    onClose();
+                }).catch((error) => {
+                    console.error('Error submitting complain:', error);
+                });
+            })
+            .catch((err) => {
+                const newErrors = {};
+                err.inner.forEach((error) => {
+                    newErrors[error.path] = error.message;
+                });
+                setErrors(newErrors);
+                return
+            });
     }
 
     const editCourier = () => {
-        console.log("TP: " + tpFields)
-        //VALIDATION SHOULD DONE HERE
-
-        axios.post("http://localhost:3001/api/courier/edit", {
-            "courier_id": open,
-            "name": nameField,
-            "tel_number": tpFields
-        }, {
-            headers: {
-                ...Autheader()
-            }
-        }).then((response) => {
-            setResp(response.data);
-            setNameField(''); // Clear the text box
-            setTpFields('');
-            reloadCouriers();
-            onClose();
-        }).catch((error) => {
-            console.error('Error submitting complain:', error);
-        });
+        courierFormValidation
+            .validate({ nameField, tpFields }, { abortEarly: false })
+            .then(() => {
+                setErrors({});
+                axios.post("http://localhost:3001/api/courier/edit", {
+                    "courier_id": open,
+                    "name": nameField,
+                    "tel_number": tpFields
+                }, {
+                    headers: {
+                        ...Autheader()
+                    }
+                }).then((response) => {
+                    setResp(response.data);
+                    setNameField(''); // Clear the text box
+                    setTpFields('');
+                    reloadCouriers();
+                    onClose();
+                }).catch((error) => {
+                    console.error('Error submitting complain:', error);
+                });
+            })
+            .catch((err) => {
+                const newErrors = {};
+                err.inner.forEach((error) => {
+                    newErrors[error.path] = error.message;
+                });
+                setErrors(newErrors);
+                return
+            });
     }
+
 
 
     if (open == 'add') return (
@@ -111,7 +139,8 @@ export default function AddEditCourierModal({ open, onClose,courierDetails,reloa
                         value={nameField}
                         onChange={(e) => setNameField(e.target.value)}
                     ></Box>
-                    <p>Tel number: </p>
+                    {errors.nameField && <p style={{ color: 'red' }}>{errors.nameField}</p>}
+                    <p style={{marginTop:'0.5rem'}}>Tel number: </p>
                     <Box component="input"
                         sx={{
                             border: '1px solid black',
@@ -121,6 +150,7 @@ export default function AddEditCourierModal({ open, onClose,courierDetails,reloa
                         value={tpFields}
                         onChange={(e) => setTpFields(e.target.value)}
                     ></Box>
+                    {errors.tpFields && <p style={{ color: 'red' }}>{errors.tpFields}</p>}
                     <div>
                         <Button onClick={addCourier} fullWidth variant="contained" sx={{ mt: 3, mb: 1, border: '1px solid #1E90FF' }}>Add</Button><br />
                         <Button onClick={clickCloseBtn} fullWidth variant="contained" sx={{ mt: 0, mb: 2, border: '1px solid #1E90FF', color: '#1E90FF', backgroundColor: 'white' }}>Cancel</Button>
@@ -188,7 +218,8 @@ export default function AddEditCourierModal({ open, onClose,courierDetails,reloa
                         defaultValue={courierDetails.name}
                         onChange={(e) => setNameField(e.target.value)}
                     ></Box>
-                    <p>Tel number: </p>
+                    {errors.nameField && <p style={{ color: 'red' }}>{errors.nameField}</p>}
+                    <p style={{marginTop:'0.5rem'}}>Tel number: </p>
                     <Box component="input"
                         sx={{
                             border: '1px solid black',
@@ -198,6 +229,7 @@ export default function AddEditCourierModal({ open, onClose,courierDetails,reloa
                         value={tpFields}
                         onChange={(e) => setTpFields(e.target.value)}
                     ></Box>
+                    {errors.tpFields && <p style={{ color: 'red' }}>{errors.tpFields}</p>}
                     <div>
                         <Button onClick={editCourier} fullWidth variant="contained" sx={{ mt: 3, mb: 1, border: '1px solid #1E90FF' }}>Edit</Button><br />
                         <Button onClick={clickCloseBtn} fullWidth variant="contained" sx={{ mt: 0, mb: 2, border: '1px solid #1E90FF', color: '#1E90FF', backgroundColor: 'white' }}>Cancel</Button>

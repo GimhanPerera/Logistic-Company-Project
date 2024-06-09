@@ -4,8 +4,9 @@ import { Field, Form, Formik, useFormik } from 'formik';
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
+import Swal from 'sweetalert2';
 import Autheader from "../../../services/Autheader";
-//import { employeeFormValidation } from '../../validations';
+import { customerDetailsValidation } from '../../../validations';
 
 export const EditCustomer = () => {
     const location = useLocation();
@@ -47,7 +48,14 @@ export const EditCustomer = () => {
             }
         })
             .then((response) => {
-                console.log("SAVED");
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: "Updated",
+                    showConfirmButton: false,
+                    timer: 1500
+                  });
+                navigate('../.');
             })
             .catch((error) => {
                 console.error("Error fetching courier details:", error);
@@ -60,7 +68,7 @@ export const EditCustomer = () => {
 
     const { values, touched, handleBlur, isSubmitting, setErrors, handleChange, handleSubmit, errors } = useFormik({
         initialValues: initialValues,
-        //validationSchema: employeeFormValidation,
+        validationSchema: customerDetailsValidation,
 
         onSubmit,
     });
