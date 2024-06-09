@@ -23,19 +23,18 @@ const ComplainDetailsCard = ({ complain, setSmsDetails, onOpen, reloadDetails, s
     return (
         <Paper
             sx={{
-                width: '50%',
-                height: '7rem',
+                width: '55%',
                 border: '1px solid',
                 marginTop: '0.75rem',
-                padding: '0.5rem',
+                padding: '1rem',
                 display: 'flex',
                 justifyContent: 'space-between'
             }}>
-            <div>
-                <div className="">Complain ID: {complain.complain_id}</div>
-                <div className="">Complain: {complain.complain}</div>
-                <div className="">Order ID: {complain.order_id}</div>
-                {complain.status != 'pending' ? <div>Status: {complain.status}</div> : <div style={{ color: 'red' }}>Status: {complain.status}</div>}
+            <div style={{width: '500px',}}>
+                <div style={{marginBottom: '2px'}}>Complain ID: {complain.complain_id}</div>
+                <div style={{ wordWrap: 'break-word',marginBottom: '2px', overflowWrap: 'break-word', maxWidth: '100%' }}>Complain: {complain.complain}</div>
+                <div style={{marginBottom: '2px'}}>Order ID: {complain.order_id}</div>
+                {complain.status != 'pending' ? <div style={{marginBottom: '2px'}}>Status: {complain.status}</div> : <div style={{ color: 'red',marginBottom: '2px' }}>Status: {complain.status}</div>}
             </div>
             <div>
                 <Box component="div"

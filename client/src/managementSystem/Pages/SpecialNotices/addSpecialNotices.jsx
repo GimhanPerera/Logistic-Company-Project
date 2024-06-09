@@ -4,6 +4,7 @@ import { Form, Formik, useFormik } from 'formik';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Autheader from "../../../services/Autheader";
+import { specialNoticeValidation } from './../../../validations';
 const initialValues = {
     title: '',
     description: '',
@@ -37,13 +38,13 @@ export const AddSpecialNotices = () => {
             navigate('../');
         } catch (error) {
             console.error('Error creating order:', error);
-            toast.error("Request failed");
+            //toast.error("Request failed");
         }
     }
 
     const { values, touched, handleBlur, isSubmitting, setErrors, handleChange, handleSubmit, errors } = useFormik({
         initialValues: initialValues,
-        //validationSchema: priceQuotationByCustomerValidation,
+        validationSchema: specialNoticeValidation,
         onSubmit,
     });
 

@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Swal from 'sweetalert2';
 import { Countries } from '../countryCodes';
 import Autheader from "../services/Autheader";
 import { priceQuotationByCustomerValidation } from '../validations';
@@ -34,20 +35,35 @@ export const NewOrderRequest = () => {
         setImage(e.target.files[0]); // Update the image file in the form data
     };
     const handleInvoiceChange = (e) => {
-        setInvoice(e.target.files[0]); // Update the image file in the form data
+        console.log("File type ", e.target.files[0].type)
+        const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+        // Check if the selected file type is allowed
+        if (allowedTypes.includes(e.target.files[0].type)) {
+            setInvoice(e.target.files[0]); // Update the image file in the form data
+        } else {
+            // File type is not allowed, show an error message or take appropriate action
+            toast.error('Invalid file type. Please select an image, PDF, or Excel file.');
+            setInvoice(null);
+            e.target.value = null;
+        }
+
 
     };
 
     const onSubmit = async (values, actions) => {
         console.log("LOG: ", selectedCountry);
         //return;
-        if (image == null) {
+        if (selectedCountry.label == null) {
+            toast.error("Country is required");
+            return
+        } else if (image == null) {
             toast.error("Image is required");
             return
         } else if (invoice == null) {
             toast.error("Invoice is required");
             return
         }
+
         try {
             const token = localStorage.getItem('token');
             await axios.post("http://localhost:3001/api/order", {
@@ -67,6 +83,13 @@ export const NewOrderRequest = () => {
                     ...Autheader()
                 }
             });
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "Request sent",
+                showConfirmButton: false,
+                timer: 1500
+              });
             navigate('../');
         } catch (error) {
             console.error('Error creating order:', error);
@@ -123,7 +146,7 @@ export const NewOrderRequest = () => {
                                             /></td>
                                         <td>
                                             <FormControl sx={{ m: 1, minWidth: 170 }}>
-                                                <InputLabel id="demo-simple-select-helper-label">Shipping method</InputLabel>
+                                                <InputLabel>Shipping method</InputLabel>
                                                 <Field
                                                     as={Select}
                                                     name="shippingmethod"
@@ -157,7 +180,6 @@ export const NewOrderRequest = () => {
                                     <tr>
                                         <td>
                                             <Autocomplete
-                                                id="country-select-demo"
                                                 sx={{ width: 250, mt: 2, mb: 2 }}
                                                 options={Countries}
                                                 autoHighlight

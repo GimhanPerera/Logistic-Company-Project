@@ -117,7 +117,14 @@ export const AddEditSpecialNoticeModal = ({ open, onClose, noticeDetails, reload
                         }}
                         value={title}
                         defaultValue={title}
-                        onChange={(e) => setTitle(e.target.value)}
+                        onChange={(e) => {
+                            const input = e.target.value;
+                            if (input.length <= 30) {
+                                setTitle(input);
+                            } else {
+                                setTitle(input.slice(0, 30)); // Truncate input to 30 characters
+                            }
+                        }}
                     ></Box>
 
                     {/*Description*/}

@@ -123,8 +123,8 @@ export const OrderTrackingDetailsValidated = () => {
                             </table>
                         </Box>
                         <div style={{ width: '600px', margin: 'auto', marginTop: '10px' }}>
-                            <p>If you have any issue with our service, You can <a style={{ color: 'blue', textDecoration: 'underline' }} onClick={() => setComplainIsOpen(true)} >open a complain</a></p>
-                            <p>Give your <a style={{ color: 'blue', textDecoration: 'underline' }} onClick={() => setFeedackIsOpen(true)} >feedback</a></p>
+                            <p>If you have any issue with our service, You can <a style={{ color: 'blue', textDecoration: 'underline', cursor:'pointer' }} onClick={() => setComplainIsOpen(true)} >open a complain</a></p>
+                            <p>Give your <a style={{ color: 'blue', textDecoration: 'underline', cursor:'pointer' }} onClick={() => setFeedackIsOpen(true)} >feedback</a></p>
                         </div>
                         <ComplainModel open={isComplainOpen} onClose={() => setComplainIsOpen(false)} ordId={firstTrackingDetails.order_id}>
                         </ComplainModel>

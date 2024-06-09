@@ -6,6 +6,7 @@ import './feedbackModal.css';
 
 export default function FeedbackModel({ open, onClose, ordId }) {
     const [feedbackText, setFeedbackText] = useState('');
+    const [feedbackError, setFeedbackError] = useState('');
     const token = localStorage.getItem('token');
     const [rateValue, setRateValue] = useState(4);
     const [star1Color, setStar1Color] = useState({ color: '#FDE68A' });
@@ -19,6 +20,7 @@ export default function FeedbackModel({ open, onClose, ordId }) {
             clickCloseBtn();
         }
     }
+
     const clickCloseBtn = () => {
         setStar1Color({ color: '#FDE68A' });
         setStar2Color({ color: '#d1d5db' });
@@ -28,6 +30,7 @@ export default function FeedbackModel({ open, onClose, ordId }) {
         setFeedbackText(''); // Clear the text box
         onClose();
     }
+
     const setRate = (e) => {
         const starId = e.target.id;
         const stars = ['star1', 'star2', 'star3', 'star4', 'star5'];
@@ -55,9 +58,28 @@ export default function FeedbackModel({ open, onClose, ordId }) {
         setStar5Color(newStarColors['star5']);
     };
 
-    const submitComplain = async () => {
+    const handleChange = (e) => {
+        const { value } = e.target;
+        if (value.length >= 200) {
+            setFeedbackError('Feedback must be at most 200 characters long');
+        } else {
+            setFeedbackError('');
+        }
+        
+        setFeedbackText(value);
+    };
+
+    const submitFeedback = async () => {
+        if (!feedbackText) {
+            setFeedbackError('Please enter your feedback');
+            return;
+        }
+        if (feedbackText.length >= 200) {
+            setFeedbackError('Feedback must be at most 200 characters long');
+            return;
+        }
         try {
-            
+
             const response = await axios.post("http://localhost:3001/api/feedback", {
                 "order_id": ordId,
                 "rating": rateValue,
@@ -66,14 +88,14 @@ export default function FeedbackModel({ open, onClose, ordId }) {
                 headers: {
                     ...Autheader()
                 }
-            });
+            })
             Swal.fire({
                 position: "center",
                 icon: "success",
                 title: response.data,
                 showConfirmButton: false,
                 timer: 1500
-              });
+            });
             onClose();
         } catch (error) {
             console.error('Error submitting complain:', error.response ? error.response.data : error.message);
@@ -90,7 +112,6 @@ export default function FeedbackModel({ open, onClose, ordId }) {
                         <p className='ord_numbe'>Order number: {ordId}</p>
                         <div className=''>
                             <p className='mt-1'>Rate: </p>
-
 
                             <div className="flex items-center mb-2">
                                 <svg onClick={setRate} className='normalStarDesign' style={star1Color} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
@@ -110,17 +131,17 @@ export default function FeedbackModel({ open, onClose, ordId }) {
                                 </svg>
                             </div>
                         </div>
-                        <p>Feedbaack</p>
+                        <p>Feedback</p>
                         <textarea
-                            id="w3review"
-                            name="w3review"
                             rows="4" cols="50"
                             value={feedbackText} // Bind value to state variable
-                            onChange={(e) => setFeedbackText(e.target.value)}
+                            onChange={handleChange}
+                            maxLength="200"
                         >
                         </textarea>
+                        {feedbackError && <div style={{ color: 'red' }}>{feedbackError}</div>}
                         <div>
-                            <button onClick={submitComplain} id='submit_btn'>Submit</button><br />
+                            <button onClick={submitFeedback} id='submit_btn'>Submit</button><br />
                             <button onClick={clickCloseBtn} id='cancel_btn'>Cancel</button>
                         </div>
                     </div>

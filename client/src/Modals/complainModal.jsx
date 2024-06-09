@@ -67,6 +67,7 @@ export default function ComplainModel({ open, onClose, ordId }) {
                         value={values.complain}
                         onChange={handleChange}
                         onBlur={handleBlur}
+                        maxLength="254"
                     >
                     </textarea><br/>
                     {errors.complain && touched.complain && <small style={{ color: 'red' }}>{errors.complain}</small>}

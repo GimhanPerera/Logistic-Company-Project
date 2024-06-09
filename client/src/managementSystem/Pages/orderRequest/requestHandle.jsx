@@ -203,6 +203,7 @@ const RequestHandle = () => {
                     navigate('../');
                 } catch (error) {
                     console.error('Error creating order:', error);
+                    toast.error('Something wrong. Please check the inputs')
                 }
             }
         });

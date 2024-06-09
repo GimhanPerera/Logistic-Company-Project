@@ -148,7 +148,7 @@ const confirmOrder = async (req, res) => {
                 "shippingmethod": req.body.shippingmethod,
                 "quotation": req.body.quotation,
                 "quotation": req.body.quotation,
-                "description": req.body.description,
+                "description": req.body.description ? req.body.description : null,
                 "supplierLoc": req.body.supplierLoc,//values.supplierLoc,
                 "status": "confirmed",
             }, {
