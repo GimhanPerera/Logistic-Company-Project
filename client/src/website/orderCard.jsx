@@ -82,7 +82,9 @@ const OrderCard = ({ orders }) => {
             textDecoration: 'underline'
           }}
         >
+          {orders.status == 'Request' ?'':
           <a onClick={viewDetails} style={{ cursor: 'pointer' }}>View more</a>
+        }
         </Box>
       </Box>
     </Box>
