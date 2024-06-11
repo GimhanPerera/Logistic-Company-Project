@@ -84,11 +84,11 @@ const newOrder = async (req, res) => {//Add a order
         console.log("New PQ_ID: " + new_price_quotation_id);
 
         let chatLink='';
-        if(req.body.chatLink!=''){
+        if(req.body.chatLink != null || req.body.chatLink != ''){
             chatLink = `\nWECHAT link: ${req.body.chatLink}`;
         }
         console.log("TempPWD ",req.body.passcode)
-        const tempPwd = req.body.passcode =='' ? '': `Templary pwd: ${req.body.passcode}`;
+        const tempPwd = req.body.passcode ==null || req.body.passcode =='' ? '': `Templary pwd: ${req.body.passcode}`;
         sendNormalSMS(newOrderId, `Order placed\nOrder ID: ${newOrderId}\nCustomer ID: ${cus_id}\n${tempPwd}${chatLink}\nContact: 0714744874`, req.user.sub);//send sms
         
 

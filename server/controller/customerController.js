@@ -129,7 +129,8 @@ const searchCustomerByID = async (req, res) => { //Search customer (Order creati
         res.status(200).json({
             "order_id": customer.customer_id,
             "name": customer.f_name + " " + customer.l_name,
-            "tel_number": customer.tel_number
+            "tel_number": customer.tel_number,
+            "status": customer.status
         });
 
     } catch (error) {

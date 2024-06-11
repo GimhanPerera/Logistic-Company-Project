@@ -1,31 +1,42 @@
+import PrintIcon from '@mui/icons-material/Print';
 import { Box, Button } from '@mui/material';
 import axios from "axios";
 import FileSaver from 'file-saver';
 import FileDownload from "js-file-download";
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
+import ReactToPrint from 'react-to-print';
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from 'sweetalert2';
 import SendSmsModal from '../../../Modals/sendSmsModal';
 import Autheader from "../../../services/Autheader";
 
 const ViewOrder = () => {
+    const [currentUser, setCurrentUser] = useState(undefined);
+    useEffect(() => {
+        const userRole = localStorage.getItem("user");
+        if (userRole) {
+            const parsedUserRole = JSON.parse(userRole); // Parse the string into an object
+            setCurrentUser(parsedUserRole.role);
+        }
+    }, []);
+
     const location = useLocation();
     const { id } = location.state || {};
     //const { id } = useParams();
+    const componentRef = useRef();
     const navigate = useNavigate();
     const [orderDetails, setOrderDetails] = useState(null); // Set initial state to null
     const [loading, setLoading] = useState(true); // Loading state
     const [discount, setDiscount] = useState(0);
     const [subTotal, setSubTotal] = useState(0);
-    const componentRef = useRef();
     const [addImage, setaddImage] = useState(true);
     const [image, setImage] = useState(null);
     const [reload, setReload] = useState(true);
 
     const [isModalOpen, setModalIsOpen] = useState(false); //Status of Modal
     const [smsDetails, setSmsDetails] = useState(null);
-    const reloadSms = () =>{
+    const reloadSms = () => {
         setReload(!reload);
         // try {
         // axios.get(`http://localhost:3001/api/order/allById/${id}`)
@@ -179,13 +190,13 @@ const ViewOrder = () => {
         const oid = orderDetails.order.order_id;
         console.log("oid ", oid);
         const needToPay = orderDetails.invoice.total - orderDetails.payment.reduce((sum, payment) => sum + parseFloat(payment.payment) || 0, 0);
-        
+
         //IF THE PAYMENT IS NOT SETTLED
-        if(needToPay > 0){
-            console.log("NEED TO PAY ",needToPay);
+        if (needToPay > 0) {
+            console.log("NEED TO PAY ", needToPay);
             Swal.fire({
                 title: `PAYMENT IS NOT SETTLED!\nNeed to pay amount: LKR ${needToPay}`,
-                icon:'error'
+                icon: 'error'
             });
             return
         }
@@ -436,11 +447,30 @@ const ViewOrder = () => {
         <>
             {/* Button section */}
             <Box component="div" sx={{ mb: '1rem' }}>
-            <Button variant="contained"
-                onClick={handleSendSMSClick}
-                sx={{ backgroundColor: '#68DD62', position: 'fixed', right: '2em', top: '5rem' }}>
-                Send SMS
-            </Button>
+                {['ADMIN', 'MANAGER'].includes(currentUser) && (
+                    <Button variant="contained"
+                        onClick={handleSendSMSClick}
+                        sx={{ backgroundColor: '#68DD62', position: 'fixed', right: '2em', top: '8rem' }}>
+                        Send SMS
+                    </Button>
+                )}
+
+                {/*Print btn*/}
+                <ReactToPrint
+                    trigger={() => (
+                        <Button
+                            component="label"
+                            variant="contained"
+                            startIcon={<PrintIcon />}
+                            sx={{  position: 'fixed', right: '2em', top: '5rem' }}
+                        >
+                            Print invoice
+                        </Button>
+                    )}
+                    content={() => componentRef.current}
+                    fileName="shipping_marks.pdf" // Set the default save name here
+                />
+
                 <Button onClick={toBack} sx={{ m: '0 2rem' }}>
                     Back
                 </Button>
@@ -488,14 +518,14 @@ const ViewOrder = () => {
                     : ''}
             </Box>
 
-            
+
 
             <Box component="div" sx={{ mt: '1rem' }}>
                 <Box component="h1" sx={{ textAlign: 'center' }}>Order ID: {orderDetails.order.order_id}</Box>
                 <Box component="h2" sx={{ textAlign: 'center' }}>Status: {orderDetails.order.status}</Box>
                 {
                     orderDetails.order.status == 'FINISH' || orderDetails.order.order_close_date != null
-                        ? <Box component="h3" sx={{ textAlign: 'center' }}>Order Closed at: {orderDetails.order.order_close_date}</Box> 
+                        ? <Box component="h3" sx={{ textAlign: 'center' }}>Order Closed at: {orderDetails.order.order_close_date}</Box>
                         : ''
                 }
                 {/*{orderDetails.order.order_close_date.substring(0, 10)} {orderDetails.order.order_close_date.substring(11, 19)}*/}
@@ -503,7 +533,7 @@ const ViewOrder = () => {
 
             {/* INVOICE */}
             <Box component="div" sx={{ mt: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
-                <Box component="div" sx={{ width: '1000px', p: '2rem', border: '1px black solid', borderRadius: '10px' }}>
+                <Box component="div" ref={componentRef} sx={{ width: '1000px', p: '2rem', border: '1px black solid', borderRadius: '10px' }}>
                     <Box component="h3" sx={{ textAlign: 'center' }}>Invoice ID: {orderDetails.invoice.invoice_id}</Box>
                     <Box component="h3" sx={{ textAlign: 'center', mb: '1rem' }}>Order ID: {orderDetails.order.order_id}</Box>
                     <Box component="div" sx={{ mb: '1rem', display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between' }}>
@@ -557,7 +587,6 @@ const ViewOrder = () => {
                             </table>
                         </Box>
                     </Box>
-
                     {/* main table */}
                     <table style={{ borderCollapse: 'collapse' }}>
                         <thead>
@@ -609,11 +638,11 @@ const ViewOrder = () => {
                                     <td style={{ textAlign: 'right', paddingTop: '0.3rem' }}><Box component="h4">{orderDetails.invoice.discount}</Box></td>
                                 </tr>
                                 {orderDetails.invoice.damage_fine != 0.00 ?
-                                <tr>
-                                    <td style={{ textAlign: 'left', paddingTop: '0.3rem' }}><Box component="h4">Damage Fine</Box></td>
-                                    <td style={{ textAlign: 'right', paddingTop: '0.3rem' }}><Box component="h4">{orderDetails.invoice.damage_fine}</Box></td>
-                                </tr>
-                                :''}
+                                    <tr>
+                                        <td style={{ textAlign: 'left', paddingTop: '0.3rem' }}><Box component="h4">Damage Fine</Box></td>
+                                        <td style={{ textAlign: 'right', paddingTop: '0.3rem' }}><Box component="h4">{orderDetails.invoice.damage_fine}</Box></td>
+                                    </tr>
+                                    : ''}
                                 <tr>
                                     <td style={{ textAlign: 'left', paddingTop: '0.3rem' }}><Box component="h3">Total</Box></td>
                                     <td style={{ textAlign: 'right', paddingTop: '0.3rem' }}><Box component="h3">LKR {orderDetails.invoice.total}</Box></td>
@@ -782,7 +811,7 @@ const ViewOrder = () => {
                 </Box>
             </Box>
 
-<SendSmsModal open={isModalOpen} onClose={() => setModalIsOpen(false)} smsDetails={smsDetails} reloadSms={reloadSms} ></SendSmsModal>
+            <SendSmsModal open={isModalOpen} onClose={() => setModalIsOpen(false)} smsDetails={smsDetails} reloadSms={reloadSms} ></SendSmsModal>
         </>
     )
 }

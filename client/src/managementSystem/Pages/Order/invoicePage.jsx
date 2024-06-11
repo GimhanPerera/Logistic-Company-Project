@@ -1,11 +1,9 @@
-import PrintIcon from '@mui/icons-material/Print';
 import { Box, Button, TextField } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import axios from "axios";
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import ReactToPrint from 'react-to-print';
 import { ToastContainer, toast } from 'react-toastify';
 
 const InvoicePage = () => {
@@ -109,17 +107,17 @@ const InvoicePage = () => {
             <ToastContainer />
             <div>
                 <Button variant="contained"
-                    sx={{}}
+                    sx={{ml:'2rem'}}
                     onClick={toBack}>
                     Back
                 </Button>
                 <Button variant="contained"
-                    sx={{ backgroundColor: '#68DD62', position: 'fixed', right: '2em', top: '4.7rem' }}
+                    sx={{ backgroundColor: '#68DD62', position: 'fixed', right: '2rem', top: '5rem'}}
                     onClick={saveDetails}>
                     Save
                 </Button>
                 {/*Print btn*/}
-                <ReactToPrint
+                {/* <ReactToPrint
                     trigger={() => (
                         <Button
                             component="label"
@@ -132,9 +130,9 @@ const InvoicePage = () => {
                     )}
                     content={() => componentRef.current}
                     fileName="shipping_marks.pdf" // Set the default save name here
-                />
+                /> */}
 
-                <FormControlLabel
+                <FormControlLabel sx={{ml:'3rem'}}
                     control={<Checkbox />}
                     checked={isChecked}
                     onChange={handleCheckboxChange}
@@ -142,13 +140,14 @@ const InvoicePage = () => {
                 />
 
                 {/* INVOICE */}
-                <Box component="div" ref={componentRef} sx={{ width: '1000px', p: '2rem', border: '1px black solid' }}>
-                    <Box component="p">Invoice ID: {orderDetails.invoice.invoice_id}</Box>
-                    <Box component="p">Order ID: {orderDetails.order.order_id}</Box>
-                    <Box component="p">Customer ID: {orderDetails.customer.customer_id}</Box>
-                    <Box component="p">Tel. number: {orderDetails.customer.tel_number}</Box>
-                    <Box component="p">Address: {orderDetails.customer.address}</Box>
-                    <Box component="p">Open date: {orderDetails.order.order_open_date}</Box>
+                <Box component="div" sx={{ mt: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+                <Box component="div" ref={componentRef} sx={{ width: '1000px', p: '2rem', border: '1px black solid', border: '1px black solid', borderRadius: '10px'  }}>
+                    <Box component="h3" sx={{ textAlign: 'center' }}>Invoice ID: {orderDetails.invoice.invoice_id}</Box>
+                    <Box component="h3" sx={{ textAlign: 'center' }}>Order ID: {orderDetails.order.order_id}</Box>
+                    <Box component="h3" sx={{ textAlign: 'center' }}>Customer ID: {orderDetails.customer.customer_id}</Box>
+                    <Box component="h3" sx={{ textAlign: 'center' }}>Tel. number: {orderDetails.customer.tel_number}</Box>
+                    <Box component="h3" sx={{ textAlign: 'center' }}>Address: {orderDetails.customer.address}</Box>
+                    <Box component="h3" sx={{ mb: '1rem', textAlign: 'center' }}>Open date: {orderDetails.order.order_open_date}</Box>
                     <table style={{ borderCollapse: 'collapse' }}>
                         <thead>
                             <tr>
@@ -376,6 +375,7 @@ const InvoicePage = () => {
                             </tbody>
                         </table>
                     </Box>
+                </Box>
                 </Box>
             </div>
         </>

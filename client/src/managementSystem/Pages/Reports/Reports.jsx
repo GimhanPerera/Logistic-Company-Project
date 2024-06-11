@@ -9,7 +9,7 @@ const Reports = () => {
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
   const [selectedYear, setSelectedYear] = useState(currentYear);
-  const [selectedMonth, setSelectedMonth] = useState('1');
+  const [selectedMonth, setSelectedMonth] = useState(1);
   const [reportType, setReportType] = useState('income-y');
   const [disableControls, setDisableControls] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -109,7 +109,7 @@ const Reports = () => {
           <Box component='div' sx={{ m: '2rem 0' }}>
             <Box component="h3" sx={{}}>Total income of the Year: LKR {reportData.totalIncomeOfYear}</Box>
             <Box component="h3" sx={{}}>Total quotation total of the Year: LKR {reportData.totalPriceQuotationsOfYear}</Box>
-            <Box component="h3" sx={{}}>Difference between quotation total and Income total: LKR {parseFloat(reportData.totalIncomeOfYear) - parseFloat(reportData.totalPriceQuotationsOfYear)}</Box>
+            <Box component="h3" sx={{}}>Difference between Income total  and Quotation total: LKR {parseFloat(reportData.totalIncomeOfYear) - parseFloat(reportData.totalPriceQuotationsOfYear)}</Box>
           </Box>
 
           {/* main table */}
@@ -139,9 +139,9 @@ const Reports = () => {
           </table>
 
 
-          <Box component="div" sx={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'space-between', mt: '2rem' }}>
-            <Box component="div">
-              <Box component="p" >CREATIVE FREIGHTWAY LOGISTIC(PVT)LTD<br />No25A/2,<br />Thoranawila Junction,<br />Makandana,<br />Piliyandala.<br />94712055774</Box>
+          <Box component="div" sx={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'center', mt: '2rem' }}>
+            <Box component="div" sx={{ }}>
+              <Box component="h5">CREATIVE FREIGHTWAY LOGISTIC(PVT)LTD<br />No25A/2,<br />Thoranawila Junction,<br />Makandana,<br />Piliyandala.<br />94712055774</Box>
             </Box>
           </Box>
         </Box>;

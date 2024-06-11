@@ -131,33 +131,40 @@ const downloadInvoice = async (req, res) => {
 
 const deleteRequest = async (req, res) => {
     try {
-        // const a = await Courier.destroy({
-        //     where: {
-        //         courier_id: req.params.courier_id,
-        //     },
-        // });
-        const oid = await Price_quotation.findOne({
-            attributes:['order_id']
-        },{
+        // Find the order_id associated with the given quotation_id
+        const priceQuotation = await Price_quotation.findOne({
+            attributes: ['order_id'],
             where: {
                 quotation_id: req.params.quotation_id,
             },
         });
+
+        if (!priceQuotation) {
+            // If no price quotation is found, send a 404 response
+            return res.status(404).json({ error: "Price quotation not found" });
+        }
+
+        const { order_id } = priceQuotation;
+
+        // Delete the price quotation with the given quotation_id
         await Price_quotation.destroy({
             where: {
                 quotation_id: req.params.quotation_id,
             },
         });
+
+        // Delete the order with the found order_id
         await Order.destroy({
             where: {
-                order_id: oid.order_id,
+                order_id: order_id,
             },
         });
-        console.log("Quotation deleted: ",req.params.quotation_id);
-        console.log("order_id deleted: ",oid.order_id);
+
+        console.log("Quotation deleted: ", req.params.quotation_id);
+        console.log("Order ID deleted: ", order_id);
         res.status(200).json("success");
     } catch (error) {
-        console.error("Error deleting courier:", error);
+        console.error("Error deleting price quotation and order:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 }
