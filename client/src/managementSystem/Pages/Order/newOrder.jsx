@@ -74,6 +74,16 @@ const NewOrder = () => {
         }
         axios.get(`http://localhost:3001/api/customers/search/${customerID}`, {
         }).then((response) => {
+            if(response.data.status == 'black list'){
+                Swal.fire({
+                    title: `Customer ${customerID} is black listed`,
+                    icon: "error"
+                });
+                setCustomerID('');
+                setCustomerName('');
+            setCustomerTp('');
+                return
+            }
             setCustomerName(response.data.name)
             setCustomerTp(response.data.tel_number);
 

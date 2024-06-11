@@ -70,10 +70,10 @@ export default function FeedbackModel({ open, onClose, ordId }) {
     };
 
     const submitFeedback = async () => {
-        if (!feedbackText) {
-            setFeedbackError('Please enter your feedback');
-            return;
-        }
+        // if (!feedbackText) {
+        //     setFeedbackError('Please enter your feedback');
+        //     return;
+        // }
         if (feedbackText.length >= 200) {
             setFeedbackError('Feedback must be at most 200 characters long');
             return;

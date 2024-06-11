@@ -27,7 +27,7 @@ export default function SendSmsModal({ open, onClose,smsDetails, reloadSms  }) {
         //VALIDATION SHOULD DONE HERE
 
         axios.post("http://localhost:3001/api/sms", {
-            msg: sms,
+            msg: `Order ID: ${smsDetails}\n${sms}`,
             oid: smsDetails
         }, {
             headers: {

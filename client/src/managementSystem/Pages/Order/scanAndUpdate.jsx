@@ -344,7 +344,7 @@ const ScanAndUpdate = () => {
                         <div id='reader'></div>
                     </Box>
 
-                    {scanResults.length > 0 && (
+                    {/* {scanResults.length > 0 && (
                         <Box component="div">
                             <Box component="h2">Scan Results:</Box>
                             <ul>
@@ -353,7 +353,7 @@ const ScanAndUpdate = () => {
                                 ))}
                             </ul>
                         </Box>
-                    )}
+                    )} */}
                     <Box component='div' sx={{ width: '200px', margin: 'auto', padding: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         <Button variant='outlined' onClick={toScanAgain}>
                             {scanToggle ? 'Stop Scanner' : 'Start Scanning'}

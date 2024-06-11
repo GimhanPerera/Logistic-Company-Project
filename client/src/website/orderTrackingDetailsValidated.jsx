@@ -37,19 +37,19 @@ export const OrderTrackingDetailsValidated = () => {
                         setStep(1);
                         break;
                     case 'Waiting':
-                        setStep(2);
+                        setStep(1);
                         break;
                     case 'In Warehouse':
-                        setStep(3);
+                        setStep(2);
                         break;
                     case 'Ship/airfreight ':
-                        setStep(4);
+                        setStep(3);
                         break;
                     case 'onhand':
-                        setStep(5);
+                        setStep(4);
                         break;
                     case 'Ready':
-                        setStep(6);
+                        setStep(5);
                         break;
                     case 'FINISH':
                         setStep(7);
