@@ -1,7 +1,5 @@
 const { Courier,Order } = require('../models');
 
-
-
 //1. Add a customer
 const addCourier = async (req, res) => {
     try {
