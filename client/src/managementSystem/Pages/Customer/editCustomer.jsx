@@ -1,5 +1,6 @@
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import axios from "axios";
+import FileSaver from 'file-saver';
 import { Field, Form, Formik, useFormik } from 'formik';
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -15,6 +16,8 @@ export const EditCustomer = () => {
     const [profileDetails, setProfileDetails] = useState([]);
     const [loading, setLoading] = useState(true); // State to track loading status
     const [orderIds, setOrderIds] = useState([]);
+    const [frontImage, setFrontImage] = useState(null);
+    const [backImage, setBackImage] = useState(null);
 
     const initialValues = {
         f_name: cusData.f_name,
@@ -26,6 +29,47 @@ export const EditCustomer = () => {
         nicFront: cusData.nicFront,
         nicBack: cusData.nicBack
     }
+
+    const downloadImage = async (img) => {
+        //e.preventDefault();
+        try {
+            const image = img==1 ? cusData.nicFront : cusData.nicBack;
+            axios({
+                url: `http://localhost:3001/api/customers/nic/${image}`,
+                method: "GET",
+                responseType: "blob"
+            }).then((res) => {
+                // Get the content type from the response headers
+                const contentType = res.headers['content-type'];
+
+                console.log("TYPE", contentType)
+
+                // Determine the file extension based on the content type
+                let extension = '';
+                if (contentType === 'application/pdf') {
+                    extension = 'pdf';
+                } else if (contentType.startsWith('image/')) {
+                    // Get the image type from the content type
+                    extension = contentType.split('/')[1];
+                } else {
+                    console.error('Unsupported file type');
+                    return;
+                }
+
+                // Create a filename with the appropriate extension
+                const filename = `nicImage.${extension}`;
+
+                // Save the file using FileSaver
+                FileSaver.saveAs(new Blob([res.data], { type: contentType }), filename);
+
+                // Optionally, set the image state if needed for further processing
+                img==1 ? setFrontImage(URL.createObjectURL(res.data)) : setBackImage(URL.createObjectURL(res.data));;
+            })
+        } catch (error) {
+            console.error('Error creating order:', error);
+        }
+    }
+    
 
     const navigate = useNavigate();
 
@@ -54,7 +98,7 @@ export const EditCustomer = () => {
                     title: "Updated",
                     showConfirmButton: false,
                     timer: 1500
-                  });
+                });
                 navigate('../.');
             })
             .catch((error) => {
@@ -165,12 +209,50 @@ export const EditCustomer = () => {
                                                     </FormControl>
                                                 </td>
                                             </tr>
+                                            <tr>
+                                                <td>
+                                                    NIC Front image
+                                                </td>
+                                                <td>
+                                                    {frontImage && (
+                                                        <div style={{ marginTop: '10px' }}>
+                                                            <img
+                                                                src={frontImage}
+                                                                alt="Preview"
+                                                                style={{ width: '200px', borderRadius: '5px' }}
+                                                            />
+                                                        </div>
+                                                    )}
+                                                    <Box component="p" onClick={() => downloadImage(2)} style={{ cursor: 'pointer', color: 'blue' }}>
+                                                        Download
+                                                    </Box>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    NIC Back image
+                                                </td>
+                                                <td>
+                                                    {backImage && (
+                                                        <div style={{ marginTop: '10px' }}>
+                                                            <img
+                                                                src={backImage}
+                                                                alt="Preview"
+                                                                style={{ width: '200px', borderRadius: '5px' }}
+                                                            />
+                                                        </div>
+                                                    )}
+                                                    <Box component="p" onClick={() => downloadImage(1)} style={{ cursor: 'pointer', color: 'blue' }}>
+                                                        Download
+                                                    </Box>
+                                                </td>
+                                            </tr>
                                         </tbody>
                                     </table>
-                                    <Box component="div" sx={{}}>
-                                    <Button variant="outlined"
+                                    <Box component="div" sx={{mt:'1rem'}}>
+                                        <Button variant="outlined"
                                             onClick={toBack}
-                                            >
+                                        >
                                             Back
                                         </Button>
                                         <Button variant="contained"

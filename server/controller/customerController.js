@@ -221,6 +221,30 @@ const changePwd = async (req, res) => {
     }
 }
 
+const downloadNIC = async (req, res) => {
+    try {
+        console.log(req.params.image);
+        const image = req.params.image;
+        // const imageOfItem = await Price_quotation.findOne({
+        //     attributes: ['image'],
+        //     where: {
+        //         quotation_id: req.params.image,
+        //     },
+        // });
+        
+        if (image) {
+            console.log("IMAGE ",image);
+            res.download(`./images/${image}`);
+        } else {
+            res.status(404).json({ error: "Image not found" });
+        }
+        
+    } catch (error) {
+        console.error("Error deleting courier:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
 module.exports = {
     addCustomer,
     getAllCustomers,
@@ -228,5 +252,7 @@ module.exports = {
     searchCustomerByQuotationID,
     editProfile,
     generatePassword,
-    changePwd
+    changePwd,
+    downloadNIC
+
 }

@@ -545,6 +545,17 @@ const ViewOrder = () => {
                                     <td>Assign To:</td>
                                     <td>{orderDetails.courier != null ? orderDetails.courier.courier_id : ''} - {orderDetails.courier != null ? orderDetails.courier.name : ''}</td>
                                 </tr>
+                                {orderDetails.order.courier_tracking_number == null || orderDetails.order.courier_tracking_number == ''  ?
+                                '':<>
+                                <tr>
+                                    <td>Courier tracking number:</td>
+                                    <td>{orderDetails.order.courier_tracking_number}</td>
+                                </tr>
+                                <tr>
+                                    <td>Issue date:</td>
+                                    <td>{orderDetails.order.issue_date}</td>
+                                </tr>
+                                </>}
                                 <tr>
                                     <td>Open date:</td>
                                     <td>{orderDetails.order.order_open_date}</td>
@@ -631,7 +642,7 @@ const ViewOrder = () => {
                             <tbody>
                                 <tr>
                                     <td style={{ textAlign: 'left', paddingTop: '0.3rem' }}><Box component="h4">Sub Total</Box></td>
-                                    <td style={{ textAlign: 'right', paddingTop: '0.3rem' }}><Box component="h4">{subTotal}.00</Box></td>
+                                    <td style={{ textAlign: 'right', paddingTop: '0.3rem' }}><Box component="h4">{subTotal}</Box></td>
                                 </tr>
                                 <tr>
                                     <td style={{ textAlign: 'left', paddingTop: '0.3rem' }}><Box component="h4">Discount</Box></td>
@@ -701,10 +712,6 @@ const ViewOrder = () => {
                             <tr>
                                 <td>Rough weight(Kg):</td>
                                 <td>{orderDetails.priceReq[0].raugh_weight}</td>
-                            </tr>
-                            <tr>
-                                <td>No of packages:</td>
-                                <td>{orderDetails.priceReq[0].no_of_packages}</td>
                             </tr>
                             <tr>
                                 <td>description</td>
@@ -804,6 +811,33 @@ const ViewOrder = () => {
                             ) : (
                                 <tr>
                                     <td style={{ ...tableCell, textAlign: 'center', padding: '1rem', fontWeight: '900' }} colSpan="4">No SMS</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </Box>
+            </Box>
+
+            {/*Rating and feedback section*/}
+            <Box component="div">
+                <Box component="h2" sx={{ mb: 2, textAlign: 'center' }}>Rating and Feedback</Box>
+                <Box component="div" sx={{ border: '1px solid gray', borderRadius: '10px', padding: '1rem', margin: '0 auto 2rem auto', maxWidth: '900px' }}>
+                    <table style={{ borderCollapse: 'collapse', margin: 'auto' }}>
+                        <thead>
+                            <tr>
+                                <th style={tableCell}>Rate</th>
+                                <th style={{ ...tableCell, width: '500px' }}>Feedback</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {orderDetails.order.rating != null ? (
+                                    <tr>
+                                        <td style={tableCell}>{orderDetails.order.rating}/5</td>
+                                        <td style={tableCell}>{orderDetails.order.feedback_des }</td>
+                                    </tr>
+                            ) : (
+                                <tr>
+                                    <td style={{ ...tableCell, textAlign: 'center', padding: '1rem', fontWeight: '900' }} colSpan="2">No Rating and Feedback</td>
                                 </tr>
                             )}
                         </tbody>

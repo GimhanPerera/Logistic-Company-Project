@@ -35,17 +35,17 @@ const Payment = () => {
         currentDate.setHours(currentDate.getHours() + 5);
         currentDate.setMinutes(currentDate.getMinutes() + 30);
         const updatedTime = currentDate.toLocaleTimeString(); //Sri lankan time
-    
+
         const year = currentDate.getFullYear();
         const month = String(currentDate.getMonth() + 1).padStart(2, '0');
         const day = String(currentDate.getDate()).padStart(2, '0');
-    
+
         const formattedDate = `${year}-${month}-${day} ${updatedTime}`;
         return formattedDate;
     };
 
     const addPayment = () => {
-
+        if (paymentValue <= 0) return
         const newPayment = {
             order_id: orderId,
             payment_method: paymentMethod,
@@ -58,8 +58,8 @@ const Payment = () => {
                 setPaymentList([...paymentList, response.data]);
                 setPaymentValue(0.00); // Reset payment value
                 setPaymentMethod('Cash'); // Reset payment method to default
-                
-        setDisplayAmountDue(displayAmountDue - paymentValue);
+
+                setDisplayAmountDue(displayAmountDue - paymentValue);
             })
             .catch((error) => {
                 console.error("Error adding payment:", error);
@@ -109,75 +109,92 @@ const Payment = () => {
     return (
         <>
             <div>
-                <Button onClick={toBack} variant="outlined" sx={{display:'fixed', top:'1rem', left:'2rem'}}>
+                <Button onClick={toBack} variant="outlined" sx={{ display: 'fixed', top: '1rem', left: '2rem' }}>
                     Back
                 </Button>
             </div>
-            <Box sx={{width:'500px', margin:'auto', display:'flex', flexDirection:'row', justifyContent:'space-between', mb:'1rem' }}>
-            <Box component="h3" sx={{}}>Total Payments: {paymentList.reduce((sum, payment) => sum + parseFloat(payment.payment) || 0, 0)}</Box>
-            <Box component="h3" sx={{ mb: 2 }}>Need to pay: {displayAmountDue}</Box>
+            <Box sx={{ width: '500px', margin: 'auto', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', mb: '1rem' }}>
+                <Box component="h3" sx={{}}>Total Payments: {paymentList.reduce((sum, payment) => sum + parseFloat(payment.payment) || 0, 0)}</Box>
+                <Box component="h3" sx={{ mb: 2 }}>Need to pay: {displayAmountDue}</Box>
             </Box>
-            <Box sx={{border: '1px black solid', borderRadius:'10px', width:'350px', p:'1.5rem', margin:'auto'}}>
-            <table>
-                <tr>
-                    <td><Box component="p" sx={{ fontSize: '1.2rem', mr:'1rem' }}>Amount</Box></td>
-                    <td><TextField size='small' variant="outlined" value={paymentValue} onChange={handleAmountChange} type='number' /></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><Box component="h3" sx={{ mb: 2, mt:2, width: '150px' }}>
-                <FormControl fullWidth>
-                    <Select
-                        size='small'
-                        value={paymentMethod}
-                        onChange={handlePayMethodChange}
-                    >
-                        <MenuItem value={'Cash'}>Cash</MenuItem>
-                        <MenuItem value={'Bank transfer'}>Bank transfer</MenuItem>
-                    </Select>
-                </FormControl>
-            </Box></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td>
-                        <Button onClick={addPayment} variant="contained">
-                Add
-            </Button>
-            </td>
-                </tr>
-            </table>
+            <Box sx={{ border: '1px black solid', borderRadius: '10px', width: '350px', p: '1.5rem', margin: 'auto' }}>
+                <table>
+                    <tr>
+                        <td><Box component="p" sx={{ fontSize: '1.2rem', mr: '1rem' }}>Amount</Box></td>
+                        <td>
+                            <TextField
+                                size='small'
+                                variant="outlined"
+                                value={paymentValue}
+                                onChange={(e) => {
+                                    const value = parseFloat(e.target.value);
+                                    if (value > 0 && value < 9999999) {
+                                        handleAmountChange(e);
+                                    } else if (e.target.value === '') {
+                                        handleAmountChange(e);
+                                    }
+                                }}
+                                type='number'
+                                inputProps={{ min: 1, max: 9999998 }}
+                            />
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><Box component="h3" sx={{ mb: 2, mt: 2, width: '150px' }}>
+                            <FormControl fullWidth>
+                                <Select
+                                    size='small'
+                                    value={paymentMethod}
+                                    onChange={handlePayMethodChange}
+                                >
+                                    <MenuItem value={'Cash'}>Cash</MenuItem>
+                                    <MenuItem value={'Bank transfer'}>Bank transfer</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Box></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <Button onClick={addPayment} variant="contained">
+                                Add
+                            </Button>
+                        </td>
+                    </tr>
+                </table>
             </Box>
-            
-            
+
+
 
             {/*Payments*/}
-            <Box sx={{display:'flex',p:'1.5rem', justifyContent:'center' }}>
-            <table style={{ borderCollapse: 'collapse' }}>
-                <thead>
-                    <tr>
-                        <th style={tableCell}>Payment ID</th>
-                        <th style={tableCell}>Payment method</th>
-                        <th style={tableCell}>Payment</th>
-                        <th style={tableCell}>Date time</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {paymentList.map((payment, index) => (
+            <Box sx={{ display: 'flex', p: '1.5rem', justifyContent: 'center' }}>
+                <table style={{ borderCollapse: 'collapse' }}>
+                    <thead>
                         <tr>
-                            <td style={tableCell}>{payment.payment_id}</td>
-                            <td style={tableCell}>{payment.payment_method}</td>
-                            <td style={tableCell}>{payment.payment}</td>
-                            <td style={tableCell}>{payment.date_time}</td>
-                            <td><Button variant="outlined" color="secondary" onClick={() => removePayment(payment.payment_id)}>
-                    Remove
-                </Button></td>
+                            <th style={tableCell}>Payment ID</th>
+                            <th style={tableCell}>Payment method</th>
+                            <th style={tableCell}>Payment</th>
+                            <th style={tableCell}>Date time</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {paymentList.map((payment, index) => (
+                            <tr>
+                                <td style={tableCell}>{payment.payment_id}</td>
+                                <td style={tableCell}>{payment.payment_method}</td>
+                                <td style={tableCell}>{payment.payment}</td>
+                                <td style={tableCell}>{payment.date_time}</td>
+                                <td><Button variant="outlined" color="secondary" onClick={() => removePayment(payment.payment_id)}>
+                                    Remove
+                                </Button></td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </Box>
-            {paymentList== 0? <Box component="h4" sx={{ mt: 2, textAlign:'center'}}>No Payments</Box>:''}
+            {paymentList == 0 ? <Box component="h4" sx={{ mt: 2, textAlign: 'center' }}>No Payments</Box> : ''}
         </>
     )
 }

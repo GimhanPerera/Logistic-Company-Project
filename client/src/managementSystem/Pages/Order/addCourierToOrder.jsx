@@ -4,6 +4,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 
 const AddCourierToOrder = () => {
@@ -81,6 +82,10 @@ const AddCourierToOrder = () => {
 
     }
     const assignCourier = () => {
+        if(checked){
+            toast.error("Enter the tracking number")
+            return
+        }
         Swal.fire({
             title: "Are you sure?",
             icon: "warning",
@@ -189,6 +194,7 @@ const AddCourierToOrder = () => {
                 </Box>
 
             </div>
+            <ToastContainer></ToastContainer>
         </>
     )
 }

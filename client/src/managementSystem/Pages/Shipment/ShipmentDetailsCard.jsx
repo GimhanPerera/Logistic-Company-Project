@@ -69,7 +69,7 @@ const ShipmentDetailsCard = ({ shipment, removeShipmentFromList }) => {
     <Box component="div"
       sx={{
         width: '50%',
-        height: '7rem',
+        minHeight: '8rem',
         border: '2px solid',
         marginTop: '0.75rem',
         padding: '0.5rem',
@@ -79,6 +79,7 @@ const ShipmentDetailsCard = ({ shipment, removeShipmentFromList }) => {
       <div>
         <div>BL number: {shipment.BL_no}</div>
         <div>Shipping method: {shipment.shipping_method}</div>
+        <div>Category: {shipment.category}</div>
         <div>Displayed arrival date: {shipment.displayed_arrival_date}</div>
         <div>
           Status: <span style={{ color: shipment.status === 'waiting' ? 'red' : 'green' }}>

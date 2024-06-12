@@ -237,6 +237,13 @@ const editShipment = async (req, res) => {
         }, {
             where: { BL_no: req.body.BL_number }
         });
+        const shipmentStatus = await Shipment.findByPk(req.body.BL_number);
+        
+        if(shipmentStatus.dataValues.status == 'completed'){
+            console.log("Completed shipment")
+            res.status(200).json(shipment);
+            return
+        }
 
         const order = await Order.update({
             BL_no: null,
@@ -258,7 +265,7 @@ const editShipment = async (req, res) => {
         });
 
         await Promise.all(orderUpdatePromises);
-        console.log("TESTLAST");
+        console.log("TESTLAST ");
         res.status(200).json(shipment);
     } catch (error) {
         // Handle error
@@ -295,11 +302,44 @@ const deleteShipment = async (req, res) => {
     }
 }
 
+const getPackagesDetailsFromBL = async (req, res) => {
+    try {
+        console.log("Connected")
+        // Retrieve order IDs that match the BL_no
+        const orders = await Order.findAll({
+            attributes: ['order_id'],
+            where: {
+                BL_no: req.params.BLnumber,
+            },
+        });
+
+        // Extract order IDs from the result
+        const orderIDs = orders.map(order => order.order_id);
+
+        // Retrieve shipping marks for the retrieved order IDs
+        const packages = await Package.findAll({
+            attributes: ['shipping_mark', 'items','collected_date_time', 'emp_id'],
+            where: {
+                order_id: orderIDs,
+            },
+        });
+
+        //console.log(orderIDs,packages)
+        // Respond with processed packages and totals
+        res.status(200).json(packages);
+
+    } catch (error) {
+        console.error("Error fetching order details:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
 module.exports = {
     getAllShipments,
     addShipment,
     getPackagesOfAShipment,
     saveScanUpdates,
     editShipment,
-    deleteShipment
+    deleteShipment,
+    getPackagesDetailsFromBL
 }
