@@ -108,7 +108,7 @@ export const Packages = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
-    const { category, items, expectedPackageCount } = location.state || {};
+  const { category, items, expectedPackageCount } = location.state || {};
   const toBack = () => {
     navigate('../');
   }
@@ -171,7 +171,11 @@ export const Packages = () => {
 
   const processRowUpdate = async (newRow) => {
     try {
-      console.log("WADUNA");
+      if (newRow.supplier == undefined) {
+        toast.error("Please select a supplier");
+        return
+      }
+      console.log("WADUNA", newRow);
       await addPackageValidation.validate(newRow, { abortEarly: false });
       const updatedRow = { ...newRow, isNew: false };
       setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
@@ -180,7 +184,7 @@ export const Packages = () => {
       return updatedRow;
     } catch (error) {
       // Handle validation errors
-
+      toast.error(error.errors[0])
       console.error('Validation error:', error.errors);
       // You can also display error messages to the user
       throw error; // Rethrow the error to prevent row update
@@ -205,35 +209,48 @@ export const Packages = () => {
   });
 
   const handleFileUpload = (e) => {
-    const reader = new FileReader();
-    reader.readAsBinaryString(e.target.files[0]);
-    reader.onload = (e) => {
-      const data = e.target.result;
-      const workbook = XLSX.read(data, { type: "binary" });
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
-      const parsedData = XLSX.utils.sheet_to_json(sheet);
-      const lastRowId = rows.length > 0 ? rows[rows.length - 1].id : 0;
-      const pid = parseInt(lastRowId) + 1;
-      parsedData.map((item, index) => (
-        setRows(prevRows => [
-          ...prevRows,
-          {
-            "id": index > 0 ? parseInt(prevRows[index - 1].id) + pid : pid,//index > 0 ? parseInt(prevRows[index - 1].id) + pid : 1,
-            "package_count": item.package_count,
-            "items": item.items,
-            "length": item.length,
-            "height": item.height,
-            "width": item.width,
-            "volume_metric_weight": item.volume_metric_weight,
-            "gross_weight": item.gross_weight,
+    try {
+      const reader = new FileReader();
+      reader.readAsBinaryString(e.target.files[0]);
+      reader.onload = (e) => {
+        const data = e.target.result;
+        const workbook = XLSX.read(data, { type: "binary" });
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const parsedData = XLSX.utils.sheet_to_json(sheet);
+        const lastRowId = rows.length > 0 ? rows[rows.length - 1].id : 0;
+        const pid = parseInt(lastRowId) + 1;
+
+        let newRows = [];
+        let newRowModesModel = {};
+
+        parsedData.forEach((item, index) => {
+          const newRow = {
+            id: index > 0 ? parseInt(newRows[index - 1].id) + pid : pid,
+            package_count: item.package_count,
+            items: item.items,
+            length: item.length,
+            height: item.height,
+            width: item.width,
+            volume_metric_weight: item.volume_metric_weight,
+            gross_weight: item.gross_weight,
             isNew: true
-          }
-        ])
-      ))
-      console.log(parsedData[0].name)
+          };
+
+          newRows.push(newRow);
+          newRowModesModel[newRow.id] = { mode: GridRowModes.Edit };
+        });
+
+        setRows((prevRows) => [...prevRows, ...newRows]);
+        setRowModesModel((prevRowModesModel) => ({ ...prevRowModesModel, ...newRowModesModel }));
+      };
+    } catch (error) {
+      toast.error(error.errors[0]);
+      console.error('Validation error:', error.errors);
+      throw error;
     }
-  }
+  };
+
   //==============================================
 
   const columns = [
@@ -247,6 +264,7 @@ export const Packages = () => {
     {
       field: 'package_count',
       headerName: 'Package Count',
+      type: 'number',
       width: 115,
       editable: true,
     },
@@ -355,7 +373,30 @@ export const Packages = () => {
 
   //Add new supplier
   const addSupplier = async (e) => {
-    //  validations
+    if (!name || name.trim() === "") {
+      toast.error("Supplier name is required");
+      return;
+    }
+    const nameRegex = /^[a-zA-Z\s]+$/; // Regex pattern for English letters and spaces
+    if (!nameRegex.test(name.trim())) {
+      toast.error("Supplier name can only contain English letters");
+      return;
+    }
+
+    if (!selectedCountry || !selectedCountry.label) {
+      toast.error("Country is required");
+      return;
+    }
+
+    const phoneRegex = /^\d{11}$/; // Regex pattern for exactly 11 digits
+    if (!tel) {
+      toast.error("Phone number is required");
+      return;
+    }
+    if (!phoneRegex.test(tel)) {
+      toast.error("Please enter valid Phone number");
+      return;
+    }
 
     //add the suppliers
     try {
@@ -384,6 +425,32 @@ export const Packages = () => {
   //Save all to database
   const saveAllPackages = async (e) => { //Submit the order
     e.preventDefault();
+    if (rows.length == 0) {
+      toast.error("Please insert package details");
+      return;
+    }
+    const totalPackageCount = rows.reduce((total, row) => total + parseInt(row.package_count || 0), 0);
+    console.log(`Total Package Count: ${totalPackageCount}`);
+    if (totalPackageCount >= 100) {
+      toast.error("Total package count in more than 100");
+      return;
+    }
+    if (totalPackageCount !== expectedPackageCount) {
+      const result = await Swal.fire({
+        title: "Expected Package count and insert package count not match",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Continue"
+      });
+
+      // If the user did not confirm, return early
+      if (!result.isConfirmed) {
+        return;
+      }
+    }
     let SMdetails = [];
     const supplierNames = Object.keys(groupedRows);
     supplierNames.map((sName, index) => {
@@ -480,49 +547,49 @@ export const Packages = () => {
               <tr>
                 <td><label for="country">Country :</label></td>
                 <td><Autocomplete
-                sx={{ width: 250, mt: 2, mb: 2 }}
-                options={Countries}
-                autoHighlight
-                defaultValue={selectedCountry}
-                getOptionLabel={(option) => option.label}
-                renderOption={(props, option) => (
-                  <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-                    <img
-                      loading="lazy"
-                      width="20"
-                      srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
-                      src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-                      alt=""
+                  sx={{ width: 250, mt: 2, mb: 2 }}
+                  options={Countries}
+                  autoHighlight
+                  defaultValue={selectedCountry}
+                  getOptionLabel={(option) => option.label}
+                  renderOption={(props, option) => (
+                    <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+                      <img
+                        loading="lazy"
+                        width="20"
+                        srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+                        src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                        alt=""
+                      />
+                      {option.label} ({option.code})
+                    </Box>
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      size="small"
+                      inputProps={{
+                        ...params.inputProps,
+                        autoComplete: 'new-password', // disable autocomplete and autofill
+                      }}
                     />
-                    {option.label} ({option.code})
-                  </Box>
-                )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    size="small"
-                    inputProps={{
-                      ...params.inputProps,
-                      autoComplete: 'new-password', // disable autocomplete and autofill
-                    }}
-                  />
-                )}
-                onChange={(event, newValue) => {
-                  setSelectedCountry(newValue);
-                }}
-              />
+                  )}
+                  onChange={(event, newValue) => {
+                    setSelectedCountry(newValue);
+                  }}
+                />
                 </td>
               </tr>
               <tr>
-                <td><label for="tp" style={{marginRight:'1rem'}}>Tel. Number :</label></td>
+                <td><label for="tp" style={{ marginRight: '1rem' }}>Tel. Number :</label></td>
                 <td>
                   <TextField type="number"
-                  size='small'
-                  id="tp"
-                  name="tp"
-                  value={tel}
-                  onChange={(e) => setTel(e.target.value)}
-                  className="border-solid border-2 border-blue-800" />
+                    size='small'
+                    id="tp"
+                    name="tp"
+                    value={tel}
+                    onChange={(e) => setTel(e.target.value)}
+                    className="border-solid border-2 border-blue-800" />
                 </td>
               </tr>
               <tr>

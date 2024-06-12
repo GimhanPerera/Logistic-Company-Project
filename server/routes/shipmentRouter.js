@@ -21,5 +21,7 @@ router.delete("/:BL_number", shipmentController.deleteShipment);
 //get shipment
 router.post("/update", shipmentController.editShipment);
 
+//Get package details for show in completed Shipments
+router.get("/getPackagesDetails/:BLnumber", shipmentController.getPackagesDetailsFromBL);
 
 module.exports = router;

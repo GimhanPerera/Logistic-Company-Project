@@ -121,18 +121,55 @@ export const priceQuotationByCustomerValidation = Yup.object({
 })
 
 export const addPackageValidation = Yup.object({
-    package_count: Yup.string().min(1).required("Please Enter name"),
-    items: Yup.string().min(2).required("Please Enter name"),
-    length: Yup.string().min(2).required("Please Enter name"),
-    height: Yup.string().min(2).required("Please Enter name"),
-    volume_metric_weight: Yup.string().min(1).required("Please Enter name"),
-    gross_weight: Yup.string().min(1).required("Please Enter name"),
+    items: Yup.string()
+        .required("Please Enter items")
+        .min(3, "Item must be at least 3 characters")
+        .max(40, "Item must not exceed 40 characters"),
+    package_count: Yup.number()
+        .required("Please Enter the package count")
+        .typeError("Package count must be a number")
+        .min(1, "Please enter valid package count")
+        .max(100, "Package count must not exceed 100")
+        .integer("Invalid package count"),
+    length: Yup.number()
+        .required("Please Enter the length")
+        .typeError("Please enter valid length")
+        .min(5, "length should be more than 5cm")
+        .max(1000, "length should be less than 10m"),
+    width: Yup.number()
+        .required("Please Enter the width")
+        .typeError("Please enter valid width")
+        .min(5, "width should be more than 5cm")
+        .max(1000, "width should be less than 10m"),
+    height: Yup.number()
+        .required("Please Enter the height")
+        .typeError("Please enter valid height")
+        .min(5, "height should be more than 5cm")
+        .max(1000, "height should be less than 10m"),
+    volume_metric_weight: Yup.number()
+        .required("Please Enter VMW")
+        .typeError("Please enter valid VMW")
+        .min(0, "VMW should be more than 0")
+        .max(1000, "VMW should be less than 1000"),
+    gross_weight: Yup.number()
+        .required("Please Enter the gross weight")
+        .typeError("Please enter valid gross weight")
+        .min(0, "Please enter valid gross weight")
+        .max(1000, "Gross weight should be less than 1000KG"),
 })
 
 export const scanPackagesValidation = Yup.object({
-    shippingMark: Yup.string().required("Shipping Mark cannot be empty"),
-    count: Yup.string().required("Count cannot be empty"),
-    collectedCount: Yup.string().required("Collected Count cannot be empty"),
+    shippingMark: Yup.string()
+        .required("Shipping Mark cannot be empty"),
+    count: Yup.number()
+        .integer("Count must be an integer")
+        .min(0, "Count cannot be negative")
+        .required("Count cannot be empty"),
+    collectedCount: Yup.number()
+        .integer("Collected Count must be an integer")
+        .min(0, "Collected Count cannot be negative")
+        .max(Yup.ref('count'), "Collected Count cannot exceed Count")
+        .required("Collected Count cannot be empty"),
 });
 
 export const addSupplier = Yup.object({
@@ -169,11 +206,11 @@ export const employeeFormValidation = Yup.object({
 //Courier details add/edit: addEditCourierModal.jsx
 export const courierFormValidation = Yup.object({
     nameField: Yup.string()
-    .required('Name is required')
-    .max(30, "Name is too long"),
+        .required('Name is required')
+        .max(30, "Name is too long"),
     tpFields: Yup.string()
-    .required("Telephone number required")
-    .matches(/^(\d{9}|0\d{9})$/, "Please enter valid telephone number"), //9-digit or a 10-digit starting with 0
+        .required("Telephone number required")
+        .matches(/^(\d{9}|0\d{9})$/, "Please enter valid telephone number"), //9-digit or a 10-digit starting with 0
 });
 
 //Special Notices: addSpecialNotices.jsx

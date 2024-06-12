@@ -115,10 +115,11 @@ const UpdateTracking = () => {
                 setRows(dataWithIds);
                 setMainTracking(response.data.tracking_number);
                 console.log(mainTracking);
+                //setBlockAll(true);
                 if (status == "Ready" || status == "Deliverd") {
                     setlocalTrackingEditable(true)
                 }
-                if(status == "onhand"){
+                if(status == "onhand" && status != "Waiting"){
                     setBlockAll(true);
                     console.log("blockAll ",blockAll)
                 }
@@ -202,7 +203,7 @@ const UpdateTracking = () => {
             field: 'status',
             headerName: 'Status',
             width: 140,
-            editable: (tracking != 'Waiting' ? false : true) || !blockAll,
+            editable: tracking === 'Waiting',//(tracking != 'Waiting' ? false : true) || !blockAll,
             type: 'singleSelect',
             valueOptions: ['not received', 'received'],
         },

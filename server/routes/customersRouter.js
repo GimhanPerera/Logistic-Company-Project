@@ -28,5 +28,6 @@ router.post("/edit", customerController.editProfile) //edit customer data
 
 //Change pwd
 router.post("/changePwd",loginController.authenticateToken, customerController.changePwd);
+router.get("/nic/:image", customerController.downloadNIC);
 
 module.exports = router;

@@ -15,6 +15,7 @@ import axios from "axios";
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 import ScanResultHandler from '../../../Modals/scanResultHandler';
 import Autheader from "../../../services/Autheader";
 import { scanPackagesValidation } from './../../../validations';
@@ -149,10 +150,10 @@ const ScanAndUpdate = () => {
             return updatedRow;
         } catch (error) {
             // Handle validation errors
-
+            toast.error(error.errors[0]);
             console.error('Validation error:', error.errors);
             // You can also display error messages to the user
-            throw error; // Rethrow the error to prevent row update
+            //throw error; // Rethrow the error to prevent row update
         }
     };
 
@@ -384,6 +385,7 @@ const ScanAndUpdate = () => {
                     />
                 </Box>
             </Container>
+            <ToastContainer />
             <ScanResultHandler open={isSuccessScanOpen} lastReading={lastReading} rows={rows} setRows={setRows} onClose={() => setSuccessScanOpen(false)} />
         </>
     );

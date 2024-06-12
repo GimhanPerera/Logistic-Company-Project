@@ -56,7 +56,7 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         },
         rate: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.DECIMAL(5, 2),
             allowNull: true,
             defaultValue: null,
         },
