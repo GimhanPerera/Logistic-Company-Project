@@ -1,10 +1,11 @@
 import { Box } from '@mui/material';
 import axios from 'axios';
-import React from 'react';
+import React, { useContext } from 'react';
 import Swal from 'sweetalert2';
+import { ActiveIDContext } from './../Customer/ActiveIDContext';
 
-const CourierDetailsCard = ({ courier, reload, clickEdit,setCourierDetails,removeCourierFromList }) => {
-
+const CourierDetailsCard = ({ courier, reload, clickEdit,setCourierDetails,removeCourierFromList, isOpen }) => {
+  
   const deleteCourier = () => {
     Swal.fire({
       title: "Are you sure?",
@@ -40,7 +41,7 @@ const CourierDetailsCard = ({ courier, reload, clickEdit,setCourierDetails,remov
     
   }
 
-
+  const { activeIDlist, setActiveIDlist } = useContext(ActiveIDContext);
   const handleEditClick = () => {
     setCourierDetails(courier);
     clickEdit(courier.courier_id);
@@ -50,6 +51,12 @@ const CourierDetailsCard = ({ courier, reload, clickEdit,setCourierDetails,remov
   if (!courier) {
     return null; // or handle the case where courier is undefined/null
   }
+
+  const toOrderIDs = () => {
+    const orderIDs = courier.Orders.map(order => order.order_id);
+    setActiveIDlist(orderIDs);
+    isOpen();
+  };
 
   return (
     <Box
@@ -82,7 +89,7 @@ const CourierDetailsCard = ({ courier, reload, clickEdit,setCourierDetails,remov
             textDecoration: 'underline'
           }}
         >
-          <Box component="p" sx={{cursor:'pointer'}}>History</Box>
+          <Box component="p" sx={{cursor:'pointer'}} onClick={toOrderIDs}>History</Box>
           <Box component="p" sx={{cursor:'pointer'}} onClick={handleEditClick}>Edit</Box>
           <Box component="p" sx={{cursor:'pointer'}} onClick={deleteCourier}>Delete</Box>
         </Box>

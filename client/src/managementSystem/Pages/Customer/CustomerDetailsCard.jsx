@@ -1,14 +1,20 @@
 import { Box, Button } from '@mui/material';
 import Paper from '@mui/material/Paper';
-import React from 'react';
+import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ActiveIDContext } from './ActiveIDContext';
 
-const CustomerDetailsCard = ({ customer }) => {
-
+const CustomerDetailsCard = ({ customer,isOpen }) => {
   const navigate = useNavigate();
-
+  const { activeIDlist, setActiveIDlist } = useContext(ActiveIDContext);
   const toView = () => {
     navigate('./view', { state: { cusData: customer } });
+  };
+
+  const toOrderIDs = () => {
+    
+    setActiveIDlist(customer.order_ids);
+    isOpen();
   };
 
 
@@ -39,7 +45,13 @@ const CustomerDetailsCard = ({ customer }) => {
           cursor: 'pointer'
         }}
       >
+        {customer.order_count != '0'?
+        <>
+        <p onClick={toOrderIDs}>
         {customer.order_count} active order
+        </p>
+        </>
+        :''}
       </Box>
       <div>
         <Box component="div"

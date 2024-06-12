@@ -40,17 +40,19 @@ const editCourier = async (req, res) => {
 
 // 2. Get all Courier
 const getAllCourier = async (req, res) => {
-    //const customer = await Customer.findByPk(id) //ID eken one nan
-    const courier = await Courier.findAll({}) //{} : pass empty obj
-    res.status(200).json(courier);
+    try {
+        const couriers = await Courier.findAll({
+            include: {
+                model: Order,
+                attributes: ['order_id'], // Select only the order_id attribute
+            }
+        });
 
-    // const now = new Date();
-    // const time = now.toLocaleTimeString();
-    // const currentDateTime = {
-    //     date: now.toLocaleDateString(),
-    //     time: now.toLocaleTimeString(),
-    //     iso: now.toISOString()
-    // };
+        res.status(200).json(couriers);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Failed to retrieve couriers' });
+    }
 }
 
 // 2. Get all Courier
