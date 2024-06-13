@@ -34,7 +34,9 @@ export const CustomerLogin = () => {
       }
     }
   };
-
+  const resetPwd = () => {
+    navigate('../resetpassword');
+}
   const loginAsCustomer = useFormik({
     
     initialValues: {
@@ -172,7 +174,7 @@ export const CustomerLogin = () => {
                   </div>
                   {loginAsCustomer.errors.password && loginAsCustomer.touched.password && <small style={{color:'red'}}>{loginAsCustomer.errors.password}</small>}
                   <div>
-                    <Box component="p" sx={{ color: '#1E90FF', fontSize: '0.875rem', fontWeight: 'medium', cursor: 'pointer', mt:'0.5rem' }} underline="always">Forgot password?</Box>
+                    <Box component="p" sx={{ color: '#1E90FF', fontSize: '0.875rem', fontWeight: 'medium', cursor: 'pointer', mt:'0.5rem' }} underline="always" onClick={resetPwd}>Forgot password?</Box>
                   </div>
                   <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>Check my orders</Button>
                 </form>
@@ -233,10 +235,10 @@ export const CustomerLogin = () => {
                     />
                   <p style={{fontSize:'0.8rem', color:'red', marginBottom: '0.5rem',marginLeft:'1rem'}}>{trackingNumberError}</p>
                   </div>
-                  <div className="flex-div">
+                  {/* <div className="flex-div">
                     <Box component="p" sx={{ color: '#1E90FF', fontSize: '0.875rem', fontWeight: 'medium', cursor: 'pointer' }} underline="always">Forgot tracking number?</Box>
-                  </div>
-                  <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>Check my order</Button>
+                  </div> */}
+                  <Button type="submit" fullWidth variant="contained" sx={{ mt: 5, mb: 2 }}>Check my order</Button>
                 </form>
               </Box>
             }

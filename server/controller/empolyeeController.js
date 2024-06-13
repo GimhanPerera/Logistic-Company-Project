@@ -1,4 +1,4 @@
-const { Employee } = require('../models');
+const { Employee, Customer } = require('../models');
 const bcrypt = require('bcrypt');
 const { sendOTP, checkOTP } = require('./../middleware/opt');
 const { Op } = require('sequelize');
@@ -102,35 +102,62 @@ const changePwd = async (req, res) => {
 const sendOtp = async (req, res) => {
     try {
         const email = req.body.email;
-        const employee = await Employee.findOne({
-            where: { email },
-            attributes: ['emp_id']
-        });
 
-        if (!employee) {
-            res.status(404).json({ error: "User not found" });
+        if (email.startsWith("CFL")) {
+            // Search by cus_id
+            const customer = await Customer.findOne({
+                where: { customer_id: email },
+                attributes: ['customer_id']
+            });
+
+            if (!customer) {
+                res.status(404).json({ error: "User not found" });
+                return;
+            }
+
+            await sendOTP(customer.customer_id);
+            res.status(200).json("Sent");
+        } else {
+            // Search by email
+            const employee = await Employee.findOne({
+                where: { email },
+                attributes: ['emp_id']
+            });
+
+            if (!employee) {
+                res.status(404).json({ error: "User not found" });
+                return;
+            }
+
+            await sendOTP(employee.emp_id);
+            res.status(200).json("Sent");
         }
-        await sendOTP(employee.emp_id);
-        res.status(200).json("Sent");
     } catch (error) {
         console.error("Error :", error);
         res.status(500).json({ error: "Internal server error" });
     }
-}
+};
 
 const checkOtp = async (req, res) => {
     try {
+        let result = '';
+        console.log("EMAIL: ", req.body.email)
+        console.log("OTP: ", req.body.otp)
         const email = req.body.email;
         const otp = req.body.otp;
-        const employee = await Employee.findOne({
-            where: { email },
-            attributes: ['emp_id']
-        });
+        if (!email.startsWith("CFL")) {
+            const employee = await Employee.findOne({
+                where: { email },
+                attributes: ['emp_id']
+            });
 
-        if (!employee) {
-            res.status(404).json({ error: "User not found" });
+            if (!employee) {
+                res.status(404).json({ error: "User not found" });
+            }
+            result = await checkOTP(employee.emp_id, otp);
+        } else {
+            result = await checkOTP(email, otp);
         }
-        const result = await checkOTP(employee.emp_id, otp);
         res.status(200).json(result);
     } catch (error) {
         console.error("Error :", error);
@@ -156,8 +183,8 @@ const editByID = async (req, res) => {
         employee.position = req.body.position;
         employee.tel_number = req.body.tel_number;
         employee.status = req.body.status;
-        
-        if(req.body.status == 'active'){
+
+        if (req.body.status == 'active') {
             employee.wrong_attempts = 0;
         }
 
@@ -203,7 +230,7 @@ const addEmployee = async (req, res) => {
             last_attempt_date_time: new Date(), // Set initial date/time
             wrong_attempts: 0 // Initialize wrong attempts
         });
-        console.log("PASSCODE: ",passcode)
+        console.log("PASSCODE: ", passcode)
         const message = `Hello ${req.body.f_name},\nWelcome to the company. Use following credentials to log to the system.\nemail: ${req.body.email}\nTemporary pwd: ${passcode}`
         sendDirectSMS(req.body.tel_number, message, req.user.sub);//send sms
 
@@ -226,7 +253,43 @@ const textSms = async (req, res) => {
 
         res.status(200).json(response.data);
     } catch (error) {
-        res.status(500).json( `Error sending SMS: ${error.message}` );
+        res.status(500).json(`Error sending SMS: ${error.message}`);
+    }
+}
+
+const changePwdByOTP = async (req, res) => {
+    try {
+        let isCustomer = false;
+        let user = '';
+        // Find the Employee
+        user = await Employee.findOne({
+            where: {
+                email: req.body.emailOrUserID
+            }
+        });
+
+        if (!user) {
+            isCustomer = true;
+            user = await Customer.findByPk(req.body.emailOrUserID);
+        }
+
+        // Check if the user not exists
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        const password = req.body.newPwd;
+        const hashPassword = await bcrypt.hash(password, process.env.HASH);//convert password to hash
+        if (isCustomer)
+            user.passcode = hashPassword;
+        else
+            user.password = hashPassword;
+        user.status = 'active';
+        await user.save();
+        console.log("User ", req.body.emailOrUserID, "New password ", password)
+        res.status(200).json(true);
+    } catch (error) {
+        res.status(500).json(`Error : ${error}`);
     }
 }
 
@@ -239,5 +302,6 @@ module.exports = {
     getAllEmployee,
     editByID,
     textSms,
-    addEmployee
+    addEmployee,
+    changePwdByOTP
 }

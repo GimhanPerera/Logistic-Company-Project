@@ -29,6 +29,7 @@ import RequestHandle from './managementSystem/Pages/orderRequest/requestHandle';
 import { ProfilePage } from './managementSystem/Pages/profilePage';
 import ManagmentSystem from './managementSystem/managmentSystem';
 import { TestFile } from './testfile';
+import { ResetPwd } from './website/ResetPwd';
 import { StaffLogin } from './website/StaffLogin';
 import { AllMyOrders } from './website/allMyOrders';
 import { CustomerLogin } from './website/customerLogin';
@@ -57,6 +58,7 @@ function App() {
           <Route path="test2" element={<PrintShippingMarks />} /> {/* Testing this */}
           <Route index element={<Website />} />
           <Route path="stafflogin" element={<StaffLogin />} />
+          <Route path="resetpassword" element={<ResetPwd />} />
           <Route path="checkmyorder">
             <Route index element={<CustomerLogin />} />
             <Route path=":trackingNumber" element={<OrderTrackingDetails />} />

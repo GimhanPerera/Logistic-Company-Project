@@ -641,7 +641,7 @@ export const Packages = () => {
   else { //Display shipping marks
     return (
       <>
-        <h2>Shipping marks</h2>
+        <h2 style={{textAlign:'center', marginBottom:'1rem', fontSize:'2rem'}}>Shipping marks</h2>
         {/* Back btn */}
         <Button variant="contained"
           sx={{ ml: '20px' }}

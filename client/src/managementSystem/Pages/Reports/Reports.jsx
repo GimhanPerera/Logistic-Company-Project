@@ -109,7 +109,7 @@ const Reports = () => {
           <Box component='div' sx={{ m: '2rem 0' }}>
             <Box component="h3" sx={{}}>Total income of the Year: LKR {reportData.totalIncomeOfYear}</Box>
             <Box component="h3" sx={{}}>Total quotation total of the Year: LKR {reportData.totalPriceQuotationsOfYear}</Box>
-            <Box component="h3" sx={{}}>Difference between Income total  and Quotation total: LKR {parseFloat(reportData.totalIncomeOfYear) - parseFloat(reportData.totalPriceQuotationsOfYear)}</Box>
+            <Box component="h3" sx={{}}>Difference between Income total  and Quotation total: LKR {(parseFloat(reportData.totalIncomeOfYear) - parseFloat(reportData.totalPriceQuotationsOfYear)).toFixed(2)}</Box>
           </Box>
 
           {/* main table */}

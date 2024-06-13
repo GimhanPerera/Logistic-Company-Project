@@ -40,7 +40,7 @@ const AddCourierToOrder = () => {
         const dd = String(today.getDate()).padStart(2, '0');
         return `${yyyy}-${mm}-${dd}`;
     };
-
+    const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
 
     const toBack = () => {
         navigate('./..', { state: { id: orderId } });
@@ -82,8 +82,12 @@ const AddCourierToOrder = () => {
 
     }
     const assignCourier = () => {
-        if(checked){
+        if(checked && !courierTN){
             toast.error("Enter the tracking number")
+            return
+        }
+        else if(checked && courierTN.length <= 5){
+            toast.error("Enter a valid tracking number")
             return
         }
         Swal.fire({
@@ -176,6 +180,7 @@ const AddCourierToOrder = () => {
                             defaultValue={issueDate}
                             disabled={!checked}
                             sx={{ ml: '1rem' }}
+                            inputProps={{ min: today }}
                         />
                         <Box component="div" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
                             <FormControlLabel control={<Checkbox checked={checked} onChange={handleCheckboxChange} />} label="Issue the packages" />

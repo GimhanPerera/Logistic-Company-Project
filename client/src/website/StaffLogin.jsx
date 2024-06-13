@@ -13,6 +13,9 @@ import Navbar from './navbar';
 export const StaffLogin = () => {
 
     const navigate = useNavigate();
+    const resetPwd = () => {
+        navigate('../resetpassword');
+    }
     const onSubmit = async (values, actions) => {
         try {
             // Check the detials
@@ -22,7 +25,7 @@ export const StaffLogin = () => {
             });
             if (response.data.isValid) {
                 localStorage.setItem('user', JSON.stringify(response.data));
-                console.log("TOKENS ",response.data);
+                console.log("TOKENS ", response.data);
                 navigate('../cmsystem');
                 window.location.reload();
             }
@@ -50,7 +53,7 @@ export const StaffLogin = () => {
     return (
         <div>
             <Navbar />
-            <Box component="section" sx={{ backgroundColor: '#edfeff', height:'87vh' }}>
+            <Box component="section" sx={{ backgroundColor: '#edfeff', height: '87vh' }}>
                 <Box component="div"
                     sx={{
                         display: 'flex',
@@ -70,12 +73,12 @@ export const StaffLogin = () => {
                             marginTop: 0,
                             maxWidth: '100%',
                             padding: 0,
-                            display:'flex',
-                            flexDirectionL:'row'
+                            display: 'flex',
+                            flexDirectionL: 'row'
                         }}>
-                            <Box component="div">
-              <img src={loginImg} alt='login image'  style={{width:'26.4rem', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',}}/>
-            </Box>
+                        <Box component="div">
+                            <img src={loginImg} alt='login image' style={{ width: '26.4rem', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)', }} />
+                        </Box>
                         <Box component="div"
                             sx={{
                                 height: '23rem',
@@ -86,7 +89,7 @@ export const StaffLogin = () => {
                                 paddingLeft: '3rem',
                                 paddingRight: '3rem',
                                 gap: '1.5rem',
-                                width:'26.4rem'
+                                width: '26.4rem'
                             }}>
                             <Box component="h1"
                                 sx={{
@@ -94,7 +97,7 @@ export const StaffLogin = () => {
                                     fontWeight: 700,
                                     lineHeight: 1.25,
                                     letterSpacing: '-0.025em',
-                                    marginTop:'2rem'
+                                    marginTop: '2rem'
                                 }}>
                                 Login
                             </Box>
@@ -153,7 +156,7 @@ export const StaffLogin = () => {
                                     {errors.password && touched.password && <small style={{ color: 'red' }}>{errors.password}</small>}
                                 </div>
                                 <div>
-                                    <Box component="p" sx={{ color: '#1E90FF', fontSize: '0.875rem', fontWeight: 'medium', cursor: 'pointer', m: '1rem 0' }} underline="always">Forgot password?</Box>
+                                    <Box component="p" sx={{ color: '#1E90FF', fontSize: '0.875rem', fontWeight: 'medium', cursor: 'pointer', m: '1rem 0' }} onClick={resetPwd} underline="always">Forgot password?</Box>
                                 </div>
                                 <div>
                                 </div>

@@ -110,6 +110,14 @@ const ViewOrder = () => {
     const toggleReadyStatus = () => {
         const oid = orderDetails.order.order_id;
         console.log("oid ", oid);
+        //IF THE PAYMENT IS NOT SETTLED
+        if (orderDetails.invoice.total == 0) {
+            Swal.fire({
+                title: `Invoice is not created`,
+                icon: 'error'
+            });
+            return
+        }
 
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
@@ -282,12 +290,23 @@ const ViewOrder = () => {
                             // text: "Your imaginary file is safe :)",
                             icon: "success"
                         });
-                        setReload(!reload);
+                        //setReload(!reload);
+                        window.location.reload();
                     }
+                    window.location.reload();
                 });
             }
         });
     }
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
+      };
 
     const addCourier = () => {
         navigate('./couriers', { state: { orderId: orderDetails.order.order_id, courierId: orderDetails.order.courier_id, courier_tracking_number: orderDetails.order.courier_tracking_number, issue_date: orderDetails.order.issue_date } });
@@ -525,7 +544,7 @@ const ViewOrder = () => {
                 <Box component="h2" sx={{ textAlign: 'center' }}>Status: {orderDetails.order.status}</Box>
                 {
                     orderDetails.order.status == 'FINISH' || orderDetails.order.order_close_date != null
-                        ? <Box component="h3" sx={{ textAlign: 'center' }}>Order Closed at: {orderDetails.order.order_close_date}</Box>
+                        ? <Box component="h3" sx={{ textAlign: 'center' }}>Order Closed at: {formatDate(orderDetails.order.order_close_date)}</Box>
                         : ''
                 }
                 {/*{orderDetails.order.order_close_date.substring(0, 10)} {orderDetails.order.order_close_date.substring(11, 19)}*/}
@@ -541,10 +560,12 @@ const ViewOrder = () => {
                             <Box component="p" >CREATIVE FREIGHTWAY LOGISTIC(PVT)LTD<br />No25A/2,<br />Thoranawila Junction,<br />Makandana,<br />Piliyandala.<br />94712055774</Box>
                             <br />
                             <table>
+                                {orderDetails.courier != null ? 
                                 <tr>
                                     <td>Assign To:</td>
                                     <td>{orderDetails.courier != null ? orderDetails.courier.courier_id : ''} - {orderDetails.courier != null ? orderDetails.courier.name : ''}</td>
                                 </tr>
+                                :''}
                                 {orderDetails.order.courier_tracking_number == null || orderDetails.order.courier_tracking_number == ''  ?
                                 '':<>
                                 <tr>
@@ -558,7 +579,7 @@ const ViewOrder = () => {
                                 </>}
                                 <tr>
                                     <td>Open date:</td>
-                                    <td>{orderDetails.order.order_open_date}</td>
+                                    <td>{formatDate(orderDetails.order.order_open_date)}</td>
                                 </tr>
                                 <tr>
                                     <td>Shipment:</td>

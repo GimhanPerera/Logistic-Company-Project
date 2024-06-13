@@ -161,10 +161,10 @@ export const OrderTrackingDetails = () => {
                                                 <td><p>From</p></td>
                                                 <td><p>: {firstTrackingDetails.supplier_loc}</p></td>
                                             </tr>
-                                            <tr>
+                                            {/* <tr>
                                                 <td>Price quotation</td>
                                                 <td>: LKR {firstTrackingDetails.Price_quotation.quotation}</td>
-                                            </tr>
+                                            </tr> */}
                                             <tr>
                                                 <td><p>Shipping method</p></td>
                                                 <td><p>: {firstTrackingDetails.Price_quotation.shipping_method}</p></td>
