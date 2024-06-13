@@ -141,7 +141,7 @@ const InvoicePage = () => {
 
                 {/* INVOICE */}
                 <Box component="div" sx={{ mt: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
-                    <Box component="div" ref={componentRef} sx={{ width: '1000px', p: '2rem', border: '1px black solid', border: '1px black solid', borderRadius: '10px' }}>
+                    <Box component="div" ref={componentRef} sx={{ width: '1000px', p: '2rem', border: '1px black solid', borderRadius: '10px' }}>
                         <Box component="h3" sx={{ textAlign: 'center' }}>Invoice ID: {orderDetails.invoice.invoice_id}</Box>
                         <Box component="h3" sx={{ textAlign: 'center' }}>Order ID: {orderDetails.order.order_id}</Box>
                         <Box component="h3" sx={{ textAlign: 'center' }}>Customer ID: {orderDetails.customer.customer_id}</Box>

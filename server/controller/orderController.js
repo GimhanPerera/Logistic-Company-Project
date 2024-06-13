@@ -87,9 +87,12 @@ const newOrder = async (req, res) => {//Add a order
         if(req.body.chatLink != null || req.body.chatLink != ''){
             chatLink = `\nWECHAT link: ${req.body.chatLink}`;
         }
+        if (req.body.status == "Request")
+            chatLink='';
         console.log("TempPWD ",req.body.passcode)
         const tempPwd = req.body.passcode ==null || req.body.passcode =='' ? '': `Templary pwd: ${req.body.passcode}`;
-        sendNormalSMS(newOrderId, `Order placed\nOrder ID: ${newOrderId}\nCustomer ID: ${cus_id}\n${tempPwd}${chatLink}\nContact: 0714744874`, req.user.sub);//send sms
+        const basicMsg = req.body.status != "Request" ? 'Order placed':'Order request sent'
+        sendNormalSMS(newOrderId, `${basicMsg}\nOrder ID: ${newOrderId}\nCustomer ID: ${cus_id}\n${tempPwd}${chatLink}\nContact: 0714744874`, req.user.sub);//send sms
         
 
         const newPriceQuotation = await Price_quotation.create({
