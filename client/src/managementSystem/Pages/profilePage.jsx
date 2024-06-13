@@ -3,6 +3,7 @@ import axios from "axios";
 import { Form, Formik, useFormik } from 'formik';
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Autheader from "../../services/Autheader";
 import { employeeFormValidation } from '../../validations';
@@ -66,9 +67,11 @@ export const ProfilePage = () => {
         })
             .then((response) => {
                 console.log("SAVED");
+                toast.success("Saved");
             })
             .catch((error) => {
                 console.error("Error fetching courier details:", error);
+            toast.error(error.response.data.error);
             });
     }
 
@@ -81,6 +84,8 @@ export const ProfilePage = () => {
 
     return (
         <>
+        
+        <ToastContainer/>
             <Box component='h2' sx={{ textAlign: 'center' }}>Emp ID: {empData.emp_id}</Box>
             <Box component='h3' sx={{ textAlign: 'center' }}>Position: {empData.position}</Box>
             <Box component='div' sx={{ mt: '2rem' }}>

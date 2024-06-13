@@ -41,7 +41,7 @@ const EmpDetails = () => {
             {listOfEmployee.filter((item) => {
                 return search.toLowerCase() === ''
                     ? item
-                    : item.emp_id.toLowerCase().includes(search);
+                    : item.emp_id.toLowerCase().includes(search.toLowerCase());
             }).map((employee, index) => (
                 <Box component="div" key={index}
                     sx={{

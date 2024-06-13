@@ -83,9 +83,10 @@ const CourierDetails = () => {
                 <p>Loading...</p>
             ) : (
                 listOfCourier.filter((item) => {
-                    return search == ''
+                    const courierIdString = String(item.courier_id);
+                    return search.toLowerCase() === ''
                         ? item
-                        : item.courier_id.includes(search);
+                        : courierIdString.toLowerCase().includes(search.toLowerCase());
                 }).map((courier, index) => (
                     <Box component="div" key={index}
                         sx={{

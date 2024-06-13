@@ -2,6 +2,7 @@ import { Box, Button } from '@mui/material';
 import axios from "axios";
 import { useFormik } from 'formik';
 import React, { useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 import { addCustomerValidation } from '../validations';
 
 export default function AddCustomerModel({ open, onClose, setCustomerID ,setPasscode}) {
@@ -38,11 +39,11 @@ export default function AddCustomerModel({ open, onClose, setCustomerID ,setPass
             onClose();
             setErrors({});
             clearFields();
+            actions.resetForm(); //Reset the form
         }).catch((error) => {
+            toast.error(error.response.data.error)
             console.error('Error submitting complain:', error);
         });
-        //values.f_name : value of f_name
-        actions.resetForm(); //Reset the form
     }
     const { values, touched, handleBlur, isSubmitting, setErrors, handleChange, handleSubmit, errors } = useFormik({
         initialValues: {
@@ -196,7 +197,7 @@ export default function AddCustomerModel({ open, onClose, setCustomerID ,setPass
                 </form>
 
             </Box>
-
+            <ToastContainer/>
             {/*Background*/}
             <Box component="div"
                 id='container' onClick={handleClose}

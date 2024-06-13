@@ -51,6 +51,10 @@ const OrderDetails = () => {
       setSelectedFilters([...selectedFilters, selectedCategory]);
     }
   };
+  useEffect(()=>{
+    console.log(search.toLowerCase());
+    console.log(search.toLowerCase());
+  },[search])
 
   return (
     <div>
@@ -81,7 +85,7 @@ const OrderDetails = () => {
       {filteredItems.filter((item) => {
           return search.toLowerCase() === ''
           ? item
-          : item.order_id.toLowerCase().includes(search);
+          : item.order_id.toLowerCase().includes(search.toLowerCase());
         }).map((order, index) => (
         <Box component="div" key={`items-${index}`}
           sx={{

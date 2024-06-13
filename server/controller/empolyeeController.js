@@ -47,6 +47,30 @@ const setFromProfile = async (req, res) => {
         // Find the Employee by ID
         const employee = await Employee.findByPk(req.user.sub);
 
+        const existingEmployee = await Employee.findOne({
+            where: {
+                email: req.body.email,
+                emp_id: {
+                    [Op.ne]: req.user.sub
+                }
+            }
+        });
+        
+        if (existingEmployee) {
+            return res.status(400).json({ error: "Email already exists for another employee" });
+        }
+        const existingEmployee1 = await Employee.findOne({
+            where: {
+                nic: req.body.nic,
+                emp_id: {
+                    [Op.ne]: req.user.sub
+                }
+            }
+        });
+        
+        if (existingEmployee1) {
+            return res.status(400).json({ error: "NIC already exists for another employee" });
+        }
         // Check if the notice exists
         if (!employee) {
             return res.status(404).json({ error: "Employee not found" });
