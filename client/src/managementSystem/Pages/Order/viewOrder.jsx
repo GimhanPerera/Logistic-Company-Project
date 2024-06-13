@@ -300,13 +300,20 @@ const ViewOrder = () => {
     }
     const formatDate = (dateString) => {
         const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    return `${year}-${month}-${day} ${hours}:${minutes}`;
-      };
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${year}-${month}-${day} ${hours}:${minutes}`;
+    };
+    const formatDateOnly = (dateString) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
 
     const addCourier = () => {
         navigate('./couriers', { state: { orderId: orderDetails.order.order_id, courierId: orderDetails.order.courier_id, courier_tracking_number: orderDetails.order.courier_tracking_number, issue_date: orderDetails.order.issue_date } });
@@ -481,7 +488,7 @@ const ViewOrder = () => {
                             component="label"
                             variant="contained"
                             startIcon={<PrintIcon />}
-                            sx={{  position: 'fixed', right: '2em', top: '5rem' }}
+                            sx={{ position: 'fixed', right: '2em', top: '5rem' }}
                         >
                             Print invoice
                         </Button>
@@ -544,7 +551,7 @@ const ViewOrder = () => {
                 <Box component="h2" sx={{ textAlign: 'center' }}>Status: {orderDetails.order.status}</Box>
                 {
                     orderDetails.order.status == 'FINISH' || orderDetails.order.order_close_date != null
-                        ? <Box component="h3" sx={{ textAlign: 'center' }}>Order Closed at: {formatDate(orderDetails.order.order_close_date)}</Box>
+                        ? <Box component="h3" sx={{ textAlign: 'center' }}>Order Closed on: {formatDateOnly(orderDetails.order.order_close_date)}</Box>
                         : ''
                 }
                 {/*{orderDetails.order.order_close_date.substring(0, 10)} {orderDetails.order.order_close_date.substring(11, 19)}*/}
@@ -560,23 +567,23 @@ const ViewOrder = () => {
                             <Box component="p" >CREATIVE FREIGHTWAY LOGISTIC(PVT)LTD<br />No25A/2,<br />Thoranawila Junction,<br />Makandana,<br />Piliyandala.<br />94712055774</Box>
                             <br />
                             <table>
-                                {orderDetails.courier != null ? 
-                                <tr>
-                                    <td>Assign To:</td>
-                                    <td>{orderDetails.courier != null ? orderDetails.courier.courier_id : ''} - {orderDetails.courier != null ? orderDetails.courier.name : ''}</td>
-                                </tr>
-                                :''}
-                                {orderDetails.order.courier_tracking_number == null || orderDetails.order.courier_tracking_number == ''  ?
-                                '':<>
-                                <tr>
-                                    <td>Courier tracking number:</td>
-                                    <td>{orderDetails.order.courier_tracking_number}</td>
-                                </tr>
-                                <tr>
-                                    <td>Issue date:</td>
-                                    <td>{orderDetails.order.issue_date}</td>
-                                </tr>
-                                </>}
+                                {orderDetails.courier != null ?
+                                    <tr>
+                                        <td>Assign To:</td>
+                                        <td>{orderDetails.courier != null ? orderDetails.courier.courier_id : ''} - {orderDetails.courier != null ? orderDetails.courier.name : ''}</td>
+                                    </tr>
+                                    : ''}
+                                {orderDetails.order.courier_tracking_number == null || orderDetails.order.courier_tracking_number == '' ?
+                                    '' : <>
+                                        <tr>
+                                            <td>Courier tracking number:</td>
+                                            <td>{orderDetails.order.courier_tracking_number}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Issue date:</td>
+                                            <td>{orderDetails.order.issue_date}</td>
+                                        </tr>
+                                    </>}
                                 <tr>
                                     <td>Open date:</td>
                                     <td>{formatDate(orderDetails.order.order_open_date)}</td>
@@ -852,10 +859,10 @@ const ViewOrder = () => {
                         </thead>
                         <tbody>
                             {orderDetails.order.rating != null ? (
-                                    <tr>
-                                        <td style={tableCell}>{orderDetails.order.rating}/5</td>
-                                        <td style={tableCell}>{orderDetails.order.feedback_des }</td>
-                                    </tr>
+                                <tr>
+                                    <td style={tableCell}>{orderDetails.order.rating}/5</td>
+                                    <td style={tableCell}>{orderDetails.order.feedback_des}</td>
+                                </tr>
                             ) : (
                                 <tr>
                                     <td style={{ ...tableCell, textAlign: 'center', padding: '1rem', fontWeight: '900' }} colSpan="2">No Rating and Feedback</td>

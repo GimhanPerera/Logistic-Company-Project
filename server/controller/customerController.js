@@ -10,6 +10,12 @@ const addCustomer = async (req, res) => {
         const { filename: nicFrontImg } = req.files['nicFront'][0];
         const { filename: nicBackImg } = req.files['nicBack'][0];
 
+        // Check if NIC already exists
+        const existingCustomer = await Customer.findOne({ where: { nic: req.body.nic } });
+        if (existingCustomer) {
+            return res.status(400).json({ error: "NIC already exists" });
+        }
+
         const cus_id = await generateNextPKforCustomer();
         const passcode = await generatePassword();
         const hashPassword = await bcrypt.hash(passcode, process.env.HASH);//convert password to hash

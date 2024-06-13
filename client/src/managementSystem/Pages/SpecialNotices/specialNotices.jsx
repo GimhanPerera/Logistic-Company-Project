@@ -96,9 +96,10 @@ export const SpecialNotices = () => {
                     <NoDataComponent message="No Special Notices" />
                 ) : (
                     listOfNotices.filter((item) => {
+                        const noticeIdString = String(item.notice_id);
                         return search.toLowerCase() === ''
                             ? item
-                            : item.id.toLowerCase().includes(search);
+                            : noticeIdString.toLowerCase().includes(search);
                     }).map((notice, index) => (
                         <Box component="div" key={index}
                             sx={{

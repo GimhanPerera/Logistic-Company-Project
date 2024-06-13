@@ -114,7 +114,7 @@ export const ShipmentDetails = () => {
                 filteredItems.filter((item) => {
                     return search.toLowerCase() === ''
                         ? item
-                        : item.BL_no.toLowerCase().includes(search);
+                        : item.BL_no.toLowerCase().includes(search.toLowerCase());
                 }).map((shipment, index) => (
                     <Box component="div" key={`items-${index}`}
                         sx={{

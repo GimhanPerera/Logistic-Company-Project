@@ -54,13 +54,13 @@ const ComplainDetails = () => {
     //---------------------------------------------------------------------------------
     if (listOfComplains.length == 0) return (
         <>
-            <SearchBar label='Search by quotation id' search={search} setSearch={setSearch} />
+            <SearchBar label='Search by order id' search={search} setSearch={setSearch} />
             <NoDataComponent message="No Data" />
         </>)
     else
         return (
             <div>
-                <SearchBar label={"Search by customer id"} search={search} setSearch={setSearch} />
+                <SearchBar label={"Search by order id"} search={search} setSearch={setSearch} />
 
                 {/* Filters */}
                 <Box component="div" sx={{ border: '1px solid black', margin: '0.7rem auto', padding: '0.3rem', display: 'flex', flexDirection: 'row', width: '800px' }}>
