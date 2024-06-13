@@ -28,5 +28,6 @@ router.get("/testingSms", empolyeeController.textSms);
 router.post("/opt/request", empolyeeController.sendOtp);
 //employee opt check
 router.post("/opt/check", empolyeeController.checkOtp);
-
+//Reset pwd after opt check
+router.post("/opt/changePWD", empolyeeController.changePwdByOTP);
 module.exports = router;

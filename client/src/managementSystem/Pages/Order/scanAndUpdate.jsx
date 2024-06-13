@@ -1,4 +1,3 @@
-import AddIcon from '@mui/icons-material/Add';
 import CancelIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
@@ -8,8 +7,7 @@ import {
     DataGrid,
     GridActionsCellItem,
     GridRowEditStopReasons,
-    GridRowModes,
-    GridToolbarContainer,
+    GridRowModes
 } from '@mui/x-data-grid';
 import axios from "axios";
 import { Html5QrcodeScanner } from 'html5-qrcode';
@@ -62,29 +60,6 @@ const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
     },
     //...customCheckbox(theme),
 }));
-
-//Table tool buttons
-function EditToolbar(props) {
-    const { rows, setRows, setRowModesModel } = props;
-
-    const handleClick = () => {
-        const lastRowId = rows.length > 0 ? rows[rows.length - 1].id : 0;
-        const id = parseInt(lastRowId) + 1;
-        setRows((oldRows) => [...oldRows, { id, package_count: '', items: '', length: '', height: '', width: '', volume_metric_weight: '', gross_weight: '', isNew: true }]);
-        setRowModesModel((oldModel) => ({
-            ...oldModel,
-            [id]: { mode: GridRowModes.Edit, fieldToFocus: 'items' },
-        }));
-    };
-
-    return (
-        <GridToolbarContainer>
-            <Button color="primary" startIcon={<AddIcon />} onClick={handleClick}>
-                Add Package
-            </Button>
-        </GridToolbarContainer>
-    );
-}
 
 const ScanAndUpdate = () => {
     const location = useLocation();
@@ -376,9 +351,6 @@ const ScanAndUpdate = () => {
                         onRowModesModelChange={handleRowModesModelChange}
                         onRowEditStop={handleRowEditStop}
                         processRowUpdate={processRowUpdate}
-                        slots={{
-                            toolbar: EditToolbar,
-                        }}
                         slotProps={{
                             toolbar: { rows, setRows, setRowModesModel },
                         }}

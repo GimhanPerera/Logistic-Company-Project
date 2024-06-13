@@ -116,10 +116,14 @@ const UpdateTracking = () => {
                 setMainTracking(response.data.tracking_number);
                 console.log(mainTracking);
                 //setBlockAll(true);
-                if (status == "Ready" || status == "Deliverd") {
-                    setlocalTrackingEditable(true)
-                }
+                // if (status == "Ready" || status == "Deliverd") {
+                //     setlocalTrackingEditable(true)
+                // }
                 if(status == "onhand" && status != "Waiting"){
+                    setBlockAll(true);
+                    console.log("blockAll ",blockAll)
+                }
+                if(status == "Ready"){
                     setBlockAll(true);
                     console.log("blockAll ",blockAll)
                 }

@@ -435,7 +435,6 @@ const RequestHandle = () => {
                                     <tr>
                                         <td><label for="invoice">Image :</label></td>
                                         <td>
-
                                             {addImage ? (
                                                 <div>
                                                     {image && (
