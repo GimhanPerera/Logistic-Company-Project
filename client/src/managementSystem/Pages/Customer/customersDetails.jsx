@@ -1,11 +1,13 @@
 import { Box } from '@mui/material';
 import axios from "axios";
 import React, { useEffect, useState } from 'react';
+import OrderIDsModal from '../../../Modals/orderIDsModal';
 import SearchBar from "../../../components/SearchBar";
+import { ActiveIDProvider } from './ActiveIDContext';
 import CustomerDetailsCard from "./CustomerDetailsCard";
 
 const CustomersDetails = () => {
-  
+  const [isComplainOpen, setComplainIsOpen] = useState(false);
   const [listOfCustomers, setListOfCustomers] = useState([]);
   const [search, setSearch] = useState('');
   const [currentUser, setCurrentUser] = useState(undefined);
@@ -24,6 +26,7 @@ const CustomersDetails = () => {
     }, []);
 
   return (
+    <ActiveIDProvider>
     <div>
         <SearchBar label={"Search by customer id"} search={search} setSearch={setSearch}/>
         {/* key kiyanne index in the array */}
@@ -39,11 +42,14 @@ const CustomersDetails = () => {
           alignItems: 'center'
         }}
         >
-          <CustomerDetailsCard customer={customer} />
+          <CustomerDetailsCard customer={customer} isOpen={() => setComplainIsOpen(true)}/>
         </Box>
       ))}
       <div style={{ marginBottom:'1rem' }}></div>
+      <OrderIDsModal open={isComplainOpen} onClose={() => setComplainIsOpen(false)}>
+      </OrderIDsModal>
     </div>
+    </ActiveIDProvider>
   )
 }
 

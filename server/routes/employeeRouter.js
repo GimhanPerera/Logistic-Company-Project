@@ -24,4 +24,9 @@ router.post("/new",loginController.authenticateToken, empolyeeController.addEmpl
 //Test the paid sms gateway
 router.get("/testingSms", empolyeeController.textSms);
 
+//employee opt send
+router.post("/opt/request", empolyeeController.sendOtp);
+//employee opt check
+router.post("/opt/check", empolyeeController.checkOtp);
+
 module.exports = router;

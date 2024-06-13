@@ -5,7 +5,8 @@ const { getCurrentSriLankanDateTime } = require('./dateTime');
 const axios = require('axios');
 
 
-const sendOPTSMS = async (tp, msg) => {
+const sendOTPSMS = async (tp, msg) => {
+    notifySMSGateway(tp, msg); //Paid gateway
     //twilioSMSGateway(tp,msg);
     console.log("----------------------------------------------------------------------------------------------\nOPT SEND SUCCESSFULLY: ", msg)
 
@@ -147,6 +148,6 @@ const notifySMSGateway = async (to, message) => {
 module.exports = {
     sendNormalSMS,
     sendSMSToOrder,
-    sendOPTSMS,
+    sendOTPSMS,
     sendDirectSMS,
 }

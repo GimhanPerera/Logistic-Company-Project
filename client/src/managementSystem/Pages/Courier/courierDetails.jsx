@@ -2,10 +2,13 @@ import { Box, Button } from '@mui/material';
 import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import AddEditCourierModal from "../../../Modals/addEditCourierModal";
+import OrderIDsModal from '../../../Modals/orderIDsModal';
 import SearchBar from "../../../components/SearchBar";
+import { ActiveIDProvider } from './../Customer/ActiveIDContext';
 import CourierDetailsCard from "./CourierDetailsCard";
 
 const CourierDetails = () => {
+    const [isComplainOpen, setComplainIsOpen] = useState(false);
     const [listOfCourier, setListOfCourier] = useState([]);
     const [loading, setLoading] = useState(true); // State to track loading status
     const [isModalOpen, setModalIsOpen] = useState('false'); //Status of Modal
@@ -66,6 +69,7 @@ const CourierDetails = () => {
     }, []);
 
     return (
+        <ActiveIDProvider>
         <div className="relative">
             <SearchBar label='Search by courier id' search={search} setSearch={setSearch} />
             <Button variant="contained"
@@ -90,14 +94,17 @@ const CourierDetails = () => {
                             alignItems: 'center'
                         }}
                     >
-                        <CourierDetailsCard courier={courier} reload={reload} clickEdit={handleEditCourierClick} setCourierDetails={setCourierDetails} removeCourierFromList={removeCourierFromList} />
+                        <CourierDetailsCard courier={courier} reload={reload} clickEdit={handleEditCourierClick} setCourierDetails={setCourierDetails} removeCourierFromList={removeCourierFromList} isOpen={() => setComplainIsOpen(true)}/>
                     </Box>
 
                 ))
 
             )}
+            <OrderIDsModal open={isComplainOpen} onClose={() => setComplainIsOpen(false)}>
+            </OrderIDsModal>
             <AddEditCourierModal open={isModalOpen} onClose={() => setModalIsOpen('false')} courierDetails={courierDetails} reloadCouriers={reloadCouriers} />
         </div>
+        </ActiveIDProvider>
     );
 };
 

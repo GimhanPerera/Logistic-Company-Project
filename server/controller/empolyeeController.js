@@ -1,6 +1,6 @@
 const { Employee } = require('../models');
 const bcrypt = require('bcrypt');
-const { sendOPT, checkOPT } = require('./../middleware/opt');
+const { sendOTP, checkOTP } = require('./../middleware/opt');
 const { Op } = require('sequelize');
 const axios = require('axios');
 const { generatePassword } = require('./customerController')
@@ -99,10 +99,39 @@ const changePwd = async (req, res) => {
     }
 }
 
-const sendOpt = async (req, res) => {
+const sendOtp = async (req, res) => {
     try {
-        sendOPT(req.user.sub);
+        const email = req.body.email;
+        const employee = await Employee.findOne({
+            where: { email },
+            attributes: ['emp_id']
+        });
+
+        if (!employee) {
+            res.status(404).json({ error: "User not found" });
+        }
+        await sendOTP(employee.emp_id);
         res.status(200).json("Sent");
+    } catch (error) {
+        console.error("Error :", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+}
+
+const checkOtp = async (req, res) => {
+    try {
+        const email = req.body.email;
+        const otp = req.body.otp;
+        const employee = await Employee.findOne({
+            where: { email },
+            attributes: ['emp_id']
+        });
+
+        if (!employee) {
+            res.status(404).json({ error: "User not found" });
+        }
+        const result = await checkOTP(employee.emp_id, otp);
+        res.status(200).json(result);
     } catch (error) {
         console.error("Error :", error);
         res.status(500).json({ error: "Internal server error" });
@@ -205,7 +234,8 @@ module.exports = {
     getEmployeeDataForProfile,
     setFromProfile,
     changePwd,
-    sendOpt,
+    sendOtp,
+    checkOtp,
     getAllEmployee,
     editByID,
     textSms,
