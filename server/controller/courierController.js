@@ -1,9 +1,29 @@
 const { Courier,Order } = require('../models');
+const { Op } = require('sequelize');
 
 //1. Add a customer
 const addCourier = async (req, res) => {
     try {
-        console.log("GOOD")
+        const courierEmployee1 = await Courier.findOne({
+            where: {
+                name: req.body.name,
+            }
+        });
+        if (courierEmployee1) {
+            console.log("EXISTE name")
+            return res.status(400).json({ error: "Name already exists for another courier" });
+        }
+
+        const courierEmployee2 = await Courier.findOne({
+            where: {
+                tel_number: req.body.tel_number,
+            }
+        });
+        if (courierEmployee2) {
+            console.log("EXISTE telephone")
+            return res.status(400).json({ error: "Telephone number already exists for another courier" });
+        }
+
     const courier = req.body;
     await Courier.create(courier);
     res.status(200).json(courier)
@@ -19,6 +39,31 @@ const editCourier = async (req, res) => {
 
         // Convert tel_number to an integer
         const telNumber = parseInt(req.body.tel_number);
+        const courierEmployee1 = await Courier.findOne({
+            where: {
+                name: req.body.name,
+                courier_id: {
+                    [Op.ne]: req.body.courier_id
+                }
+            }
+        });
+        if (courierEmployee1) {
+            console.log("EXISTE name")
+            return res.status(400).json({ error: "Name already exists for another courier" });
+        }
+
+        const courierEmployee2 = await Courier.findOne({
+            where: {
+                tel_number: req.body.tel_number,
+                courier_id: {
+                    [Op.ne]: req.body.courier_id
+                }
+            }
+        });
+        if (courierEmployee2) {
+            console.log("EXISTE telephone")
+            return res.status(400).json({ error: "Telephone number already exists for another courier" });
+        }
 
         // Find the courier by ID
         const courier = await Courier.findByPk(req.body.courier_id);

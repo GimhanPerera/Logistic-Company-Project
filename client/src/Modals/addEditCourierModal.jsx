@@ -1,6 +1,7 @@
 import { Box, Button } from '@mui/material';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 import Autheader from "../services/Autheader";
 import { courierFormValidation } from './../validations';
 
@@ -53,6 +54,7 @@ export default function AddEditCourierModal({ open, onClose, courierDetails, rel
                     onClose();
                 }).catch((error) => {
                     console.error('Error submitting complain:', error);
+                    toast.error(error.response.data.error);
                 });
             })
             .catch((err) => {
@@ -86,6 +88,7 @@ export default function AddEditCourierModal({ open, onClose, courierDetails, rel
                     onClose();
                 }).catch((error) => {
                     console.error('Error submitting complain:', error);
+                    toast.error(error.response.data.error);
                 });
             })
             .catch((err) => {
@@ -101,7 +104,7 @@ export default function AddEditCourierModal({ open, onClose, courierDetails, rel
 
 
     if (open == 'add') return (
-        <>
+        <><ToastContainer></ToastContainer>
             {/*Add Card*/}
             <Box component="div"
                 sx={{
@@ -176,7 +179,7 @@ export default function AddEditCourierModal({ open, onClose, courierDetails, rel
     else if (open == 'false') return null;
     //else if (nameField=='') return null;
     else return (
-        <>
+        <><ToastContainer></ToastContainer>
             {/*Edit courier Card*/}
             <Box component="div"
                 sx={{

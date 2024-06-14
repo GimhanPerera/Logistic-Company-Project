@@ -55,7 +55,6 @@ const setFromProfile = async (req, res) => {
                 }
             }
         });
-        
         if (existingEmployee) {
             return res.status(400).json({ error: "Email already exists for another employee" });
         }
@@ -67,11 +66,21 @@ const setFromProfile = async (req, res) => {
                 }
             }
         });
-        
         if (existingEmployee1) {
             return res.status(400).json({ error: "NIC already exists for another employee" });
         }
-        // Check if the notice exists
+        const existingEmployee2 = await Employee.findOne({
+            where: {
+                tel_number: req.body.tel_number,
+                emp_id: {
+                    [Op.ne]: req.user.sub
+                }
+            }
+        });
+        if (existingEmployee2) {
+            return res.status(400).json({ error: "Telephone number already exists for another employee" });
+        }
+        // Check if the exists
         if (!employee) {
             return res.status(404).json({ error: "Employee not found" });
         }
@@ -199,6 +208,43 @@ const editByID = async (req, res) => {
             console.log("ID not found: ", req.body.emp_id)
             return res.status(404).json({ error: "Employee not found" });
         }
+        const existingEmployee = await Employee.findOne({
+            where: {
+                email: req.body.email,
+                emp_id: {
+                    [Op.ne]: req.body.emp_id
+                }
+            }
+        });
+        
+        if (existingEmployee) {
+            return res.status(400).json({ error: "Email already exists for another employee" });
+        }
+        const existingEmployee1 = await Employee.findOne({
+            where: {
+                nic: req.body.nic,
+                emp_id: {
+                    [Op.ne]: req.body.emp_id
+                }
+            }
+        });
+        
+        if (existingEmployee1) {
+            return res.status(400).json({ error: "NIC already exists for another employee" });
+        }
+
+        const existingEmployee2 = await Employee.findOne({
+            where: {
+                tel_number: req.body.tel_number,
+                emp_id: {
+                    [Op.ne]: req.body.emp_id
+                }
+            }
+        });
+        
+        if (existingEmployee2) {
+            return res.status(400).json({ error: "telephone number already exists for another employee" });
+        }
 
         employee.f_name = req.body.f_name;
         employee.l_name = req.body.l_name;
@@ -228,6 +274,37 @@ const addEmployee = async (req, res) => {
         const lastEmployee = await Employee.findOne({
             order: [['emp_id', 'DESC']]
         });
+
+        const existingEmployee = await Employee.findOne({
+            where: {
+                email: req.body.email,
+            }
+        });
+        
+        if (existingEmployee) {
+            console.log("EXISTE EMail")
+            return res.status(400).json({ error: "Email already exists for another employee" });
+        }
+        const existingEmployee1 = await Employee.findOne({
+            where: {
+                nic: req.body.nic,
+            }
+        });
+        
+        if (existingEmployee1) {
+            console.log("EXISTE NIC")
+            return res.status(400).json({ error: "NIC already exists for another employee" });
+        }
+        const existingEmployee2 = await Employee.findOne({
+            where: {
+                tel_number: req.body.tel_number,
+            }
+        });
+        
+        if (existingEmployee2) {
+            console.log("EXISTE telephone")
+            return res.status(400).json({ error: "telephone number already exists for another employee" });
+        }
 
         // Generate the new primary key
         let newEmpId = 'EMP02';

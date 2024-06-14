@@ -98,17 +98,17 @@ const Reports = () => {
           <Box component="h1" sx={{ textAlign: 'center', marginBottom: '3rem' }}>INCOME REPORT - {selectedYear} YEAR</Box>
           <Box component='div' sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
             <Box component='div'>
-              <Box component="h2" sx={{}}>Most Income month: {getMonthLabel(reportData.mostIncome.month)}</Box>
+              <Box component="h2" sx={{}}>Highest Income month: {getMonthLabel(reportData.mostIncome.month)}</Box>
               <Box component="h2" sx={{}}>Income: LKR {reportData.mostIncome.totalIncome}</Box>
             </Box>
             <Box component='div'>
-              <Box component="h2" sx={{}}>Less Income month: {getMonthLabel(reportData.lessIncome.month)}</Box>
+              <Box component="h2" sx={{}}>Lowest Income month: {getMonthLabel(reportData.lessIncome.month)}</Box>
               <Box component="h2" sx={{}}>Income: LKR {reportData.lessIncome.totalIncome}</Box>
             </Box>
           </Box>
           <Box component='div' sx={{ m: '2rem 0' }}>
             <Box component="h3" sx={{}}>Total income of the Year: LKR {reportData.totalIncomeOfYear}</Box>
-            <Box component="h3" sx={{}}>Total quotation total of the Year: LKR {reportData.totalPriceQuotationsOfYear}</Box>
+            <Box component="h3" sx={{}}>Total quotation of the Year: LKR {reportData.totalPriceQuotationsOfYear}</Box>
             <Box component="h3" sx={{}}>Difference between Income total  and Quotation total: LKR {(parseFloat(reportData.totalIncomeOfYear) - parseFloat(reportData.totalPriceQuotationsOfYear)).toFixed(2)}</Box>
           </Box>
 
