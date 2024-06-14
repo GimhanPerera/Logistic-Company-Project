@@ -1,5 +1,5 @@
 const { Shipment, Order, Package } = require('../models');
-
+const { sendNormalSMS } = require('../middleware/smsGateway');
 
 
 //Add a shipment
@@ -189,6 +189,8 @@ const saveScanUpdates = async (req, res) => {
             if (totalPackageCount != totalCollectedCount) {
                 orderStatus = 'Ship/airfreight';
                 allCompleted = false;
+            }else{
+                sendNormalSMS(orderId, `Order ID: ${orderId}\nYour packages have arrived in Sri Lanka\nContact Us: 0714744874`, req.user.sub);//send sms
             }
 
             // Update order status in the database

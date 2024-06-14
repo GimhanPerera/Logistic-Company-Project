@@ -89,11 +89,15 @@ export const priceQuotationValidation = Yup.object({
         .typeError("Packages must be a number")
         .integer("Packages must be an integer")
         .max(100, "Must not exceed 100"),
-    weight: Yup.string().required("Please enter weight"),
+        weight: Yup.number()
+        .required("Please enter weight")
+        .typeError("Please enter valid weight")
+        .min(0.01, "Please enter valid weight")
+        .max(100, "weight must not exceed 100KG"),
     shippingmethod: Yup.string().required("Please Enter shippingmethod"),
     quotation: Yup.number()
         .required("Please enter the quotation")
-        .min(0, "Please enter valid quotation")
+        .min(10, "Please enter valid quotation")
         .max(999999.99, "Must not exceed 999999.99"),
     description: descriptionValidation
 });
@@ -115,7 +119,7 @@ export const priceQuotationByCustomerValidation = Yup.object({
     weight: Yup.number()
         .required("Please enter weight")
         .typeError("Please enter valid weight")
-        .min(0, "Please enter valid weight")
+        .min(0.01, "Please enter valid weight")
         .max(100, "weight must not exceed 100KG"),
     shippingmethod: Yup.string().required("Please Enter Shipping method"),
 })

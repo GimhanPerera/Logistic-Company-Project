@@ -3,6 +3,7 @@ import axios from "axios";
 import { Field, Form, Formik, useFormik } from 'formik';
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from 'sweetalert2';
 import Autheader from "../../../services/Autheader";
@@ -72,6 +73,7 @@ export const EditEmployee = () => {
             })
             .catch((error) => {
                 console.error("Error :", error.message);
+                toast.error(error.response.data.error);
             });
     }
 
@@ -88,6 +90,7 @@ export const EditEmployee = () => {
 
     return (
         <>
+        <ToastContainer></ToastContainer>
             <Box component='h2' sx={{ textAlign: 'center' }}>{empData.emp_id == '' ? 'New Employee' : `Employee ID: ${empData.emp_id}`}</Box>
             <Box component='div' sx={{ mt: '2rem' }}>
                 <div className="relative">

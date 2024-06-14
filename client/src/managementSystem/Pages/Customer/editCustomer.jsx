@@ -4,6 +4,7 @@ import FileSaver from 'file-saver';
 import { Field, Form, Formik, useFormik } from 'formik';
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Swal from 'sweetalert2';
 import Autheader from "../../../services/Autheader";
@@ -103,6 +104,7 @@ export const EditCustomer = () => {
             })
             .catch((error) => {
                 console.error("Error fetching courier details:", error);
+                toast.error(error.response.data.error);
             });
     }
 
@@ -119,6 +121,7 @@ export const EditCustomer = () => {
 
     return (
         <>
+        <ToastContainer></ToastContainer>
             <Box component='h2' sx={{ textAlign: 'center' }}>Customer ID: {cusData.customer_id}</Box>
             <Box component='div' sx={{ mt: '2rem' }}>
                 <div className="relative">

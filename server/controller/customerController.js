@@ -15,6 +15,11 @@ const addCustomer = async (req, res) => {
         if (existingCustomer) {
             return res.status(400).json({ error: "NIC already exists" });
         }
+        // Check if tel_number already exists
+        const existingCustomer1 = await Customer.findOne({ where: { tel_number: req.body.tel_number } });
+        if (existingCustomer1) {
+            return res.status(400).json({ error: "Telephone number already exists" });
+        }
 
         const cus_id = await generateNextPKforCustomer();
         const passcode = await generatePassword();
@@ -177,13 +182,38 @@ const editProfile = async (req, res) => {
             return res.status(404).json({ error: "Customer not found" });
         }
 
+        // Check if nic already exists
+        const existingCustomer1 = await Customer.findOne({
+            where: {
+                nic: req.body.nic,
+                customer_id: {
+                    [Op.ne]: req.body.customer_id
+                }
+            }
+        });
+        if (existingCustomer1) {
+            return res.status(400).json({ error: "NIC already exists" });
+        }
+        // Check if nic already exists
+        const existingCustomer2 = await Customer.findOne({
+            where: {
+                tel_number: req.body.tel_number,
+                customer_id: {
+                    [Op.ne]: req.body.customer_id
+                }
+            }
+        });
+        if (existingCustomer2) {
+            return res.status(400).json({ error: "Telephone number already exists" });
+        }
+
         customer.f_name = req.body.f_name;
         customer.l_name = req.body.l_name;
         customer.nic = req.body.nic;
         customer.address = req.body.address;
         customer.tel_number = req.body.tel_number;
         customer.status = req.body.status;
-        if(req.body.status == 'active'){
+        if (req.body.status == 'active') {
             customer.wrong_attempts = 0;
         }
 
@@ -218,7 +248,7 @@ const changePwd = async (req, res) => {
         const hashPassword = await bcrypt.hash(passcode, process.env.HASH);//convert password to hash
         customer.passcode = hashPassword;
         await customer.save();
-        console.log("NEW PWD: ",passcode);
+        console.log("NEW PWD: ", passcode);
         res.status(200).json("Success");
 
     } catch (error) {
@@ -237,14 +267,14 @@ const downloadNIC = async (req, res) => {
         //         quotation_id: req.params.image,
         //     },
         // });
-        
+
         if (image) {
-            console.log("IMAGE ",image);
+            console.log("IMAGE ", image);
             res.download(`./images/${image}`);
         } else {
             res.status(404).json({ error: "Image not found" });
         }
-        
+
     } catch (error) {
         console.error("Error deleting courier:", error);
         res.status(500).json({ error: "Internal server error" });
