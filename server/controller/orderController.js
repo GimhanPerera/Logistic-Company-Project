@@ -122,6 +122,7 @@ const newOrder = async (req, res) => {//Add a order
     }
 }
 
+//generate password
 function generateRandomPassword(length) {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let password = '';
@@ -132,6 +133,7 @@ function generateRandomPassword(length) {
     return password;
 }
 
+// order bring to confirm status
 const confirmOrder = async (req, res) => {
     try {
         console.log("Updateing",req.body.order_id)
@@ -223,7 +225,8 @@ const getCourierAndOrder = async (req, res) => {
     res.status(200).json(courier)
 }
 
-const trackingDetailsOfACustomer = async (req, res) => { //After customer login, Access the tracking details
+//After customer login, Access the tracking details for customer
+const trackingDetailsOfACustomer = async (req, res) => {
     //console.table(req.user)
     const cus_id = req.user.sub //"CFL610"
     //console.log(cus_id)
@@ -240,7 +243,8 @@ const trackingDetailsOfACustomer = async (req, res) => { //After customer login,
     res.status(200).json(order)
 }
 
-const trackingDetailsOfAOrder = async (req, res) => {//Tracking details of individual orders
+//Tracking details of individual orders
+const trackingDetailsOfAOrder = async (req, res) => {
     const tracking_id = req.body.tracking_id
     console.log(tracking_id)
     const order = await Order.findAll({
@@ -259,7 +263,8 @@ const trackingDetailsOfAOrder = async (req, res) => {//Tracking details of indiv
     res.status(200).json(order)
 }
 
-const isvalidtrackingnum = async (req, res) => {//When customer enter the tracking number. This check it is valid or not
+//When customer enter the tracking number. This check it is valid or not
+const isvalidtrackingnum = async (req, res) => {
     try {
         const tracking_id = req.body.tracking_id;
         console.log(tracking_id);
@@ -286,6 +291,7 @@ const isvalidtrackingnum = async (req, res) => {//When customer enter the tracki
     }
 };
 
+//update tracking details
 const updateTracking = async (req, res) => {
     try {
         console.log("BODY",req.body)
@@ -318,6 +324,7 @@ const updateTracking = async (req, res) => {
     }
 }
 
+//get order IDs and categories of orders where status 'In Warehouse'
 const readyToShipOrderIDs = async (req, res) => {
     try {
         
@@ -334,6 +341,7 @@ const readyToShipOrderIDs = async (req, res) => {
     }
 }
 
+//get order details from order ID
 const getAllDetailsOfAOrder = async (req, res) => {
     try {
         const orderId = req.params.orderId;
@@ -428,6 +436,7 @@ const getAllDetailsOfAOrder = async (req, res) => {
     }
 }
 
+// change toggle Ready and Onhand status
 const toggleReadyStatus = async (req, res) => {
     try {
         console.log("OID ",req.body)
@@ -455,7 +464,8 @@ const toggleReadyStatus = async (req, res) => {
     }
 }
 
-const getAllOrderDetailsForOrderCard = async (req, res) => { //Get all Order
+//Get all Order details
+const getAllOrderDetailsForOrderCard = async (req, res) => {
     try {
         const orders = await Order.findAll({
             where: {
@@ -482,6 +492,7 @@ const getAllOrderDetailsForOrderCard = async (req, res) => { //Get all Order
 
 }
 
+//Complete the order
 const toggleCompleteStatus = async (req, res) => {
     try {
         console.log("OID ",req.body)

@@ -30,6 +30,7 @@ const getAllComplains = async (req, res) => {
     res.status(200).json(complains)
 }
 
+//Set complain status to reviewed
 const setAsReviewed = async (req, res) => {
     try {
         const complain = await Complain.findByPk(req.body.complain_id);
@@ -43,6 +44,7 @@ const setAsReviewed = async (req, res) => {
     }
 }
 
+//For testing
 const testFunction = async (req, res) => {
     try {
         res.status(200).json(complain);

@@ -4,7 +4,7 @@ const { Order, Customer, Sms, Order_sms } = require('../models');
 const { getCurrentSriLankanDateTime } = require('./dateTime');
 const axios = require('axios');
 
-
+//send OTP SMS
 const sendOTPSMS = async (tp, msg) => {
     notifySMSGateway(tp, msg); //Paid gateway
     //twilioSMSGateway(tp,msg);
@@ -61,6 +61,7 @@ const insertSmsRecord = async (massage, emp_id, oid) => {
     }
 }
 
+//Send normal SMS
 const sendNormalSMS = async (oid, msg, empID) => {
     try {
         // Get the customer_id from the Order table
@@ -95,6 +96,7 @@ const sendNormalSMS = async (oid, msg, empID) => {
     }
 };
 
+//Send custom SMS
 const sendDirectSMS = async (to, msg, empID) => {
     try {
         console.log("----------------------------------------------------------------------------------------------\nMSG SEND SUCCESSFULLY: ", msg)
@@ -109,6 +111,7 @@ const sendDirectSMS = async (to, msg, empID) => {
     }
 };
 
+// Twilio SMS gateway
 const twilioSMSGateway = (async (tp, msg) => {
     const client = new twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
     return client.messages
@@ -122,7 +125,7 @@ const twilioSMSGateway = (async (tp, msg) => {
 
 
 //--------------Paid gateway-------------------------------------------------------------------
-
+// notify SMS gateway
 const notifySMSGateway = async (to, message) => {
     try {
         console.log("PAID SMS STARTED------------------");

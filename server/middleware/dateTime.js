@@ -1,3 +1,5 @@
+
+// get current Sri Lanka date only
 const getCurrentSriLankanDate = () => {
     const currentDate = new Date();
     //const time = currentDate.toLocaleTimeString();//This give the GMT time. Need to add 5.30hours to convert to Sri Lankan time
@@ -8,6 +10,8 @@ const getCurrentSriLankanDate = () => {
     const formattedDate = `${year}-${month}-${day}`;
     return formattedDate;
 };
+
+// get current Sri Lanka date and time
 const getCurrentSriLankanDateTime = () => {
     const currentDate = new Date();
     //const time = currentDate.toLocaleTimeString();//This give the GMT time. Need to add 5.30hours to convert to Sri Lankan time
@@ -18,6 +22,8 @@ const getCurrentSriLankanDateTime = () => {
     const formattedDate = getCurrentSriLankanDate()+` ${updatedTime}`;
     return formattedDate;
 };
+
+// get current Sri Lanka time only
 const getCurrentSriLankanTime = () => {
     const currentDate = new Date();
     //const time = currentDate.toLocaleTimeString();//This give the GMT time. Need to add 5.30hours to convert to Sri Lankan time

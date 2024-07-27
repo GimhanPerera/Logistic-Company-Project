@@ -2,7 +2,7 @@ const { Shipment, Order, Package } = require('../models');
 const { sendNormalSMS } = require('../middleware/smsGateway');
 
 
-//Add a shipment
+// Add a shipment
 const addShipment = async (req, res) => {
     try {
         const shipment = [{
@@ -38,7 +38,7 @@ const addShipment = async (req, res) => {
     }
 }
 
-// 2. Get all Shipment details
+// Get all Shipment details
 const getAllShipments = async (req, res) => {
     try {
         //const customer = await Customer.findByPk(id) //ID eken one nan
@@ -56,7 +56,7 @@ const getAllShipments = async (req, res) => {
     }
 }
 
-//get all packages from shipment
+// get all packages from shipment
 const getPackagesOfAShipment = async (req, res) => {
     try {
         console.log("Connected")
@@ -127,6 +127,7 @@ const getPackagesOfAShipment = async (req, res) => {
     }
 }
 
+// get current Sri Lanka date time
 const getCurrentSriLankanDateTime = () => {
 
     const currentDate = new Date();
@@ -143,6 +144,7 @@ const getCurrentSriLankanDateTime = () => {
     return formattedDate;
 };
 
+// save QR code scan updates
 const saveScanUpdates = async (req, res) => {
     try {
         // Get the user id(Employee id) and current date and time
@@ -228,7 +230,7 @@ const saveScanUpdates = async (req, res) => {
     }
 }
 
-//edit a shipment
+// edit a shipment
 const editShipment = async (req, res) => {
     try {
         console.log("TEST!");
@@ -276,6 +278,7 @@ const editShipment = async (req, res) => {
     }
 }
 
+// delete shipment
 const deleteShipment = async (req, res) => {
     try {
         const BL_number = req.params.BL_number;
@@ -304,6 +307,7 @@ const deleteShipment = async (req, res) => {
     }
 }
 
+// get package details from BL number
 const getPackagesDetailsFromBL = async (req, res) => {
     try {
         console.log("Connected")

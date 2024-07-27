@@ -4,10 +4,12 @@ const {sendOTPSMS} = require('./smsGateway');
 const { Employee, Customer } = require('../models');
 
 let opt = []
+//Generate OTP
 const generateOTP = () => {
     return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
+//send OTP
 const sendOTP = async (userID) => {
     try {
         const otp = generateOTP();
@@ -49,6 +51,7 @@ const sendOTP = async (userID) => {
     }
 }
 
+//Check OTP
 const checkOTP = (userID, otp) => {
     try {
         console.log("OPT LIST ",opt)

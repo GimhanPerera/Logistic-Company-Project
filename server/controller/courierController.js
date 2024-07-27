@@ -1,7 +1,7 @@
 const { Courier,Order } = require('../models');
 const { Op } = require('sequelize');
 
-//1. Add a customer
+//Add a courier
 const addCourier = async (req, res) => {
     try {
         const courierEmployee1 = await Courier.findOne({
@@ -33,6 +33,7 @@ const addCourier = async (req, res) => {
 }
 }
 
+//edit courier details
 const editCourier = async (req, res) => {
     try {
         console.table(req.body);
@@ -81,7 +82,7 @@ const editCourier = async (req, res) => {
 }
 
 
-// 2. Get all Courier
+// Get all Courier details
 const getAllCourier = async (req, res) => {
     try {
         const couriers = await Courier.findAll({
@@ -98,7 +99,7 @@ const getAllCourier = async (req, res) => {
     }
 }
 
-// 2. Get all Courier
+// Testing
 const getCourierAndOrder = async (req, res) => {
     //const customer = await Customer.findByPK(id) //ID eken one nan
     const courier = await Courier.findAll({
@@ -110,6 +111,7 @@ const getCourierAndOrder = async (req, res) => {
     res.status(200).json(customer)
 }
 
+//Delete courier
 const deleteCourier = async (req, res) => {
     try {
         const a = await Courier.destroy({
@@ -125,7 +127,7 @@ const deleteCourier = async (req, res) => {
     }
 };
 
-
+//For testing
 const test = async (req, res) => {
 
     const getCurrentDateTime = () => {
@@ -147,6 +149,7 @@ const test = async (req, res) => {
     }
 }
 
+//assign courier to a order
 const assignCourier = async (req, res) => {
     try {
         const order = await Order.update({
@@ -166,6 +169,7 @@ const assignCourier = async (req, res) => {
     }
 }
 
+// clear courier details of a order
 const clearCourier = async (req, res) => {
     try {
         const order = await Order.update({

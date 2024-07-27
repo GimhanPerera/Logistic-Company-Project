@@ -1,6 +1,7 @@
 const { Payment, Order, Price_quotation, Shipment, Package } = require('../models');
 const { Op, fn, col } = require('sequelize');
 
+//get total package count
 const getTotalPackageCount = async (year) => {
     try {
         const startOfMonth = new Date(year, 0, 1);
@@ -29,6 +30,7 @@ const getTotalPackageCount = async (year) => {
     }
 };
 
+//get total package count of each month
 const getTotalPackageCountByMonth = async (year) => {
     try {
         const startOfYear = new Date(`${year}-01-01`);
@@ -69,6 +71,7 @@ const getTotalPackageCountByMonth = async (year) => {
     }
 };
 
+//get total shipment count of each year
 const getTotalShipmentsByYear = async (year) => {
     try {
         // Ensure the year is an integer
@@ -97,6 +100,7 @@ const getTotalShipmentsByYear = async (year) => {
     }
 };
 
+//get total shipment count of each month
 const getShipmentCountByMonth = async (year) => {
     try {
         // Ensure the year is an integer
@@ -144,6 +148,7 @@ const getShipmentCountByMonth = async (year) => {
     }
 };
 
+//get highest and lowest package count
 const findHighestAndLowestPackageCount = (totalPackageCountByMonth) => {
     if (!totalPackageCountByMonth || totalPackageCountByMonth.length === 0) {
         return {
@@ -171,6 +176,7 @@ const findHighestAndLowestPackageCount = (totalPackageCountByMonth) => {
     };
 };
 
+//get highest and lowest shipment count
 const findHighestAndLowestShipmentCount = (shipmentCountByMonth) => {
     if (!shipmentCountByMonth || shipmentCountByMonth.length === 0) {
         return {
@@ -198,6 +204,7 @@ const findHighestAndLowestShipmentCount = (shipmentCountByMonth) => {
     };
 };
 
+//get year report
 const getYearReport = async (req, res) => {
     try {
         let  { year} = req.query;

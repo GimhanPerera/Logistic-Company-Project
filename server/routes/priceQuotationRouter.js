@@ -19,11 +19,13 @@ const storage = multer.diskStorage({
 const upload = multer({storage: storage})
 //-------------------------------------
 
-
+//add a price quotation
 router.post("/", upload.fields([{ name: 'image', maxCount: 1 }, { name: 'invoice', maxCount: 1 }]), priceQuotationController.addAQuotationReq)
 
+//Get all price quotation
 router.get("/", priceQuotationController.allRequests)
 
+//search price quotation by id
 router.get("/searchby/id/:id", priceQuotationController.getRequestByID)
 
 //req: Quotation id, res: Image

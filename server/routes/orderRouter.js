@@ -51,6 +51,7 @@ router.post("/toggleReadyStatus",loginController.authenticateToken, orderControl
 //Completed Status
 router.post("/completeOrder",loginController.authenticateToken, orderController.toggleCompleteStatus)
 
+//Delete order in just open state
 router.delete("/:orderID", orderController.deleteOrderJOstate)
 
 module.exports = router;

@@ -10,6 +10,7 @@ const { Op, fn, col, literal } = require('sequelize');
 //     where: {customer_id: 'CFL610'}
 // });
 
+//get dashboard data
 const getDashboardData = async (req, res) => {
     const currentYear = new Date().getFullYear();
     const startOfMonth = new Date(new Date().setDate(1));

@@ -42,6 +42,7 @@ const addAQuotationReq = async (req, res) => {//Add a order - NOT TESTED
     }
 }
 
+//get all quotation req
 const allRequests = async (req, res) => {
     try {
         const priceReq = await Price_quotation.findAll({
@@ -57,6 +58,7 @@ const allRequests = async (req, res) => {
     }
 }
 
+//get quotation details by ID
 const getRequestByID = async (req, res) => {
     try {
         const priceReq = await Price_quotation.findOne({
@@ -83,6 +85,7 @@ const getRequestByID = async (req, res) => {
     }
 }
 
+//download item image
 const downloadImage = async (req, res) => {
     try {
         console.log(req.params.quotation_id)
@@ -106,6 +109,7 @@ const downloadImage = async (req, res) => {
     }
 }
 
+//download invoice
 const downloadInvoice = async (req, res) => {
     try {
         console.log(req.params.quotation_id)
@@ -129,6 +133,7 @@ const downloadInvoice = async (req, res) => {
     }
 }
 
+//delete quotation request
 const deleteRequest = async (req, res) => {
     try {
         // Find the order_id associated with the given quotation_id

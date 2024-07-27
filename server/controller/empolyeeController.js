@@ -42,6 +42,7 @@ const getEmployeeDataForProfile = async (req, res) => {
     }
 }
 
+//Save edit employee data - From employee profile
 const setFromProfile = async (req, res) => {
     try {
         // Find the Employee by ID
@@ -101,6 +102,7 @@ const setFromProfile = async (req, res) => {
     }
 }
 
+//Change employee password
 const changePwd = async (req, res) => {
     try {
         // Find the Employee by ID
@@ -132,6 +134,7 @@ const changePwd = async (req, res) => {
     }
 }
 
+//Send OTP
 const sendOtp = async (req, res) => {
     try {
         const email = req.body.email;
@@ -171,6 +174,7 @@ const sendOtp = async (req, res) => {
     }
 };
 
+// Check OTP
 const checkOtp = async (req, res) => {
     try {
         let result = '';
@@ -198,6 +202,7 @@ const checkOtp = async (req, res) => {
     }
 }
 
+//edit employee data by ID
 const editByID = async (req, res) => {
     try {
         // Find the Customer by ID
@@ -268,6 +273,7 @@ const editByID = async (req, res) => {
     }
 }
 
+//Add a new employee
 const addEmployee = async (req, res) => {
     try {
         // Retrieve the last inserted primary key
@@ -342,6 +348,7 @@ const addEmployee = async (req, res) => {
     }
 };
 
+//Test sms
 const textSms = async (req, res) => {
     try {
         const response = await axios.post('https://app.notify.lk/api/v1/send', {
@@ -358,6 +365,7 @@ const textSms = async (req, res) => {
     }
 }
 
+//change password by OTP
 const changePwdByOTP = async (req, res) => {
     try {
         let isCustomer = false;

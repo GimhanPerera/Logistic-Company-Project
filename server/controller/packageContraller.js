@@ -2,7 +2,7 @@ const { Package, Order } = require('../models');
 
 
 
-//Add packages
+//Add packages to a order
 const addPackages = async (req, res) => {
     try {
         let orderID = '';
@@ -55,6 +55,7 @@ const addPackages = async (req, res) => {
     }
 }
 
+//get packages of a order
 const getPackages = async (req, res) => {
     try {
         let i = 1;

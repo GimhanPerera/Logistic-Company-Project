@@ -3,7 +3,7 @@ const { Op } = require('sequelize');
 require('dotenv').config()
 const bcrypt = require('bcrypt');
 
-//1. Add a customer
+// Add a customer
 const addCustomer = async (req, res) => {
     try {
         // Extract the filename
@@ -57,6 +57,7 @@ const addCustomer = async (req, res) => {
     }
 }
 
+// generate new PK for a new customer
 const generateNextPKforCustomer = async () => {//create new PK for customer
     try {
         // Find the last record in the Customer table
@@ -82,6 +83,7 @@ const generateNextPKforCustomer = async () => {//create new PK for customer
     }
 };
 
+// generate temp password
 function generatePassword() {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*';
     const passwordLength = 8;
@@ -95,7 +97,7 @@ function generatePassword() {
     return password;
 }
 
-// 2. Get all Customers
+// Get all Customers
 const getAllCustomers = async (req, res) => {
     //const customer = await Customer.findByPk(id) //ID eken one nan
     const customers = await Customer.findAll({}) //{} : pass empty obj
@@ -121,7 +123,7 @@ const getAllCustomers = async (req, res) => {
     res.status(200).json(customersWithOrderDetails)
 }
 
-// 2. Get all Customers
+// Get Customer and order data - Testing
 const getCustomerAndOrder = async (req, res) => {
     //const customer = await Customer.findByPK(id) //ID eken one nan
     const customer = await Customer.findAll({
@@ -133,7 +135,8 @@ const getCustomerAndOrder = async (req, res) => {
     res.status(200).json(customer)
 }
 
-const searchCustomerByID = async (req, res) => { //Search customer (Order creation part)
+ // Search customer (For order creation part)
+const searchCustomerByID = async (req, res) => {
     try {
         console.log(req.params.customerID)
         const customer = await Customer.findByPk(req.params.customerID);
@@ -152,7 +155,8 @@ const searchCustomerByID = async (req, res) => { //Search customer (Order creati
 
 }
 
-const searchCustomerByQuotationID = async (req, res) => { //Search customer (Order creation part)
+//Search customer (For order creation part)
+const searchCustomerByQuotationID = async (req, res) => {
     try {
         console.log(req.params.quotationID)
         const price_quotation = await Price_quotation.findByPk(req.params.quotationID);
@@ -172,6 +176,7 @@ const searchCustomerByQuotationID = async (req, res) => { //Search customer (Ord
 
 }
 
+// save edit data of customer
 const editProfile = async (req, res) => {
     try {
         // Find the Customer by ID
@@ -227,6 +232,7 @@ const editProfile = async (req, res) => {
     }
 }
 
+// change customer password
 const changePwd = async (req, res) => {
     try {
         // Find the Employee by ID
@@ -257,6 +263,7 @@ const changePwd = async (req, res) => {
     }
 }
 
+// Download NIC
 const downloadNIC = async (req, res) => {
     try {
         console.log(req.params.image);

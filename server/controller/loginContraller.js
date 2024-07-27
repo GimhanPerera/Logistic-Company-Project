@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt');
 let refreshTokens = [];
 
+//Customer login
 const customerLogin = async (req, res) => {
     try {
         //Authentication
@@ -69,6 +70,7 @@ const customerLogin = async (req, res) => {
 
 }
 
+//Staff login
 const stuffLogin = async (req, res) => {
     try {
         // Authentication
@@ -129,8 +131,7 @@ const stuffLogin = async (req, res) => {
     }
 };
 
-
-// Auth link
+// Testing
 const getData = async (req, res) => {
     const courier = await Courier.findAll({})
     //req.user
@@ -154,6 +155,7 @@ const authenticateToken = async (req, res, next) => {
     })
 }
 
+// generate refresh Access Token
 const refreshAccessToken = async (req, res) => {
     const refreshToken = req.headers['x-auth-token']
 
@@ -194,6 +196,7 @@ const refreshAccessToken = async (req, res) => {
     }
 }
 
+//delete token
 const deleteToken = async (req, res) => {
     const refreshToken = req.header("x-auth-token");
     refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
@@ -213,8 +216,6 @@ function createRefreshToken(user, exp_time) {
     return jwt.sign(user, process.env.REFRESH_TOKEN_SECRET, { expiresIn: exp_time }) //Create the access token with expire time
 
 }
-
-
 
 module.exports = {
     customerLogin,

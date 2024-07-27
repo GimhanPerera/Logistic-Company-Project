@@ -1,5 +1,6 @@
 const { Invoice, Order, Package, Customer,Payment,Price_quotation } = require('../models');
 
+// get invoice data by order ID
 const getInvoiceDetails = async (req, res) => {
     try {
         const orderId = req.params.orderId;
@@ -94,6 +95,8 @@ const setInvoiceDetails = async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 }
+
+//get current Sri Lanka Date time - test
 const getCurrentSriLankanDateTime = () => {
     
     const currentDate = new Date();

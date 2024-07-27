@@ -30,6 +30,7 @@ async function generateNextSupplierId() {
     }
 }
 
+// get all suppliers
 const getAllSuppliers = async (req, res) => {
     try{
     const supplier = await Supplier.findAll({}) //{} : pass empty obj
@@ -39,6 +40,8 @@ const getAllSuppliers = async (req, res) => {
     throw error;
 }
 }
+
+// get all suppliers for add packages
 const getAllSuppliersForAddPackage = async (req, res) => {
     try{
     const supplier = await Supplier.findAll({}) //{} : pass empty obj
@@ -50,6 +53,7 @@ const getAllSuppliersForAddPackage = async (req, res) => {
 }
 }
 
+//add new supplier
 const addSupplier = async (req, res) => {
     try{
     const newID = await generateNextSupplierId();
@@ -69,7 +73,6 @@ const addSupplier = async (req, res) => {
     throw error;
 }
 }
-
 
 module.exports = {
     getAllSuppliers,

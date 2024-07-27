@@ -8,7 +8,7 @@ app.use(cors());
 
 //Routers: for apply routes
 
-// http://localhost:3001/api/order Ekata ena ewa okkoma mekata yanne
+// http://localhost:3001/api/customers Endpoint
 const customerRouter = require('./routes/customersRouter');
 app.use("/api/customers",customerRouter);
 
@@ -57,6 +57,7 @@ app.use("/api/report",reportRouter);
 const employeeRouter = require('./routes/employeeRouter');
 app.use("/api/employee",employeeRouter);
 
+//server listen to 3001 port number
 db.sequelize.sync().then(() => {
     app.listen(3001, () => {
         console.log("Server running on port 3001");

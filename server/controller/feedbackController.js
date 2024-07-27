@@ -2,7 +2,7 @@ const { Order } = require('../models');
 
 
 
-//1. Add a feedback
+// Add a feedback
 const addAFeedback = async (req, res) => {
     try {
         //NEED TO VALIDATE: order id is actualy this customer's order

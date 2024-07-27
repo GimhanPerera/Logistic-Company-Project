@@ -37,6 +37,7 @@ Object.keys(db).forEach(modelName => {
   }
 });
 
+// database relationships
 db.Customer.hasMany(db.Order, { foreignKey: 'customer_id' });//customer
 db.Order.belongsTo(db.Customer, { foreignKey: 'customer_id' });
 db.Order.hasMany(db.Payment, { foreignKey: 'order_id' });

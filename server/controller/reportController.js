@@ -181,6 +181,7 @@ const getTotalIncomeOfEachDay = async (year, month) => {
 };
 //---------------------------------
 
+//get yearly income report
 const getYearReport = async (req, res) => {
     try {
 
@@ -223,6 +224,7 @@ const getYearReport = async (req, res) => {
     }
 }
 
+//get monthly income report
 const getMonthReport = async (req, res) => {
     try {
         let  { year, month } = req.query;
