@@ -4,7 +4,8 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import React, { useEffect, useState } from 'react';
 
-export default function ScanResultHandler({ open, lastReading, rows,setRows, onClose }) {
+//After sQR code scanned this page popup
+export default function ScanResultHandler({ open, lastReading, rows, setRows, onClose }) {
     const [collectedCounts, setCollectedCounts] = useState({});
     // const clearFields = (e) => {
     //     setCustomerData({
@@ -15,6 +16,8 @@ export default function ScanResultHandler({ open, lastReading, rows,setRows, onC
     //         nic: ''
     //     })
     // }
+
+    //Close the modal
     const handleClose = (e) => {
         if (e.target.id === 'container') {
             onClose();
@@ -22,28 +25,34 @@ export default function ScanResultHandler({ open, lastReading, rows,setRows, onC
             //clearFields()
         }
     }
+
+    //Close button click
     const clickCloseBtn = () => {
         onClose();
         //setErrors({})
         //clearFields()
     }
+
+    //Submit save
     const handleSave = () => {
         const updatedRows = rows.map(row => ({
             ...row,
             collectedCount: collectedCounts[row.id] !== undefined ? collectedCounts[row.id] : row.collectedCount,
         }));
-        setRows(updatedRows);
-        onClose();
+        setRows(updatedRows);//Update table
+        onClose();//close the modal
     };
 
+    //get the data to modal
     useEffect(() => {
         const initialCollectedCounts = {};
-        rows.forEach(row => {
+        rows.forEach(row => {//set data
             initialCollectedCounts[row.id] = row.collectedCount;
         });
-        setCollectedCounts(initialCollectedCounts);
+        setCollectedCounts(initialCollectedCounts);//set collected count
     }, [rows]);
 
+    //handle collected count change
     const handleCollectedChange = (id, value) => {
         setCollectedCounts(prevState => ({
             ...prevState,
@@ -77,8 +86,12 @@ export default function ScanResultHandler({ open, lastReading, rows,setRows, onC
                     sx={{
                         fontSize: '1.8rem',
                         fontWeight: 'bold',
-                    }}>{lastReading}</Box>
+                    }}>{lastReading}
+                </Box>
+
+                {/* Table */}
                 <table style={{ border: '1px gray solid' }}>
+                    {/* Table header section */}
                     <thead>
                         <tr>
                             <th style={{ paddingRight: '1rem' }}>Related Shipping Marks</th>
@@ -86,6 +99,7 @@ export default function ScanResultHandler({ open, lastReading, rows,setRows, onC
                             <th>Collected</th>
                         </tr>
                     </thead>
+                    {/* table body */}
                     <tbody>
                         {filteredRows.map(row => (
                             <tr key={row.id}>
@@ -108,7 +122,9 @@ export default function ScanResultHandler({ open, lastReading, rows,setRows, onC
                     </tbody>
                 </table>
 
+                {/* Submit button */}
                 <Button fullWidth variant="contained" sx={{ mt: 3, mb: 1, border: '1px solid #1E90FF' }} onClick={handleSave}>Submit</Button><br />
+                {/* Cancel button */}
                 <Button onClick={clickCloseBtn} fullWidth variant="contained" sx={{ mt: 0, mb: 2, border: '1px solid #1E90FF', height: '2.0rem', color: '#1E90FF', backgroundColor: 'white' }}>Cancel</Button>
             </Box>
 

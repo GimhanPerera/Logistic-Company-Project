@@ -45,6 +45,7 @@ const InvoicePage = () => {
         }
     };
 
+    //Get invoice ID
     useEffect(() => {
         console.log("GET INVOICE OF ID: ", id)
         axios.get(`http://localhost:3001/api/invoice/${id}`)
@@ -70,6 +71,7 @@ const InvoicePage = () => {
             });
     }, [id]);
 
+    {/* Save invice data */}
     const saveDetails = () => {
         console.log("Need to send: ", orderDetails);
         axios.post('http://localhost:3001/api/invoice', orderDetails)

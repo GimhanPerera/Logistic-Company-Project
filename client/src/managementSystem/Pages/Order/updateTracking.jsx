@@ -312,6 +312,7 @@ const UpdateTracking = () => {
             });
     }
 
+    //Reload the page
     const reloadPage = () => {
         window.location.reload();
     };
@@ -357,6 +358,7 @@ const UpdateTracking = () => {
                                 />
                             </td>
                             <td>
+                                {/* Display if tracking in not onhand */}
                                 {tracking=='onhand' ? '' : 
                                 <FormControl sx={{ m: 1, minWidth: 120 }}>
                                     <InputLabel id="demo-select-small-label">Received Status</InputLabel>
@@ -381,11 +383,13 @@ const UpdateTracking = () => {
                             </td>
                         </tr>
                         <tr>
+                            {/* Undo button */}
                             <td>
                                 <Button variant="contained" onClick={reloadPage} disabled={blockAll}>
                                     Undo all changes
                                 </Button>
                             </td>
+                            {/* Set all button */}
                             <td style={{ paddingTop: '0.7rem' }}>
                                 <Button variant="contained" onClick={setAllReceived} disabled={blockAll}>
                                     Set all packages as Received
@@ -399,7 +403,7 @@ const UpdateTracking = () => {
             <Button variant="contained" onClick={saveAllPackages} startIcon={<SaveIcon />} sx={{ backgroundColor: '#68DD62', position: 'fixed', right: '4rem', top: '5rem' }}>Save</Button>
             <Button variant="outlined" onClick={toBack} sx={{ position: 'fixed', right: '11rem', top: '5rem' }}>Back</Button>
 
-            {/*Table*/}
+            {/* Package details table */}
             <Container>
                 <Box sx={{ height: 400, width: 850, m:'0 auto' }}>
                     <StyledDataGrid sx={{ border: '1px solid gray' }}

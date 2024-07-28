@@ -61,6 +61,7 @@ const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
     //...customCheckbox(theme),
 }));
 
+//Scan and update
 const ScanAndUpdate = () => {
     const location = useLocation();
     const { packages, totalPackageCount, totalCollectedCount } = location.state || {};
@@ -111,6 +112,7 @@ const ScanAndUpdate = () => {
         }
     };
 
+    //Update rows
     const processRowUpdate = async (newRow) => {
         try {
             await scanPackagesValidation.validate(newRow, { abortEarly: false });
@@ -143,6 +145,7 @@ const ScanAndUpdate = () => {
         //setRows(initialValues);
         //console.log(packages.length)
     }, [])
+
     useEffect(() => {
         // Map packages to rows with appropriate structure
         const initialRows = packages.map((pkg, index) => ({
@@ -192,16 +195,19 @@ const ScanAndUpdate = () => {
         };
     }, [scanToggle]);
 
+    //To Back
     const toBack = () => {
         //console.log(rows);
         //setScanToggle(false);  // Stop the scanner
         navigate('./..');
     };
 
+    //Click Scan again button
     const toScanAgain = () => {
         setScanToggle(!scanToggle);
     };
 
+    //When click all collected button
     const setAsAllCollected = () => {
         setTotalCollected(totalPackages);
         const updatedRows = rows.map(row => ({
@@ -231,6 +237,7 @@ const ScanAndUpdate = () => {
             });
     }
 
+    //columns
     const columns = [
         { field: 'id', headerName: 'ID', width: 80, editable: false },
         {

@@ -44,6 +44,7 @@ const Payment = () => {
         return formattedDate;
     };
 
+    //Add payment
     const addPayment = () => {
         if (paymentValue <= 0) return
         const newPayment = {
@@ -89,6 +90,8 @@ const Payment = () => {
         border: '1px solid #dddddd',
         padding: '8px'
     }
+
+    //Remove payment
     const removePayment = (paymentId) => {
         axios.delete(`http://localhost:3001/api/invoice/removePayment/${paymentId}`)
             .then((response) => {
@@ -166,8 +169,6 @@ const Payment = () => {
                 </table>
             </Box>
 
-
-
             {/*Payments*/}
             <Box sx={{ display: 'flex', p: '1.5rem', justifyContent: 'center' }}>
                 <table style={{ borderCollapse: 'collapse' }}>
@@ -180,15 +181,19 @@ const Payment = () => {
                         </tr>
                     </thead>
                     <tbody>
+                        {/* Payment list */}
                         {paymentList.map((payment, index) => (
                             <tr>
                                 <td style={tableCell}>{payment.payment_id}</td>
                                 <td style={tableCell}>{payment.payment_method}</td>
                                 <td style={tableCell}>{payment.payment}</td>
                                 <td style={tableCell}>{payment.date_time}</td>
-                                <td><Button variant="outlined" color="secondary" onClick={() => removePayment(payment.payment_id)}>
-                                    Remove
-                                </Button></td>
+                                <td>
+                                    {/* Remove button */}
+                                    <Button variant="outlined" color="secondary" onClick={() => removePayment(payment.payment_id)}>
+                                        Remove
+                                    </Button>
+                                </td>
                             </tr>
                         ))}
                     </tbody>

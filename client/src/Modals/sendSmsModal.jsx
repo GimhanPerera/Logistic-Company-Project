@@ -3,6 +3,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import Autheader from "../services/Autheader";
 
+//send custom SMS to a user
 export default function SendSmsModal({ open, onClose,smsDetails, reloadSms  }) {
     const [sms, setSMS] = useState('');
 
@@ -22,10 +23,8 @@ export default function SendSmsModal({ open, onClose,smsDetails, reloadSms  }) {
         onClose();
     }
 
+    //send SMS
     const sendSMS = () => {
-
-        //VALIDATION SHOULD DONE HERE
-
         axios.post("http://localhost:3001/api/sms", {
             msg: `Order ID: ${smsDetails}\n${sms}`,
             oid: smsDetails
@@ -34,8 +33,8 @@ export default function SendSmsModal({ open, onClose,smsDetails, reloadSms  }) {
                 ...Autheader()
             }
         }).then((response) => {
-            setSMS('');
-            onClose();
+            setSMS('');//set SMS field as empty
+            onClose();//Close the modal
         }).catch((error) => {
             console.error('Error submitting complain:', error);
         });
@@ -45,7 +44,6 @@ export default function SendSmsModal({ open, onClose,smsDetails, reloadSms  }) {
 
     if (open == true) return (
         <>
-            {/*Add Card*/}
             <Box component="div"
                 sx={{
                     position: 'fixed',
@@ -58,6 +56,7 @@ export default function SendSmsModal({ open, onClose,smsDetails, reloadSms  }) {
                     zIndex: 50
                 }}
             >
+                {/* Modal title */}
                 <Box component="h4"
                     sx={{
                         fontSize: '1.875rem',
@@ -73,6 +72,7 @@ export default function SendSmsModal({ open, onClose,smsDetails, reloadSms  }) {
                     }}
                 ></Box>
                 <div>
+                    {/* SMS description */}
                     <Box component='p' sx={{fontSize:'1.4rem', mt:'1.3rem'}}>SMS: </Box>
                     <TextField
                         fullWidth
@@ -87,7 +87,9 @@ export default function SendSmsModal({ open, onClose,smsDetails, reloadSms  }) {
                         }}
                     />
                     <div>
+                        {/* Send button */}
                         <Button onClick={sendSMS} fullWidth variant="contained" sx={{ mt: 3, mb: 1, border: '1px solid #1E90FF' }}>Send</Button><br />
+                        {/* Cancel button */}
                         <Button onClick={clickCloseBtn} fullWidth variant="contained" sx={{ mt: 0, mb: 2, border: '1px solid #1E90FF', color: '#1E90FF', backgroundColor: 'white' }}>Cancel</Button>
                     </div>
                 </div>

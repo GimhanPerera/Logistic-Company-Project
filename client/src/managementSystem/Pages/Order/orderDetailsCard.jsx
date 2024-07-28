@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
+//Order card
 const OrderDetailsCard = ({ order,removeOrderFromList }) => {
   const navigate = useNavigate();
   const [visible, setVisible] = useState(true);
@@ -76,6 +77,7 @@ const OrderDetailsCard = ({ order,removeOrderFromList }) => {
         justifyContent: 'space-between'
       }}
       >
+        {/* Order details */}
       <div>
         <div>Order number: {order.order_id}</div>
         <div>Customer ID: {order.Customer.customer_id}</div>

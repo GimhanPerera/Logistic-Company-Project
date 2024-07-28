@@ -3,10 +3,10 @@ import { useFormik } from 'formik';
 import React from 'react';
 import { addPackageValidation } from '../validations';
 
-
+//edit package details
 export default function EditPackageModal({ open, onClose, tableData, setTableData, number }) {
 
-    const onSubmit = async (values, actions) => { //Submition here
+    const onSubmit = async (values, actions) => { //Submit form
         const index = tableData.findIndex(item => item.id === id);
         if (index !== -1) {
             // Create a new array to hold the updated tableData
@@ -34,7 +34,7 @@ export default function EditPackageModal({ open, onClose, tableData, setTableDat
     const { values, touched, handleBlur, isSubmitting, setErrors, handleChange, handleSubmit, errors } = useFormik({
         initialValues: {
             s_mark: tableData[number],
-            items: 'sdsd',
+            items: '',
             length: '',
             height: '',
             width: '',

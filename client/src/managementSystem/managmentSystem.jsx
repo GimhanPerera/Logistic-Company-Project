@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Sidebar from '../components/Sidebar';
 import SystemLayout from './SystemLayout';
 
+//Side bar and pages
 function ManagmentSystem() {
   const [sidebarToggle, setSidebarToggle] = useState(false)
 
@@ -12,8 +13,11 @@ function ManagmentSystem() {
   return (
     <div style={{ display: 'flex' }}>
 
+      {/* Side bar */}
       <Sidebar sidebarToggle={sidebarToggle} handleChangeValue={handleChangeValue} />
       <div ></div>
+
+      {/* Pages display here */}
       <SystemLayout
         sidebarToggle={sidebarToggle}
         setSidebarToggle={setSidebarToggle}

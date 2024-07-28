@@ -11,9 +11,12 @@ import { RiLogoutBoxFill, RiStickyNoteFill } from "react-icons/ri";
 import { TbReportAnalytics } from "react-icons/tb";
 import { NavLink } from 'react-router-dom';
 
+//side bar of the management system
 const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
 
-    const [currentUser, setCurrentUser] = useState(undefined);
+    const [currentUser, setCurrentUser] = useState(undefined);//current user
+    
+    //identify the current user
     useEffect(() => {
         const userRole = localStorage.getItem("user");
         if (userRole) {
@@ -22,6 +25,7 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
         }
     }, []);
 
+    //Handle click of nav buttons
     const handleClick = (display_name) => {
         handleChangeValue(display_name);
     };
@@ -34,7 +38,7 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
             height: '100%',
             padding: '0.5rem 1rem',
             ...(sidebarToggle ? { display: 'none' } : { display: 'block' })
-        }}>
+        }}>{/* Company name area */}
             <Box component="div" style={{ margin: '0.5rem 0rem 0rem 1rem' }}>
                 <Box component="h1"
                     sx={{
@@ -46,6 +50,8 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
                 </Box>
             </Box>
             <hr />
+
+            {/* Navigation buttons */}
             <Box component="ul"
                 sx={{
                     mt: '0.75rem',
@@ -53,6 +59,7 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
                     fontWeight: 'bold'
                 }}
             >
+                {/* Dashboard button */}
                 <NavLink to="" onClick={() => handleClick('Dashboard')}>
                     <li
                         style={{
@@ -68,6 +75,8 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
                         </a>
                     </li>
                 </NavLink>
+
+                {/* Quotation requests button */}
                 <NavLink to="/cmsystem/requests" onClick={() => handleClick('Price quotation requests')}>
                     <li
                         style={{
@@ -82,6 +91,8 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
                         </a>
                     </li>
                 </NavLink>
+
+                {/* Orders button */}
                 <NavLink to="/cmsystem/order" onClick={() => handleClick('Orders')}>
                     <li
                         style={{
@@ -96,6 +107,8 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
                         </a>
                     </li>
                 </NavLink>
+
+                {/* Shipments button */}
                 <NavLink to="/cmsystem/shipment" onClick={() => handleClick('Shipments')}>
                     <li
                         style={{
@@ -110,6 +123,8 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
                         </a>
                     </li>
                 </NavLink>
+
+                {/* Customers button */}
                 <NavLink to="/cmsystem/customers" onClick={() => handleClick('Customers')}>
                     <li
                         style={{
@@ -124,6 +139,8 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
                         </a>
                     </li>
                 </NavLink>
+                
+                {/* Employee button: Only visible to Admin and manager */}
                 {['ADMIN', 'MANAGER'].includes(currentUser) && (
                     <NavLink to="/cmsystem/employee" onClick={() => handleClick('Employees')}>
                         <li
@@ -140,6 +157,8 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
                         </li>
                     </NavLink>
                 )}
+
+                {/* Courier serviers button */}
                 <NavLink to="/cmsystem/courier" onClick={() => handleClick('Courier services')}>
                     <li
                         style={{
@@ -154,6 +173,8 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
                         </a>
                     </li>
                 </NavLink>
+
+                {/* Specail notices button: Only visible to admin */}
                 {currentUser == 'ADMIN' && (
                     <NavLink to="/cmsystem/SpecialNotices" onClick={() => handleClick('Special Notices')}>
                         <li
@@ -170,6 +191,8 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
                         </li>
                     </NavLink>
                 )}
+
+                {/* Complain and report button: Only visible to admin and manager */}
                 {['ADMIN', 'MANAGER'].includes(currentUser) && (
                     <>
                         <NavLink to="/cmsystem/complain" onClick={() => handleClick('Complains')}>
@@ -203,8 +226,9 @@ const Sidebar = ({ sidebarToggle, handleChangeValue }) => {
                         </NavLink>
                     </>
                 )}
+                {/* Logout button */}
                 <NavLink to="/" onClick={() => {
-                    localStorage.removeItem('user');
+                    localStorage.removeItem('user');//remove user
                 }}>
                     <li
                         style={{

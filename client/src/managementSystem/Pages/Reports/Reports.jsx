@@ -6,6 +6,7 @@ import React, { useRef, useState } from 'react';
 import ReactToPrint from 'react-to-print';
 
 const Reports = () => {
+  //Variables
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
   const [selectedYear, setSelectedYear] = useState(currentYear);
@@ -16,10 +17,13 @@ const Reports = () => {
   const componentRef = useRef();
   const [reportData, setReportData] = useState({ combinedReport: [] });
   const years = [];
+
+  //Set year drapdown values
   for (let year = 2023; year <= currentYear; year++) {
     years.push(year);
   }
 
+  //months
   const months = [
     { value: 1, label: 'January' },
     { value: 2, label: 'February' },
@@ -40,6 +44,7 @@ const Reports = () => {
     ? months.filter(month => month.value <= currentMonth)
     : months;
 
+  //Handle year dropdown changes
   const handleYearChange = (event) => {
     setLoading(true);
     setSelectedYear(event.target.value);
@@ -49,11 +54,13 @@ const Reports = () => {
     }
   };
 
+  //Handle month dropdown changes
   const handleMonthChange = (event) => {
     setLoading(true);
     setSelectedMonth(event.target.value);
   };
 
+  //Handle report type changes
   const handleTypeChange = (event) => {
     setLoading(true);
     event.target.value == 'income-m' ? setDisableControls(false) : setDisableControls(true);
@@ -65,7 +72,7 @@ const Reports = () => {
   }
 
   //------------------------------------------------------
-
+  //Generate report based on the settings
   const buttonClick = () => {
     let url = `http://localhost:3001/api/report/income/yearReport?year=${selectedYear}`;
     if (reportType == 'income-m')
@@ -91,8 +98,11 @@ const Reports = () => {
     padding: '0.2rem',
     border: '1px solid black'
   }
+
+  //Basic details of Reports: Header section of the report
   const renderContent = () => {
     switch (reportType) {
+      //INcome report year
       case 'income-y':
         return <Box component="div" sx={{ width: '1000px', p: '2rem', border: '1px black solid', borderRadius: '10px', mb: '2rem' }}>
           <Box component="h1" sx={{ textAlign: 'center', marginBottom: '3rem' }}>INCOME REPORT - {selectedYear} YEAR</Box>
@@ -140,15 +150,17 @@ const Reports = () => {
 
 
           <Box component="div" sx={{ display: 'flex', flexDirection: 'row', width: '100%', justifyContent: 'center', mt: '2rem' }}>
-            <Box component="div" sx={{ }}>
+            <Box component="div" sx={{}}>
               <Box component="h5">CREATIVE FREIGHTWAY LOGISTIC(PVT)LTD<br />No25A/2,<br />Thoranawila Junction,<br />Makandana,<br />Piliyandala.<br />94712055774</Box>
             </Box>
           </Box>
         </Box>;
+
+      //Income report month
       case 'income-m':
         return <Box component="div" sx={{ width: '1000px', p: '2rem', border: '1px black solid', borderRadius: '10px', mb: '2rem' }}>
           <Box component="h1" sx={{ textAlign: 'center', marginBottom: '1rem' }}>INCOME REPORT - {selectedYear}-{getMonthLabel(selectedMonth)}</Box>
-            <Box component="h3" sx={{textAlign: 'center', marginBottom: '3rem'}}>Total income of the Month: LKR {reportData.totalIncomeOfMonth}</Box>
+          <Box component="h3" sx={{ textAlign: 'center', marginBottom: '3rem' }}>Total income of the Month: LKR {reportData.totalIncomeOfMonth}</Box>
 
           {/* main table */}
           <table style={{ borderCollapse: 'collapse', width: '600px', margin: 'auto', }}>
@@ -174,6 +186,8 @@ const Reports = () => {
             </tbody>
           </table>
         </Box>;
+
+      //package report year
       case 'package-y': {
 
         const chartSetting = {
@@ -305,6 +319,7 @@ const Reports = () => {
             </Select>
           </FormControl>
 
+          {/* Generate button */}
           <Button variant="contained"
             onClick={buttonClick}
             sx={{ backgroundColor: '#68DD62', height: '2.5rem', mt: '6px', ml: '15px' }}>
@@ -321,7 +336,7 @@ const Reports = () => {
                 component="label"
                 variant="contained"
                 startIcon={<PrintIcon />}
-                sx={{ position:'fixed', right:'50px',top:'95px'  }}
+                sx={{ position: 'fixed', right: '50px', top: '95px' }}
               >
                 Print / Download
               </Button>
@@ -330,15 +345,15 @@ const Reports = () => {
             fileName="Report.pdf" // Set the default save name here
           />
           <Box component="div" sx={{ m: '10px 100px' }}>
-              {/* REPORT */}
-              <Box component="div" sx={{ mt: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
-              <Box component="div" ref={componentRef} className='motech' sx={{ }}>
+            {/* REPORT */}
+            <Box component="div" sx={{ mt: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+              <Box component="div" ref={componentRef} className='motech' sx={{}}>
                 {renderContent()}
               </Box>
-            
 
+
+            </Box>
           </Box>
-        </Box>
         </>
       }
     </>

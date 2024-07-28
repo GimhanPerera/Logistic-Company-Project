@@ -612,7 +612,9 @@ export const Packages = () => {
           </Form>
         </Formik>
 
+        {/* Save button */}
         <Button variant="contained" onClick={saveAllPackages} startIcon={<SaveIcon />} sx={{ backgroundColor: '#68DD62', position: 'fixed', right: '4rem', top: '5rem' }}>Save</Button>
+        {/* Back button */}
         <Button variant="outlined" onClick={toBack} sx={{ position: 'fixed', right: '11rem', top: '5rem' }}>Back</Button>
 
         <Container>
@@ -641,7 +643,7 @@ export const Packages = () => {
   else { //Display shipping marks
     return (
       <>
-        <h2 style={{textAlign:'center', marginBottom:'1rem', fontSize:'2rem'}}>Shipping marks</h2>
+        <h2 style={{ textAlign: 'center', marginBottom: '1rem', fontSize: '2rem' }}>Shipping marks</h2>
         {/* Back btn */}
         <Button variant="contained"
           sx={{ ml: '20px' }}

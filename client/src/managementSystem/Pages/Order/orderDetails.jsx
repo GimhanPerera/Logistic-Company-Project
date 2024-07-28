@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import SearchBar from "../../../components/SearchBar";
 import OrderDetailsCard from "./orderDetailsCard";
 
+//Order details page
 const OrderDetails = () => {
   const [selectedFilters, setSelectedFilters] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
@@ -13,6 +14,8 @@ const OrderDetails = () => {
 
   const navigate = useNavigate();
   const [listOfOrderDetails, setListOfOrder] = useState([]);
+
+  //get order list
   useEffect(() => {
     axios.get("http://localhost:3001/api/order").then((response) => {
       setListOfOrder(response.data);
@@ -40,9 +43,12 @@ const OrderDetails = () => {
     setListOfOrder(prevList => prevList.filter(order => order.order_id !== cid));
 };
 
+//new order button
   const toNewOrder = () => {
     navigate('../neworder');
   }
+
+  //add filters
   const handleFilterButtonClick = (selectedCategory) => {
     if(selectedFilters.includes(selectedCategory)){
       let filters = selectedFilters.filter((el) => el !== selectedCategory);
@@ -58,17 +64,22 @@ const OrderDetails = () => {
 
   return (
     <div>
+      {/* Search bar */}
       <SearchBar label='Search by order id' search={search} setSearch={setSearch}/>
+
+      {/* New order button */}
       <Button variant="contained"
         sx={{ backgroundColor: '#68DD62', position: 'fixed', right: '2em', top: '4.7rem' }}
         onClick={toNewOrder}>
         New Order
       </Button>
-      {/* key kiyanne index in the array */}
 
+      {/* 'key' is the index in the array */}
+      {/* Filter field */}
       <Box component="div" sx={{ border:'1px solid black',margin:'0.7rem auto', padding:'0.3rem', display:'flex', flexDirection:'row', width:'800px' }}>
         <Box component='h3' sx={{marginRight:'1rem'}}>Filter by status:</Box>
       <Box component="div" sx={{ }}>
+        {/* Filter list */}
         {filters.map((category, idx) => (
           <Button size='small'
           onClick={() => handleFilterButtonClick(category)}

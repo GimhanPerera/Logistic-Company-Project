@@ -11,7 +11,9 @@ import Swal from 'sweetalert2';
 import SendSmsModal from '../../../Modals/sendSmsModal';
 import Autheader from "../../../services/Autheader";
 
+//Display all details of a order
 const ViewOrder = () => {
+    //set the current user
     const [currentUser, setCurrentUser] = useState(undefined);
     useEffect(() => {
         const userRole = localStorage.getItem("user");
@@ -36,6 +38,8 @@ const ViewOrder = () => {
 
     const [isModalOpen, setModalIsOpen] = useState(false); //Status of Modal
     const [smsDetails, setSmsDetails] = useState(null);
+
+    //reload sms table
     const reloadSms = () => {
         setReload(!reload);
         // try {
@@ -65,6 +69,8 @@ const ViewOrder = () => {
         //     console.error('Error creating order:', error);
         // }
     }
+
+    //  Send SMS button action
     const handleSendSMSClick = () => {
         setModalIsOpen(true); // Or setModalIsOpen(true) depending on how you handle the modal state
     };
@@ -73,18 +79,22 @@ const ViewOrder = () => {
         setaddImage(addImage => !addImage);
     };
 
+    //navigate to invoice 
     const toInvoice = () => {
         navigate(`./${id}`);
     }
 
+    //Go back
     const toBack = () => {
         navigate('./..');
     }
 
+    //Shipping marks
     const toShippingMarks = () => {
         let SMdetails = [];
         let processedBases = new Set();
 
+        //prepare Shipping marks
         orderDetails.packages.forEach((row) => {
             console.log(row.shipping_mark);
             const [base, count] = row.shipping_mark.split(' ');
@@ -103,10 +113,12 @@ const ViewOrder = () => {
         navigate('./shippingMarks', { state: { orderId: id, printables: SMdetails, category: orderDetails.order.category } });
     };
 
+    //To payment page
     const toPayment = () => {
         navigate('./payments', { state: { orderId: orderDetails.order.order_id, payments: orderDetails.payment, amountDue: amountDue } });
     }
 
+    //Toggle Ready status
     const toggleReadyStatus = () => {
         const oid = orderDetails.order.order_id;
         console.log("oid ", oid);
@@ -194,6 +206,7 @@ const ViewOrder = () => {
         });
     }
 
+    //Set order as completed
     const toggleCompleteStatus = () => {
         const oid = orderDetails.order.order_id;
         console.log("oid ", oid);
@@ -209,6 +222,7 @@ const ViewOrder = () => {
             return
         }
 
+        //If the payment is settled
         Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -236,6 +250,7 @@ const ViewOrder = () => {
                     reverseButtons: true
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        //complete the order
                         axios.post('http://localhost:3001/api/order/completeOrder', {
                             oid: oid,
                             sendSMS: true
@@ -298,6 +313,8 @@ const ViewOrder = () => {
             }
         });
     }
+
+    //set format date and time
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         const year = date.getFullYear();
@@ -307,6 +324,8 @@ const ViewOrder = () => {
         const minutes = String(date.getMinutes()).padStart(2, '0');
         return `${year}-${month}-${day} ${hours}:${minutes}`;
     };
+
+    //set format date only
     const formatDateOnly = (dateString) => {
         const date = new Date(dateString);
         const year = date.getFullYear();
@@ -315,10 +334,12 @@ const ViewOrder = () => {
         return `${year}-${month}-${day}`;
     };
 
+    //Add courier
     const addCourier = () => {
         navigate('./couriers', { state: { orderId: orderDetails.order.order_id, courierId: orderDetails.order.courier_id, courier_tracking_number: orderDetails.order.courier_tracking_number, issue_date: orderDetails.order.issue_date } });
     }
 
+    //Reload the page
     useEffect(() => {
         console.log("ID: ", id);
         axios.get(`http://localhost:3001/api/order/allById/${id}`)
@@ -385,15 +406,18 @@ const ViewOrder = () => {
         return <div>No order details available</div>; // Handle case where no order details are available
     }
 
+    //table cell styles
     const tableCell = {
         border: '1px solid #dddddd',
         padding: '8px'
     }
+    //table row styles
     const tableRowStyle = {
         padding: '0.2rem',
         border: '1px solid black'
     }
 
+    //Download image
     const downloadImage = async (e) => {
         e.preventDefault();
         try {
@@ -433,6 +457,7 @@ const ViewOrder = () => {
         }
     }
 
+    //Download invoice
     const downloadInvoice = async (e) => {
         e.preventDefault();
         try {
@@ -873,6 +898,7 @@ const ViewOrder = () => {
                 </Box>
             </Box>
 
+            {/* SMS modal */}
             <SendSmsModal open={isModalOpen} onClose={() => setModalIsOpen(false)} smsDetails={smsDetails} reloadSms={reloadSms} ></SendSmsModal>
         </>
     )

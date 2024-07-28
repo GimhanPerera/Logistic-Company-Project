@@ -1,6 +1,6 @@
+//set authentication
 export default function Autheader() {
     const userRole = localStorage.getItem("user");
-
     if (userRole) {
         const parsedUserRole = JSON.parse(userRole); // Parse the string into an object
 

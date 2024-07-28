@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Autheader from "../services/Autheader";
 
-
+//Add or edit specail notices
 export const AddEditSpecialNoticeModal = ({ open, onClose, noticeDetails, reloadNotices }) => {
 
     const location = useLocation();
@@ -17,17 +17,20 @@ export const AddEditSpecialNoticeModal = ({ open, onClose, noticeDetails, reload
     const [description, setDescription] = useState('');
     const [expireDate, setExpireDate] = useState('');
 
+    //Initial values
     const initialValues = {
         title: '',
         description: '',
         expireDate: '',
     }
 
+    //Close the modal
     const toClose = () => {
         reloadNotices();
         onClose();
     }
 
+    //Set initial details: when edit existing notice
     useEffect(() => {
         setTitle(noticeDetails ? noticeDetails.title : '');
         setDescription(noticeDetails ? noticeDetails.description : '');
@@ -35,6 +38,7 @@ export const AddEditSpecialNoticeModal = ({ open, onClose, noticeDetails, reload
         setLoading(false)
     }, [noticeDetails]);
 
+    //close the modal
     const handleClose = (e) => {
         if (e.target.id === 'container') {
             // setTitle(''); // Clear the text box
@@ -48,10 +52,10 @@ export const AddEditSpecialNoticeModal = ({ open, onClose, noticeDetails, reload
     // Get today's date in the format YYYY-MM-DD
     const today = new Date().toISOString().split('T')[0];
 
+    //Edit notice
     const onSubmit = async (values, actions) => {
-        //VALIDATION SHOULD DONE HERE
-
-        axios.post("http://localhost:3001/api/noitces/edit", {
+        
+        axios.post("http://localhost:3001/api/noitces/edit", {//send updated details to backend
             "notice_id": noticeDetails.notice_id,
             "title": title,
             "description": description,
@@ -63,8 +67,8 @@ export const AddEditSpecialNoticeModal = ({ open, onClose, noticeDetails, reload
         }).then((response) => {
             //setResp(response.data);
             reloadNotices();
-            reloadNotices();
-            onClose();
+            reloadNotices();//reload the notice list
+            onClose();//close the modal
         }).catch((error) => {
             console.error('Error submitting complain:', error);
         });
@@ -77,7 +81,7 @@ export const AddEditSpecialNoticeModal = ({ open, onClose, noticeDetails, reload
     });
 
 
-    if (loading || !open) return null;
+    if (loading || !open) return null;//not opened or not loaded data
     else if (open) return (
         <>
             <Box component="div"
@@ -162,7 +166,9 @@ export const AddEditSpecialNoticeModal = ({ open, onClose, noticeDetails, reload
                         }}
                     />
                     <div>
+                        {/* Edit button */}
                         <Button onClick={onSubmit} fullWidth variant="contained" sx={{ mt: 3, mb: 1, border: '1px solid #1E90FF' }}>Edit</Button><br />
+                        {/* Cancel button */}
                         <Button onClick={toClose} fullWidth variant="contained" sx={{ mt: 0, mb: 2, border: '1px solid #1E90FF', color: '#1E90FF', backgroundColor: 'white' }}>Cancel</Button>
                     </div>
                 </div>

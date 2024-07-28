@@ -74,14 +74,14 @@ const NewOrder = () => {
         }
         axios.get(`http://localhost:3001/api/customers/search/${customerID}`, {
         }).then((response) => {
-            if(response.data.status == 'black list'){
+            if (response.data.status == 'black list') {
                 Swal.fire({
                     title: `Customer ${customerID} is black listed`,
                     icon: "error"
                 });
                 setCustomerID('');
                 setCustomerName('');
-            setCustomerTp('');
+                setCustomerTp('');
                 return
             }
             setCustomerName(response.data.name)
@@ -137,7 +137,7 @@ const NewOrder = () => {
                         "image": image,
                         "invoice": invoice,
                         "cusID": customerID,
-                        "passcode":passcode,
+                        "passcode": passcode,
                         "name": customerName,
                         "tp": customerTp,
                         "category": values.category,
@@ -171,6 +171,7 @@ const NewOrder = () => {
         <>
             <ToastContainer />
             <div className="relative">
+                {/* Price quotation table */}
                 <Formik>
                     <Form onSubmit={handleSubmit}>
                         <Box component="div"
@@ -179,6 +180,7 @@ const NewOrder = () => {
                                 <Box component="h3" sx={{ mb: 2 }}>Price quotation details</Box>
                                 <table style={{ border: '1px solid gray', padding: '1rem' }}>
                                     <tr>
+                                        {/* Items */}
                                         <td>
                                             <TextField label="Items" size="small" type='text' name='items' margin="normal"
                                                 value={values.items}
@@ -188,6 +190,7 @@ const NewOrder = () => {
                                                 helperText={touched.items && errors.items}
                                             />
                                         </td>
+                                        {/* number of packages */}
                                         <td>
                                             <TextField label="No of packages" size="small" type='number' name='packages' margin="normal"
                                                 value={values.packages}
@@ -198,6 +201,7 @@ const NewOrder = () => {
                                             /></td>
                                     </tr>
                                     <tr>
+                                        {/* Weight */}
                                         <td>
                                             <TextField label="Rough weight(Kg)" size="small" type='number' name='weight' margin="normal"
                                                 value={values.weight}
@@ -205,7 +209,9 @@ const NewOrder = () => {
                                                 onBlur={handleBlur}
                                                 error={touched.weight && Boolean(errors.weight)}
                                                 helperText={touched.weight && errors.weight}
-                                            /></td>
+                                            />
+                                        </td>
+                                        {/* Shipping method */}
                                         <td>
                                             <FormControl sx={{ m: 1, minWidth: 170 }}>
                                                 <InputLabel id="demo-simple-select-helper-label">Shipping method</InputLabel>
@@ -226,6 +232,7 @@ const NewOrder = () => {
 
                                     </tr>
                                     <tr>
+                                        {/* Quotation */}
                                         <td>
                                             <TextField label="Quotation(LKR)" size="small" type='number' name='quotation' margin="normal"
                                                 value={values.quotation}
@@ -233,17 +240,21 @@ const NewOrder = () => {
                                                 onBlur={handleBlur}
                                                 error={touched.quotation && Boolean(errors.quotation)}
                                                 helperText={touched.quotation && errors.quotation}
-                                            /></td>
-                                        <td><TextField label="Description" size="small" type='text' name='description' margin="normal"
-                                            value={values.description}
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                            error={touched.description && Boolean(errors.description)}
-                                            helperText={touched.description && errors.description}
-                                        />
+                                            />
+                                        </td>
+                                        {/* Description */}
+                                        <td>
+                                            <TextField label="Description" size="small" type='text' name='description' margin="normal"
+                                                value={values.description}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                error={touched.description && Boolean(errors.description)}
+                                                helperText={touched.description && errors.description}
+                                            />
                                         </td>
                                     </tr>
                                     <tr>
+                                        {/* Country code */}
                                         <td> <Autocomplete
                                             sx={{ width: 250, mt: 2, mb: 2 }}
                                             options={Countries}
@@ -277,6 +288,7 @@ const NewOrder = () => {
                                                 setSelectedCountry(newValue);
                                             }}
                                         /></td>
+                                        {/* Order category */}
                                         <td>
                                             <FormControl sx={{ m: 1, minWidth: 170 }}>
                                                 <InputLabel id="demo-simple-select-helper-label">Category</InputLabel>
@@ -298,6 +310,7 @@ const NewOrder = () => {
                                         </td>
                                     </tr>
                                     <tr>
+                                        {/* Image */}
                                         <td><label for="invoice">Image :</label></td>
                                         <td>
                                             <Field type="file" id="image" name="image" onChange={handleImageChange} accept="image/*"
@@ -311,6 +324,7 @@ const NewOrder = () => {
                                         </td>
                                     </tr>
                                     <tr>
+                                        {/* Performa invoice */}
                                         <td><label for="invoice">Performa invoice :</label></td>
                                         <td><input type="file" id="invoice" name="invoice" onChange={handleInvoiceChange}
                                             style={{
@@ -324,9 +338,12 @@ const NewOrder = () => {
                                     </tr>
                                 </table>
                             </Box>
+
+                            {/* Customer details section */}
                             <Box component="div">
                                 <Box component="h3" sx={{ mb: 2 }}>Customer Details</Box>
                                 <table style={{ border: '1px solid gray', padding: '1rem' }}>
+                                    {/* Customer ID input */}
                                     <tr>
                                         <td>
                                             <TextField label="Customer ID" size="small" type='text' name='cusID'
@@ -335,9 +352,12 @@ const NewOrder = () => {
                                             />
                                         </td>
                                         <td>
+                                            {/* Search button */}
                                             <Button size="medium" onClick={searchCustomer}>Search</Button>
                                         </td>
                                     </tr>
+
+                                    {/* Name input */}
                                     <tr>
                                         <td>
                                             <TextField label="Name" size="small" type='text' name='name' margin="normal"
@@ -349,6 +369,8 @@ const NewOrder = () => {
                                             />
                                         </td>
                                     </tr>
+
+                                    {/* Customer telephone number */}
                                     <tr>
                                         <td>
                                             <TextField label="Tel number" size="small" type='text' name='tp'
@@ -361,6 +383,8 @@ const NewOrder = () => {
 
                                         </td>
                                     </tr>
+
+                                    {/* Add new customer button */}
                                     <tr>
                                         <td style={{ display: 'flex', flexDirection: 'row' }}>
                                             <Box component="p" sx={{ m: 'auto 0' }}>New customer?</Box>
@@ -370,11 +394,14 @@ const NewOrder = () => {
                                 </table>
                             </Box>
                         </Box>
+
+                        {/* Chat link input */}
                         <Box component="div" sx={{ position: 'absolute', right: '8rem', bottom: '8.5rem', display: 'flex', flexDirection: 'column' }}>
                             <TextField label="ChatLink" size="small" type='text' name='chatlink'
                                 value={chatLink}
                                 onChange={(e) => setChatLink(e.target.value)}
                             />
+                            {/* Check box */}
                             <FormControlLabel control={<Checkbox checked={checked} onChange={handleCheckboxChange} />} label="Send Chat link" />
                         </Box>
                         <Box component="div" sx={{ position: 'absolute', right: '8rem', bottom: '5rem' }}>
@@ -392,6 +419,7 @@ const NewOrder = () => {
                     </Form>
                 </Formik>
                 <div>
+                    {/* Add a new customer */}
                     <AddCustomerModel open={isAddCustomerOpen} onClose={() => setAddCustomerOpen(false)} setCustomerID={setCustomerID} setPasscode={setPasscode}></AddCustomerModel>
                 </div>
             </div>

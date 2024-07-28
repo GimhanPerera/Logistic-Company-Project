@@ -4,6 +4,7 @@ import { Box } from '@mui/material';
 import { QRCodeSVG } from 'qrcode.react';
 import React, { useRef } from 'react';
 
+//Display Shipping marks list
 const PrintShippingMarks = ({printables,category}) => {
 
     const componentRef = useRef();
@@ -27,6 +28,7 @@ const PrintShippingMarks = ({printables,category}) => {
                                 padding: '20px',
                                 flexGrow: 4
                             }}>
+                                {/* Details */}
                             <table>
                                 <tbody>
                                     <tr>
@@ -64,6 +66,7 @@ const PrintShippingMarks = ({printables,category}) => {
                                 </tbody>
                             </table>
                         </Box>
+                        {/* QR code section */}
                         <Box component="div"
                             sx={{
                                 border: '1px solid black',

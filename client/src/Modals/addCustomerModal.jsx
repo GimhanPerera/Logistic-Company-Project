@@ -3,19 +3,23 @@ import axios from "axios";
 import { useFormik } from 'formik';
 import React, { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
-import { addCustomerValidation } from '../validations';
+import { addCustomerValidation } from '../validations'; //Validations
 
-export default function AddCustomerModel({ open, onClose, setCustomerID ,setPasscode}) {
+//Add a new customer
+export default function AddCustomerModel({ open, onClose, setCustomerID, setPasscode }) {
     const [nicFront, setNicFront] = useState(null);
     const handleNicFrontChange = (e) => {
-        setNicFront( e.target.files[0]); // Update the image file in the form data
+        setNicFront(e.target.files[0]); // Update the image file in the form data
     };
     const [nicBack, setNicBack] = useState(null);
     const handleNicBackChange = (e) => {
-        setNicBack( e.target.files[0]); // Update the image file in the form data
+        setNicBack(e.target.files[0]); // Update the image file in the form data
     };
-    const onSubmit = async (values, actions) => { //Submition here
+
+    //Form submition handle
+    const onSubmit = async (values, actions) => {
         //e.preventDefault;
+        //set data
         const customerData = {
             f_name: values.f_name,
             l_name: values.l_name,
@@ -26,16 +30,16 @@ export default function AddCustomerModel({ open, onClose, setCustomerID ,setPass
             nicBack: nicBack
         }
         console.log(customerData)
-        axios.post("http://localhost:3001/api/customers", customerData ,{
+        axios.post("http://localhost:3001/api/customers", customerData, {//insert data
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
         }
         ).then((response) => {
             //alert("New customer " + response.data.cus_id + " added")
-            setCustomerID(response.data.cus_id);
-            setPasscode(response.data.passcode);
-            console.log("PWD ",response.data);
+            setCustomerID(response.data.cus_id);//get the customer ID of new customer
+            setPasscode(response.data.passcode);//get the passcode of new customer
+            console.log("PWD ", response.data);
             onClose();
             setErrors({});
             clearFields();
@@ -46,15 +50,15 @@ export default function AddCustomerModel({ open, onClose, setCustomerID ,setPass
         });
     }
     const { values, touched, handleBlur, isSubmitting, setErrors, handleChange, handleSubmit, errors } = useFormik({
-        initialValues: {
+        initialValues: {//initial values
             f_name: '',
             l_name: '',
             tel_number: '',
             address: '',
             nic: ''
         },
-        validationSchema: addCustomerValidation,
-        onSubmit,
+        validationSchema: addCustomerValidation,    //assign validations
+        onSubmit,   //form submitions
     });
 
 
@@ -65,6 +69,7 @@ export default function AddCustomerModel({ open, onClose, setCustomerID ,setPass
         address: '',
         nic: ''
     });
+    //clear the fields when submit completed or close the modal
     const clearFields = (e) => {
         setCustomerData({
             f_name: '',
@@ -74,6 +79,8 @@ export default function AddCustomerModel({ open, onClose, setCustomerID ,setPass
             nic: ''
         })
     }
+
+    //When click the ourside of the modal: close the modal
     const handleClose = (e) => {
         if (e.target.id === 'container') {
             onClose();
@@ -81,14 +88,16 @@ export default function AddCustomerModel({ open, onClose, setCustomerID ,setPass
             clearFields()
         }
     }
+
+    //When click the close button
     const clickCloseBtn = () => {
         onClose(); setErrors({})
         clearFields()
     }
 
 
-    if (!open) return null;
-    return (
+    if (!open) return null; // If modal is not open, return null
+    return (//if the modal is opened
         <>
             {/*Card*/}
             <Box component="div"
@@ -102,6 +111,7 @@ export default function AddCustomerModel({ open, onClose, setCustomerID ,setPass
                     zIndex: 50
                 }}
             >
+                {/* Header line */}
                 <Box component="h4"
                     sx={{
                         fontSize: '1.8rem',
@@ -109,6 +119,7 @@ export default function AddCustomerModel({ open, onClose, setCustomerID ,setPass
                     }}>Add customer</Box>
                 <form onSubmit={handleSubmit}>
                     <table>
+                        {/* First name */}
                         <tr>
                             <td><label>First name :</label></td>
                             <td><input
@@ -119,7 +130,9 @@ export default function AddCustomerModel({ open, onClose, setCustomerID ,setPass
                                 id="f_name"
                                 onBlur={handleBlur}
                                 className="border-solid border-2 border-blue-800" /></td>
-                            {errors.f_name && touched.f_name ? <small style={{ color: 'red' }}>{errors.f_name}</small> : null}</tr>
+                            {errors.f_name && touched.f_name ? <small style={{ color: 'red' }}>{errors.f_name}</small> : null}
+                        </tr>
+                        {/* Last name */}
                         <tr>
                             <td><label>Last name :</label></td>
                             <td><input
@@ -130,7 +143,10 @@ export default function AddCustomerModel({ open, onClose, setCustomerID ,setPass
                                 id="l_name"
                                 onBlur={handleBlur}
                                 className="border-solid border-2 border-blue-800" /></td>
-                            {errors.l_name && touched.l_name ? <small style={{ color: 'red' }}>{errors.l_name}</small> : null}</tr>
+                            {errors.l_name && touched.l_name ? <small style={{ color: 'red' }}>{errors.l_name}</small> : null}
+                        </tr>
+
+                        {/* Telephone number */}
                         <tr>
                             <td><label>Tel. Number :</label></td>
                             <td><input
@@ -143,6 +159,8 @@ export default function AddCustomerModel({ open, onClose, setCustomerID ,setPass
                                 className="border-solid border-2 border-blue-800" /></td>
                             {errors.tel_number && touched.tel_number ? <small style={{ color: 'red' }}>{errors.tel_number}</small> : null}</tr>
                         <tr>
+
+                            {/* Address */}
                             <td><label>Address :</label></td>
                             <td><input
                                 type='text'
@@ -153,6 +171,8 @@ export default function AddCustomerModel({ open, onClose, setCustomerID ,setPass
                                 onBlur={handleBlur}
                                 className="border-solid border-2 border-blue-800" /></td>
                             {errors.address && touched.address ? <small style={{ color: 'red' }}>{errors.address}</small> : null}</tr>
+
+                        {/* NIC number */}
                         <tr>
                             <td><label>NIC :</label></td>
                             <td><input
@@ -163,7 +183,10 @@ export default function AddCustomerModel({ open, onClose, setCustomerID ,setPass
                                 id="nic"
                                 onBlur={handleBlur}
                                 className="border-solid border-2 border-blue-800" /></td>
-                            {errors.nic && touched.nic ? <small style={{ color: 'red' }}>{errors.nic}</small> : null}</tr>
+                            {errors.nic && touched.nic ? <small style={{ color: 'red' }}>{errors.nic}</small> : null}
+                        </tr>
+
+                        {/* NIC front picture */}
                         <tr>
                             <td><label for="nicBack">NIC front picture :</label></td>
                             <td>
@@ -177,6 +200,8 @@ export default function AddCustomerModel({ open, onClose, setCustomerID ,setPass
                                     }} />
                             </td>
                         </tr>
+
+                        {/* NIC back picture */}
                         <tr>
                             <td><label for="nicBack">NIC back picture :</label></td>
                             <td>
@@ -192,12 +217,15 @@ export default function AddCustomerModel({ open, onClose, setCustomerID ,setPass
                             </td>
                         </tr>
                     </table>
+
+                    {/* Submit button */}
                     <Button type='submit' fullWidth variant="contained" sx={{ mt: 3, mb: 1, border: '1px solid #1E90FF' }}>Submit</Button><br />
+                    {/* Cancel button */}
                     <Button onClick={clickCloseBtn} fullWidth variant="contained" sx={{ mt: 0, mb: 2, border: '1px solid #1E90FF', height: '2.0rem', color: '#1E90FF', backgroundColor: 'white' }}>Cancel</Button>
                 </form>
 
             </Box>
-            <ToastContainer/>
+            <ToastContainer />
             {/*Background*/}
             <Box component="div"
                 id='container' onClick={handleClose}

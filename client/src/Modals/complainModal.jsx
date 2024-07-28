@@ -4,11 +4,13 @@ import React, { useState } from 'react';
 import { complainValidation } from '../validations';
 import './complainModal.css';
 
+//Submit a complain
 export default function ComplainModel({ open, onClose, ordId }) {
     const [resp, setResp] = useState();
     const [complainText, setComplainText] = useState('');
     const token = localStorage.getItem('token');
 
+    //Close the modal
     const handleClose = (e) => {
         if (e.target.id === 'container') {
             values.complain='';
@@ -16,14 +18,17 @@ export default function ComplainModel({ open, onClose, ordId }) {
             onClose();
         }
     }
+
+    //Click close button
     const clickCloseBtn = () => {
         values.complain='';
         onClose();
     }
 
+    //Submit the complain
     const onSubmit = async (values, actions) => {
         try {
-            axios.post("http://localhost:3001/api/complain", {
+            axios.post("http://localhost:3001/api/complain", {//send the complain
                 "order_id": ordId,
                 "complain": values.complain
             }, {
@@ -41,8 +46,9 @@ export default function ComplainModel({ open, onClose, ordId }) {
         } catch (error) {
             toast.error("Invalid email or password");
         }
-
     }
+
+    //set initial data
     const { values, errors, handleBlur, handleChange, handleSubmit, touched } = useFormik({
         initialValues: {
             complain: "",
@@ -58,7 +64,9 @@ export default function ComplainModel({ open, onClose, ordId }) {
             <div id='card'>
                 <h4 id='title'>Open a complain</h4><hr />
                 <form onSubmit={handleSubmit}>
+                    {/* Order number */}
                     <p className='ord_number'>Order number: {ordId}</p>
+                    {/* Input complain */}
                     <p>Complain</p>
                     <textarea
                         id="complain"
@@ -77,8 +85,6 @@ export default function ComplainModel({ open, onClose, ordId }) {
                 </form>
 
             </div>
-
-
 
             {/*Background*/}
             <div

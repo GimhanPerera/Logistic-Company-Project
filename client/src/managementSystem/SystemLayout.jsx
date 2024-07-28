@@ -5,12 +5,14 @@ import Navbar from '../components/Navbar'
 const SystemLayout = ({ sidebarToggle, setSidebarToggle, value }) => {
   return (
     <div style={{ width: '100%', ...(sidebarToggle ? {} : { marginLeft: '16rem' }) }}>
+
+      {/* Navigation bar */}
       <Navbar
         sidebarToggle={sidebarToggle}
         setSidebarToggle={setSidebarToggle}
         value={value} />
 
-      {/* For resole the fixed effect of Nav bar */}
+      {/* For resolve the fixed effect of Nav bar */}
       <div style={{ paddingTop: '5rem' }} />
       <Outlet />
 
