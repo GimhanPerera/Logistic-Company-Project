@@ -4,10 +4,14 @@ import { useNavigate } from 'react-router-dom';
 
 const OrderCard = ({ orders }) => {
   const navigate = useNavigate();
-  const [id, setId] = useState(orders.main_tracking_number);
+  const [id, setId] = useState(orders.main_tracking_number);//order tracking number
+
+  //view more button
   const viewDetails = () => {
     navigate(`./${id}`);
   }
+
+  //set date format
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const formattedDate = date.toISOString().split('T')[0];
@@ -15,6 +19,7 @@ const OrderCard = ({ orders }) => {
     const minutes = ('0' + date.getMinutes()).slice(-2);
     return `${formattedDate} ${hours}:${minutes}`;
   };
+
   return (
     <Box component="div"
       sx={{
@@ -28,6 +33,7 @@ const OrderCard = ({ orders }) => {
         borderStyle: 'solid'
       }}
     >
+      {/* Left side row */}
       <Box component="div"
         sx={{
           display: 'flex',
@@ -37,6 +43,8 @@ const OrderCard = ({ orders }) => {
           height: '100%'
         }}
       >
+
+        {/* Order number */}
         <Box component="div"
           sx={{
             fontWeight: 'bold',
@@ -45,22 +53,29 @@ const OrderCard = ({ orders }) => {
           }}>
           Order number: {orders.order_id}
         </Box>
+
+        {/* Tracking number */}
         <Box
           sx={{
             width: '300px',
             marginBottom: '0.5rem'
           }}>Tracking number: {orders.main_tracking_number}</Box>
+
+        {/* Status */}
         <Box
           sx={{
             width: '300px',
             marginBottom: '0.5rem'
           }}>Status: {orders.status}</Box>
+
+        {/* Country */}
         <Box
           sx={{
             width: '300px',
           }}>From: {orders.supplier_loc}</Box>
       </Box>
 
+      {/* Right side row */}
       <Box component="div"
         sx={{
           display: 'flex',
@@ -69,7 +84,10 @@ const OrderCard = ({ orders }) => {
           alignItems: 'flex-end',
           height: '100%'
         }}>
+
+          {/* Order open date */}
         <div>Order open date: {formatDate(orders.order_open_date).substring(0, 10)}</div>
+        {/* Order expecting receiving date  */}
         {orders.Shipment ? (
           <p>Expecting receiving date: {orders.Shipment.displayed_arrival_date}</p>
         ) : (<p>Expecting receiving date: -</p>)}
@@ -82,9 +100,10 @@ const OrderCard = ({ orders }) => {
             textDecoration: 'underline'
           }}
         >
-          {orders.status == 'Request' ?'':
-          <a onClick={viewDetails} style={{ cursor: 'pointer' }}>View more</a>
-        }
+          {/* View more button */}
+          {orders.status == 'Request' ? '' :
+            <a onClick={viewDetails} style={{ cursor: 'pointer' }}>View more</a>
+          }
         </Box>
       </Box>
     </Box>

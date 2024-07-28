@@ -7,13 +7,14 @@ import FeedbackModel from '../Modals/feedbackModel';
 import logisticImg1 from "../assets/logisticImg1.jpg";
 import Navbar from "./navbar";
 
+//Full tracking details: For customers who logged in using customer ID and password
 export const OrderTrackingDetailsValidated = () => {
     const navigate = useNavigate();
     // Extract the parameter from the URL
     //const { trackingNumber } = useParams();
-    const [isComplainOpen, setComplainIsOpen] = useState(false);
-    const [isFeedbackOpen, setFeedackIsOpen] = useState(false);
-    const [step, setStep] = useState(1);
+    const [isComplainOpen, setComplainIsOpen] = useState(false);//Is the complain box opened
+    const [isFeedbackOpen, setFeedackIsOpen] = useState(false);//Is the feedback box opened
+    const [step, setStep] = useState(1);//tracking status level: for display
 
     const [trackingDetails, setTrackingDetails] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -21,14 +22,14 @@ export const OrderTrackingDetailsValidated = () => {
     const toLogin = () => {
         navigate('../');
     }
-    useEffect(() => {
+    useEffect(() => {//get the tracking details
         axios.post("http://localhost:3001/api/order/trackorder", {
             "tracking_id": id
         })
             .then((response) => {
                 console.log(response.data);
                 setTrackingDetails(response.data);
-                const tracking = response.data[0].status;
+                const tracking = response.data[0].status;//set the tracking status
                 switch (tracking) {
                     case 'Request':
                         setStep(0);
@@ -74,30 +75,33 @@ export const OrderTrackingDetailsValidated = () => {
         <div>
             <Navbar />
             <Box
-            sx={{
-                backgroundImage: `url(${logisticImg1})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-            }}
+                sx={{
+                    backgroundImage: `url(${logisticImg1})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                }}
             >
-                {loading ? (
+                {loading ? (//still loading
                     <p>Loading...</p>
-                ) : (
-                    <div style={{marginTop:'60px'}}>
-                        <Button variant="outlined" sx={{ margin: '3rem 2rem 2rem 2rem', backgroundColor:'white' }}
+                ) : (//loading completed
+                    <div style={{ marginTop: '60px' }}>
+                        {/* Back button */}
+                        <Button variant="outlined" sx={{ margin: '3rem 2rem 2rem 2rem', backgroundColor: 'white' }}
                             onClick={toLogin}>
                             back
                         </Button>
+
+                        {/* Details section */}
                         <Box component="div" style={{ width: '900px', margin: 'auto' }}>
                             <Paper elevation={3} style={{ padding: '20px 16px', display: 'inline-block' }}>
                                 <Box component="div" sx={{ marginTop: '2px', width: '900px', margin: 'auto' }}>
-                                    <Box component="h1" sx={{ textAlign: 'center', mb: '2rem' }}>Tracking details</Box>
-
+                                    <Box component="h1" sx={{ textAlign: 'center', mb: '2rem' }}>Tracking Details</Box>
+                                    {/* Tracking details path */}
                                     <>
                                         <Stepper orientation='horizontal' alternativeLabel activeStep={step}>
                                             <Step>
@@ -127,6 +131,8 @@ export const OrderTrackingDetailsValidated = () => {
                                         </Stepper>
                                     </>
                                 </Box>
+
+                                {/* Tracking details */}
                                 <Box component='div' sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: '2rem' }}>
                                     <div>
                                         <table>
@@ -184,6 +190,7 @@ export const OrderTrackingDetailsValidated = () => {
                                         </table>
                                     </div>
 
+                                    {/* Description and buttons */}
                                     <div style={{ width: '600px', marginTop: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                         <p>If you have any issue with our service, You can <a style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => setComplainIsOpen(true)} >open a complain</a></p>
                                         <p>Give your <a style={{ color: 'blue', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => setFeedackIsOpen(true)} >feedback</a></p>
@@ -191,8 +198,11 @@ export const OrderTrackingDetailsValidated = () => {
                                 </Box>
                             </Paper>
                         </Box>
+
+                        {/* Complain model */}
                         <ComplainModel open={isComplainOpen} onClose={() => setComplainIsOpen(false)} ordId={firstTrackingDetails.order_id}>
                         </ComplainModel>
+                        {/* Feedback model */}
                         <FeedbackModel open={isFeedbackOpen} onClose={() => setFeedackIsOpen(false)} ordId={firstTrackingDetails.order_id}>
                         </FeedbackModel>
 

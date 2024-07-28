@@ -15,6 +15,7 @@ export const CustomerLogin = () => {
   const [pwd, setPwd] = useState("");
   const navigate = useNavigate();
 
+  //Check the tracking number
   const checkTrackingNumber = async (e) => {
     e.preventDefault();
     try {
@@ -34,52 +35,56 @@ export const CustomerLogin = () => {
       }
     }
   };
+
+  //Go to reset password page
   const resetPwd = () => {
     navigate('../resetpassword');
-}
+  }
+
+  //Login as a customer
   const loginAsCustomer = useFormik({
-    
+
     initialValues: {
       customerID: '',
-      password:''
+      password: ''
     },
     validationSchema: customerLoginValidation,
     onSubmit: async (values, actions) => {
-        try {
-            const response = await axios.post("http://localhost:3001/api/login/customer", {
-                "cus_id": values.customerID,
-                "pwd": values.password
-            });
+      try {
+        const response = await axios.post("http://localhost:3001/api/login/customer", {
+          "cus_id": values.customerID,
+          "pwd": values.password
+        });
 
-            if (response.data.isValid) {
-                localStorage.setItem('user', JSON.stringify(response.data));
-                navigate('./myorders');
-            }
-        } catch (error) {
-            if (error.response && error.response.data && error.response.data.error) {
-                toast.error(error.response.data.error);
-            } else {
-                toast.error("An unexpected error occurred. Please try again.");
-            }
+        if (response.data.isValid) {
+          localStorage.setItem('user', JSON.stringify(response.data));
+          navigate('./myorders');
         }
+      } catch (error) {
+        if (error.response && error.response.data && error.response.data.error) {
+          toast.error(error.response.data.error);
+        } else {
+          toast.error("An unexpected error occurred. Please try again.");
+        }
+      }
     },
-});
+  });
 
   return (
     <div>
-      <Navbar />
-      <Box component="section" sx={{ backgroundColor: '#e0f0f3', height:'88vh',marginTop:'0rem' }}>
+      <Navbar />{/* NAvigation bar */}
+      <Box component="section" sx={{ backgroundColor: '#e0f0f3', height: '88vh', marginTop: '0rem' }}>{/* Background */}
         <Box component="div"
           sx={{
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
-            paddingTop:'5rem',
+            paddingTop: '5rem',
           }}>
-            <Box component="div">
-              <img src={loginImg} alt='login image'  style={{width:'26.4rem', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',}}/>
-            </Box>
+          <Box component="div">
+            <img src={loginImg} alt='login image' style={{ width: '26.4rem', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)', }} />
+          </Box>
           <Box component="div"
             sx={{
               width: '30%',
@@ -91,7 +96,9 @@ export const CustomerLogin = () => {
               padding: 0
             }}>
             <div>
-              <Button variant="text" onClick={() => {setTrackingNumberError("");setTrackingNumber("");setShow(true);}} sx={{ width: "50%", border: '1px solid', borderRadius: 0, borderBottom: show ? 'none' : '1px solid', borderRight: show ? 'none' : '1px solid' }}>By customer ID</Button>
+              {/* By Customer ID BUTTON */}
+              <Button variant="text" onClick={() => { setTrackingNumberError(""); setTrackingNumber(""); setShow(true); }} sx={{ width: "50%", border: '1px solid', borderRadius: 0, borderBottom: show ? 'none' : '1px solid', borderRight: show ? 'none' : '1px solid' }}>By customer ID</Button>
+              {/* By Tracking Number BUTTON */}
               <Button variant="text" onClick={() => setShow(false)} sx={{ width: "50%", border: '1px solid', borderRadius: 0, borderBottom: show ? '1px solid' : 'none', borderLeft: show ? '1px solid' : 'none' }}>By tracking number</Button>
             </div>
             {/*Login by customer ID form*/}
@@ -116,8 +123,9 @@ export const CustomerLogin = () => {
                   }}>
                   Check My Orders
                 </Box>
-                <form className="form" onSubmit={loginAsCustomer.handleSubmit}>{/*loginAsCustomer*/}
+                <form className="form" onSubmit={loginAsCustomer.handleSubmit}>{/*Form: login As Customer*/}
                   <div>
+                    {/* Customer ID input */}
                     <Box component="input"
                       type="text"
                       name="customerID"
@@ -143,9 +151,10 @@ export const CustomerLogin = () => {
                         }
                       }}
                     />
-                    {loginAsCustomer.errors.customerID && loginAsCustomer.touched.customerID && <small style={{color:'red'}}>{loginAsCustomer.errors.customerID}</small>}
+                    {loginAsCustomer.errors.customerID && loginAsCustomer.touched.customerID && <small style={{ color: 'red' }}>{loginAsCustomer.errors.customerID}</small>}
                   </div>
                   <div>
+                    {/* Password input */}
                     <Box component="input"
                       type="password"
                       name="password"
@@ -172,10 +181,11 @@ export const CustomerLogin = () => {
                       }}
                       required />
                   </div>
-                  {loginAsCustomer.errors.password && loginAsCustomer.touched.password && <small style={{color:'red'}}>{loginAsCustomer.errors.password}</small>}
+                  {loginAsCustomer.errors.password && loginAsCustomer.touched.password && <small style={{ color: 'red' }}>{loginAsCustomer.errors.password}</small>}
                   <div>
-                    <Box component="p" sx={{ color: '#1E90FF', fontSize: '0.875rem', fontWeight: 'medium', cursor: 'pointer', mt:'0.5rem' }} underline="always" onClick={resetPwd}>Forgot password?</Box>
+                    <Box component="p" sx={{ color: '#1E90FF', fontSize: '0.875rem', fontWeight: 'medium', cursor: 'pointer', mt: '0.5rem' }} underline="always" onClick={resetPwd}>Forgot password?</Box>
                   </div>
+                  {/* Check my order BUTTON */}
                   <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>Check my orders</Button>
                 </form>
               </Box> : null
@@ -205,6 +215,7 @@ export const CustomerLogin = () => {
                 </Box>
                 <form className="form" onSubmit={checkTrackingNumber}>
                   <div>
+                    {/* Tracking number input */}
                     <Box component="input"
                       type="text"
                       name="trNumber"
@@ -233,7 +244,7 @@ export const CustomerLogin = () => {
                         }
                       }}
                     />
-                  <p style={{fontSize:'0.8rem', color:'red', marginBottom: '0.5rem',marginLeft:'1rem'}}>{trackingNumberError}</p>
+                    <p style={{ fontSize: '0.8rem', color: 'red', marginBottom: '0.5rem', marginLeft: '1rem' }}>{trackingNumberError}</p>
                   </div>
                   {/* <div className="flex-div">
                     <Box component="p" sx={{ color: '#1E90FF', fontSize: '0.875rem', fontWeight: 'medium', cursor: 'pointer' }} underline="always">Forgot tracking number?</Box>

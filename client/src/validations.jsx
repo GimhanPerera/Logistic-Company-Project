@@ -10,30 +10,30 @@ const descriptionValidation = Yup.string()
 
 
 export const testValication = Yup.object({
-    f_name: Yup.string().min(3).required("Please Enter name"),
-    l_name: Yup.string().min(3).required("Please Enter name"),
-    tel_number: Yup.string().min(3).required("Please Enter name"),
+    f_name: Yup.string().min(3).required("Please Enter name"),  //first name
+    l_name: Yup.string().min(3).required("Please Enter name"),  //last name
+    tel_number: Yup.string().min(3).required("Please Enter name"),  //Telephone number
 })
 
 export const customerDetailsValidation = Yup.object({
-    f_name: Yup.string()
+    f_name: Yup.string()  //first name
         .required("First name required")
         .min(3, "First name must be at least 3 characters long")
         .max(15, "First name must be at most 15 characters long")
         .matches(/^[A-Za-z']+$/, "Enter valid name"),
-    l_name: Yup.string()
+    l_name: Yup.string()    //last name
         .required("Last name required")
         .min(3, "Last name must be at least 3 characters long")
         .max(15, "Last name must be at most 15 characters long")
         .matches(/^[A-Za-z']+$/, "Enter valid name"),
-    nic: Yup.string()
+    nic: Yup.string()   //NIC number
         .required("NIC required")
         .max(20, "Last name must be at most 20 characters long")
         .matches(/^\d{9}[Vv]$|^\d{12}$/, "Enter valid NIC"),//Sri Lankan NIC format (e.g., 123456789V or 123456789012)
-    tel_number: Yup.string()
+    tel_number: Yup.string()    //Telephone number
         .required("Telephone number required")
         .matches(/^(\d{9}|0\d{9})$/, "Please enter valid telephone number"), //9-digit or a 10-digit starting with 0
-    address: Yup.string()
+    address: Yup.string()   //address
         .required("Address required")
         .min(5, "Please enter valid address")
         .max(50, "address must be at most 50 characters long"),
@@ -41,7 +41,7 @@ export const customerDetailsValidation = Yup.object({
 
 //Staff login validation: StaffLogin.jsx
 export const staffLoginValidation = Yup.object({
-    email: Yup.string()
+    email: Yup.string() //Email
         .email('Invalid email format')
         .matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Invalid email format')
         .required('Email is required'),
@@ -63,7 +63,7 @@ export const complainValidation = Yup.object({
 })
 
 export const addCustomerValidation = Yup.object({
-    f_name: Yup.string().min(3).required("Please Enter first name"),
+    f_name: Yup.string().min(3).required("Please Enter first name"),  //first name
     l_name: Yup.string().min(3).required("Please Enter last name"),
     tel_number: Yup.string().min(3).required("Please Enter Telephone number"),
     address: Yup.string().min(3).required("Please Enter Address"),
@@ -185,7 +185,7 @@ export const addSupplier = Yup.object({
 
 //employee details: editEmployee.jsx
 export const employeeFormValidation = Yup.object({
-    f_name: Yup.string()
+    f_name: Yup.string()  //first name
         .required("First name required")
         .min(3, "First name must be at least 3 characters long")
         .max(15, "First name must be at most 15 characters long")

@@ -12,6 +12,7 @@ import Autheader from "../services/Autheader";
 import { priceQuotationByCustomerValidation } from '../validations';
 import Navbar from './navbar';
 
+//initial values
 const initialValues = {
     items: '',
     packages: '',
@@ -22,6 +23,7 @@ const initialValues = {
     supplierLoc: 'China',
 };
 
+//Price quotation request page
 export const NewOrderRequest = () => {
     //const token = localStorage.getItem('token');
     const [image, setImage] = useState(null);
@@ -50,9 +52,11 @@ export const NewOrderRequest = () => {
 
     };
 
+    //Submit request
     const onSubmit = async (values, actions) => {
         console.log("LOG: ", selectedCountry);
         //return;
+        //Image, Invoice and country validation
         if (selectedCountry.label == null) {
             toast.error("Country is required");
             return
@@ -98,8 +102,8 @@ export const NewOrderRequest = () => {
     }
 
     const { values, touched, handleBlur, isSubmitting, setErrors, handleChange, handleSubmit, errors } = useFormik({
-        initialValues: initialValues,
-        validationSchema: priceQuotationByCustomerValidation,
+        initialValues: initialValues,//set initial values
+        validationSchema: priceQuotationByCustomerValidation,//Form validation
         onSubmit,
     });
 
@@ -118,6 +122,7 @@ export const NewOrderRequest = () => {
                                 <table style={{}}>
                                     <tr>
                                         <td>
+                                            {/* Items input field */}
                                             <TextField label="Items" size="small" type='text' name='items' margin="normal"
                                                 value={values.items}
                                                 onChange={handleChange}
@@ -127,6 +132,7 @@ export const NewOrderRequest = () => {
                                             />
                                         </td>
                                         <td>
+                                            {/* Package count: input field */}
                                             <TextField label="No of packages" size="small" type='number' name='packages' margin="normal"
                                                 value={values.packages}
                                                 onChange={handleChange}
@@ -137,6 +143,7 @@ export const NewOrderRequest = () => {
                                     </tr>
                                     <tr>
                                         <td>
+                                            {/* Rough Weight: Input field */}
                                             <TextField label="Rough weight(Kg)" size="small" type='number' name='weight' margin="normal"
                                                 value={values.weight}
                                                 onChange={handleChange}
@@ -145,6 +152,7 @@ export const NewOrderRequest = () => {
                                                 helperText={touched.weight && errors.weight}
                                             /></td>
                                         <td>
+                                            {/* Shipping methods: Input field */}
                                             <FormControl sx={{ m: 1, minWidth: 170 }}>
                                                 <InputLabel>Shipping method</InputLabel>
                                                 <Field
@@ -164,6 +172,7 @@ export const NewOrderRequest = () => {
 
                                     </tr>
                                     <tr>
+                                        {/* Description: Input field */}
                                         <Box component='td' sx={{
                                             '& .MuiTextField-root': { m: 1, width: '25ch' },
                                         }}><TextField label="Description" size="small" type='text' name='description' margin="normal"
@@ -179,6 +188,7 @@ export const NewOrderRequest = () => {
                                     </tr>
                                     <tr>
                                         <td>
+                                            {/* Country select area */}
                                             <Autocomplete
                                                 sx={{ width: 250, mt: 2, mb: 2 }}
                                                 options={Countries}
@@ -215,6 +225,7 @@ export const NewOrderRequest = () => {
                                         </td>
                                     </tr>
                                     <tr>
+                                        {/* Image: Input field */}
                                         <td><label for="invoice">Image :</label></td>
                                         <td>
                                             <Field type="file" id="image" name="image" onChange={handleImageChange} accept="image/*"
@@ -228,6 +239,7 @@ export const NewOrderRequest = () => {
                                         </td>
                                     </tr>
                                     <tr>
+                                        {/* Performa Invoice: Input field */}
                                         <td><label for="invoice">Performa invoice :</label></td>
                                         <td><input type="file" id="invoice" name="invoice" onChange={handleInvoiceChange}
                                             style={{
@@ -240,12 +252,15 @@ export const NewOrderRequest = () => {
                                         </td>
                                     </tr>
                                 </table>
+                                {/* Buttons */}
                                 <Box component="div" sx={{ display: 'flex', flexDirection: 'column' }}>
+                                    {/* Request Price quotation button */}
                                     <Button variant="contained"
                                         type="submit"
                                         sx={{ backgroundColor: '#68DD62', m: '1rem 0' }}>
                                         Request price quotation
                                     </Button>
+                                    {/* Cancel button */}
                                     <Button onClick={toOrders} variant="outlined"
                                         sx={{}}>
                                         Cancel

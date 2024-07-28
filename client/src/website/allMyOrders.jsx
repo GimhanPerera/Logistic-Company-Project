@@ -9,31 +9,33 @@ import Autheader from "../services/Autheader";
 import Navbar from "./navbar";
 import OrderCard from "./orderCard";
 
+//Desplay all orders of the customer
 export const AllMyOrders = () => {
   const navigate = useNavigate();
-  const [reqCount, setReqCount] = useState(0);
+  const [reqCount, setReqCount] = useState(0);//Order request count
   const [oldPwd, setOldPwd] = useState('');
   const [newPwd, setNewPwd] = useState('');
   const [newPwdC, setNewPwdC] = useState('');
-  const [showPwdBox, setShowPwdBox] = useState(false);
+  const [showPwdBox, setShowPwdBox] = useState(false);//is password box display
 
   const [oldPwdError, setOldPwdError] = useState('');
   const [newPwdError, setNewPwdError] = useState('');
   const [newPwdCError, setNewPwdCError] = useState('');
 
+  //Logout and navigate to login page
   const toBack = () => {
     localStorage.removeItem('user')
     navigate('../');
   }
 
+  //order request button
   const orderRequest = () => {
     console.log("REQ COUNT:" + reqCount)
-    if (reqCount < 2) {
+    if (reqCount < 2) {//check the count is less than 2. If yes, Able to send new request
       navigate('./request');
       return
     }
     toast.error("Maximum of 2 orders requests can be send at once");
-
   }
 
   const [listOfOrders, setListOfOrders] = useState([]);
@@ -84,7 +86,7 @@ export const AllMyOrders = () => {
     }
     // END-Basic validations
 
-    axios.post("http://localhost:3001/api/customers/changePwd", {
+    axios.post("http://localhost:3001/api/customers/changePwd", {//CHANGE THE PASSWORD
       "oldPwd": oldPwd,
       "newPwd": newPwd,
       "newPwdC": newPwdC,
@@ -93,7 +95,7 @@ export const AllMyOrders = () => {
         ...Autheader()
       }
     })
-      .then((response) => {
+      .then((response) => {//Changed successfully
         console.log("PWD CHANGED");
         setShowPwdBox(!showPwdBox);
         setOldPwd('');
@@ -119,7 +121,7 @@ export const AllMyOrders = () => {
       });
   }
 
-
+  //get order details
   useEffect(() => {
     axios.get("http://localhost:3001/api/order/myTrackingDetails", {
       headers: Autheader()
@@ -141,6 +143,7 @@ export const AllMyOrders = () => {
     <>
       <ToastContainer />
       <Navbar />
+      {/* Logout button */}
       <Button variant="outlined"
         onClick={toBack} sx={{ position: 'fixed', mt: '20px', ml: '35px', p: '10px' }}>
         Log out
@@ -155,11 +158,13 @@ export const AllMyOrders = () => {
           justifyContent: 'center'
         }}>
 
+{/* Order request button */}
         <Button variant="contained" sx={{ mt: '25px' }}
           onClick={orderRequest}>
           Order Request
         </Button>
-        {/* key kiyanne index in the array */}
+        {/* 'key' is the index in the array */}
+        {/* Order list */}
         {listOfOrders.map((orders, index) => (
           <Box component="div"
             key={index} sx={{ width: '100%' }}>
@@ -169,7 +174,7 @@ export const AllMyOrders = () => {
       </Box>
       {showPwdBox ?
         <>
-          {/* Change Password */}
+          {/* Change Password box */}
           <Box component="div" style={{ border: '1px solid gray', padding: '1rem', width: '250px', position: 'fixed', right: '5rem', top: '10rem' }}>
             <Box component="h3" sx={{ mb: 2, textAlign: 'center' }}>Change Password</Box>
             <table>

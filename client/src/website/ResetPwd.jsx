@@ -7,15 +7,15 @@ import 'react-toastify/dist/ReactToastify.css';
 import loginImg from '../assets/staffLoginImg.jpg';
 import Navbar from './navbar';
 
-
+//Send OTP page, Enter OTP page, Reset pwd page
 export const ResetPwd = () => {
 
     const location = useLocation();
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [otp, setOtp] = useState('');
-    const [send, setSend] = useState(false);
-    const [validation, setValidation] = useState(false);
+    const [send, setSend] = useState(false);    //Check whether OTP send or not
+    const [validation, setValidation] = useState(false);    //User ID or Email correct or not
     const [newPwd, setNewPwd] = useState('');
     const [newPwdC, setNewPwdC] = useState('');
     const [newPwdError, setNewPwdError] = useState('');
@@ -31,18 +31,21 @@ export const ResetPwd = () => {
         navigate('../stafflogin');
     }
 
+    //Validations for email and customer ID formats
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const cflRegex = /^CFL.{3}$/;
         return emailRegex.test(email) || cflRegex.test(email);
     };
+
+    //Send OTP
     const sendOTP = async () => {
-        if (!validateEmail(email)) {
+        if (!validateEmail(email)) {// Check Validations
             toast.error('Invalid email or User ID.');
             return;
         }
         try {
-            // Check Validations
+            //Send OTP
             const response = await axios.post("http://localhost:3001/api/employee/opt/request", {
                 "email": email,
             });
@@ -61,10 +64,13 @@ export const ResetPwd = () => {
         }
     }
 
+    //OTP validations
     const isValidOtp = (otp) => {
         const otpRegex = /^\d{6}$/;
         return otpRegex.test(otp);
     };
+
+    //Check the OTP
     const checkOTP = async () => {
         try {
             // Check Validations
@@ -77,10 +83,10 @@ export const ResetPwd = () => {
                 "email": email,
                 "otp": otp
             });
-            if (response.data == true) {
+            if (response.data == true) {//OTP is correct
                 setValidation(true);
             }
-            else {
+            else {//OTP wrong
                 toast.error("OTP is wrong");
             }
         } catch (error) {
@@ -92,6 +98,7 @@ export const ResetPwd = () => {
         }
     }
 
+    //PAssword validations
     const validatePasswords = () => {
         let isValid = true;
         if (newPwd.length <= 6) {
@@ -110,11 +117,12 @@ export const ResetPwd = () => {
 
         return isValid;
     };
+
+    //Check validations
     const changePWD = async () => {
-        // Check Validations
         //setNewPwdCError('');
         //setNewPwdError('');
-        if (!validatePasswords()) {
+        if (!validatePasswords()) { // Check Validations
             return;
         }
 
@@ -123,14 +131,14 @@ export const ResetPwd = () => {
                 "emailOrUserID": email,
                 "newPwd": newPwd
             });
-            if (response.data == true) {
+            if (response.data == true) {//Password changed successfully
                 toast.success("Your password changed");
                 if (email.startsWith("CFL"))
                     navigate('../checkmyorder');
                 else
                     navigate('../stafflogin');
             }
-            else {
+            else {//Error
                 toast.error("Something wrong");
             }
         } catch (error) {
@@ -176,7 +184,7 @@ export const ResetPwd = () => {
                         {validation
                             ?
                             <>
-                                {/* Change Password */}
+                                {/* Change Password : Page*/}
                                 <Box component="div" sx={{
                                     height: '23rem',
                                     display: 'flex',
@@ -188,10 +196,12 @@ export const ResetPwd = () => {
                                     gap: '1.5rem',
                                     width: '26.4rem'
                                 }}>
+                                    {/* Page title */}
                                     <Box component="h2" sx={{ mb: 2, textAlign: 'center' }}>Change Password</Box>
                                     <table>
                                         <tr>
                                             <td>
+                                                {/* New password input */}
                                                 <TextField label="New Password" size="small" type='password' name='newPwd' margin="normal" fullWidth
                                                     value={newPwd}
                                                     onChange={(e) => {
@@ -206,12 +216,12 @@ export const ResetPwd = () => {
                                         </tr>
                                         <tr>
                                             <td>
+                                                {/* confirm new password input */}
                                                 <TextField label="Confirm New Password" size="small" type='password' name='tp' fullWidth
                                                     value={newPwdC}
                                                     onChange={(e) => {
                                                         setNewPwdCError('');
                                                         setNewPwdC(e.target.value);
-
                                                     }}
                                                     error={!!newPwdCError}
                                                     helperText={newPwdCError}
@@ -219,6 +229,7 @@ export const ResetPwd = () => {
                                             </td>
                                         </tr>
                                     </table>
+                                    {/* Button */}
                                     <Button variant="contained" onClick={changePWD}
                                         sx={{ backgroundColor: '#68DD62', mt: '1rem' }} fullWidth>
                                         Change password
@@ -227,7 +238,7 @@ export const ResetPwd = () => {
                             </>
                             :
                             <>
-                                {/* send otp */}
+                                {/* Send OTP Page: First page comes when click forgot pwd */}
                                 {!send ?
                                     <Box component="div"
                                         sx={{
@@ -241,7 +252,9 @@ export const ResetPwd = () => {
                                             gap: '1.5rem',
                                             width: '26.4rem'
                                         }}>
+                                        {/* Description */}
                                         <Typography>Enter your username or email. We'll send a OTP to your mobile number.</Typography>
+                                        {/* Title */}
                                         <Box component="h1"
                                             sx={{
                                                 fontSize: '1.5rem',
@@ -254,6 +267,7 @@ export const ResetPwd = () => {
                                         </Box>
                                         <form>
                                             <div>
+                                                {/* Email or user ID : Input field */}
                                                 <Box component="input"
                                                     value={email}
                                                     onChange={handleEmail}
@@ -278,13 +292,14 @@ export const ResetPwd = () => {
                                             </div>
                                             <div>
                                             </div>
+                                            {/* Button */}
                                             <Button fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} onClick={sendOTP}>
                                                 Send OTP
                                             </Button>
+                                            {/* Back btn */}
                                             <div>
                                                 <Box component="h5" sx={{ textAlign: 'center', color: '#1E90FF', fontSize: '0.875rem', fontWeight: 'medium', cursor: 'pointer', m: '1rem 0' }} underline="always" onClick={toBack}>Back</Box>
                                             </div>
-
                                         </form>
                                     </Box>
                                     :
@@ -299,7 +314,8 @@ export const ResetPwd = () => {
                                             paddingRight: '3rem',
                                             gap: '1.5rem',
                                             width: '26.4rem'
-                                        }}>
+                                        }}>{/* Enter OTP page */}
+                                        {/* Button */}
                                         <Box component="h1"
                                             sx={{
                                                 fontSize: '1.5rem',
@@ -311,6 +327,7 @@ export const ResetPwd = () => {
                                             Enter OTP
                                         </Box>
                                         <form>
+                                            {/* OTP input field */}
                                             <div>
                                                 <Box component="input"
                                                     type="number"
@@ -336,6 +353,7 @@ export const ResetPwd = () => {
                                             </div>
                                             <div>
                                             </div>
+                                            {/* Button */}
                                             <Button fullWidth variant="contained" sx={{ mt: 2, mb: 1 }} onClick={checkOTP}>
                                                 Enter
                                             </Button>

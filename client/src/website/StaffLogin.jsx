@@ -9,30 +9,32 @@ import loginImg from '../assets/staffLoginImg.jpg';
 import { staffLoginValidation } from '../validations';
 import Navbar from './navbar';
 
-
+// Staff login page
 export const StaffLogin = () => {
 
     const navigate = useNavigate();
+    //to reset pwd page
     const resetPwd = () => {
         navigate('../resetpassword');
     }
+
+    // Check the login details
     const onSubmit = async (values, actions) => {
         try {
-            // Check the detials
             const response = await axios.post("http://localhost:3001/api/login/staff", {
                 "email": values.email,
                 "password": values.password
             });
             if (response.data.isValid) {
-                localStorage.setItem('user', JSON.stringify(response.data));
+                localStorage.setItem('user', JSON.stringify(response.data));//store token in local storage
                 console.log("TOKENS ", response.data);
-                navigate('../cmsystem');
-                window.location.reload();
+                navigate('../cmsystem');//Navigate to company management system
+                window.location.reload();//reload the page
             }
             else {
-                toast.error("Invalid email or password");
+                toast.error("Invalid email or password");//error massage
             }
-        } catch (error) {
+        } catch (error) {//exceptions
             if (error.response && error.response.data && error.response.data.error) {
                 toast.error(error.response.data.error);
             } else {
@@ -42,7 +44,7 @@ export const StaffLogin = () => {
 
     }
     const { values, errors, handleBlur, handleChange, handleSubmit, touched } = useFormik({
-        initialValues: {
+        initialValues: {//define variables
             email: "",
             password: "",
         },
@@ -52,8 +54,8 @@ export const StaffLogin = () => {
 
     return (
         <div>
-            <Navbar />
-            <Box component="section" sx={{ backgroundColor: '#edfeff', height: '87vh' }}>
+            <Navbar />{/* Navigation bar */}
+            <Box component="section" sx={{ backgroundColor: '#edfeff', height: '87vh' }}>{/* Background */}
                 <Box component="div"
                     sx={{
                         display: 'flex',
@@ -101,8 +103,10 @@ export const StaffLogin = () => {
                                 }}>
                                 Login
                             </Box>
+                            {/* Login form */}
                             <form onSubmit={handleSubmit}>
                                 <div>
+                                    {/* Email input field */}
                                     <Box component="input"
                                         type="email"
                                         value={values.email}
@@ -129,6 +133,7 @@ export const StaffLogin = () => {
                                     {errors.email && touched.email && <small style={{ color: 'red' }}>{errors.email}</small>}
                                 </div>
                                 <div>
+                                    {/* Pwd inpput field */}
                                     <Box component="input"
                                         type="password"
                                         value={values.password}
@@ -160,6 +165,7 @@ export const StaffLogin = () => {
                                 </div>
                                 <div>
                                 </div>
+                                {/* Login button */}
                                 <Button type="submit" fullWidth variant="contained" sx={{ mt: 1, mb: 2 }}>
                                     Log in
                                 </Button>

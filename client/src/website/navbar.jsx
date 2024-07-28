@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import logo from "../assets/logo.png";
 import DrawerCom from './drawerCom';
 
+{/* NAvigation bar */}
 const Navbar = () => {
   const [value, setValue] = useState(0);
   const theme = useTheme()
@@ -41,7 +42,7 @@ const Navbar = () => {
               </>
             ) : (
               <>
-
+                {/* Navigation buttons */}
                 <Tabs sx={{ margin: 'auto' }} >  {/* value={value} onChange={(e, value) => setValue(value)}*/}
                   <Link label="Home" to="/" onClick={() => setValue(0)}>
                     <Tab label="Home"></Tab>
@@ -60,7 +61,7 @@ const Navbar = () => {
                   </Link>
                 </Tabs>
 
-                {/* staff login btn */}
+                {/* Staff login button */}
                 <Box>
                   <Link to="/stafflogin">
                     <Button variant="contained" sx={{ backgroundColor: '#1E90FF' }}>Staff Login</Button>

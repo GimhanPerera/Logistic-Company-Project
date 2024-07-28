@@ -56,31 +56,36 @@ function App() {
         <Route path="/">
           <Route path="test1" element={<TestFile />} /> {/* Testing this */}
           <Route path="test2" element={<PrintShippingMarks />} /> {/* Testing this */}
-          <Route index element={<Website />} />
-          <Route path="stafflogin" element={<StaffLogin />} />
-          <Route path="resetpassword" element={<ResetPwd />} />
-          <Route path="checkmyorder">
+          <Route index element={<Website />} /> {/* Default route: Website */}
+          <Route path="stafflogin" element={<StaffLogin />} />  {/* Staff login page */}
+          <Route path="resetpassword" element={<ResetPwd />} /> {/* reset password page */}
+          <Route path="checkmyorder"> {/* Customer login page */}
             <Route index element={<CustomerLogin />} />
-            <Route path=":trackingNumber" element={<OrderTrackingDetails />} />
+            <Route path=":trackingNumber" element={<OrderTrackingDetails />} /> {/* Page displayed when using tracking number */}
             <Route path="myorders">
               <Route index element={<AllMyOrders />} />
               <Route path=":id" element={<OrderTrackingDetailsValidated />} />
               <Route path="request" element={<NewOrderRequest />} />
             </Route>
           </Route>
+          {/* Protected routes for admin, manager, employees */}
           {['ADMIN', 'MANAGER', 'EMP'].includes(currentUser) && (
             <Route path="cmsystem" element={<ManagmentSystem />}>
-              <Route index element={<Dashboard />} />
+              <Route index element={<Dashboard />} /> {/* Dashboard */}
               <Route path="customers" >
-                <Route index element={<CustomersDetails />} />
-                <Route path="view" element={<EditCustomer />} />
+                <Route index element={<CustomersDetails />} />  {/* customer details */}
+                <Route path="view" element={<EditCustomer />} />  {/* edit customer details */}
               </Route>
+
+              {/* Protected routes for admin, manager only*/}
               {['ADMIN', 'MANAGER'].includes(currentUser) && (
-              <Route path="employee" >
-                <Route index element={<EmpDetails />} />
-                <Route path="view" element={<EditEmployee />} />
-              </Route>
+                <Route path="employee" >
+                  <Route index element={<EmpDetails />} />
+                  <Route path="view" element={<EditEmployee />} />
+                </Route>
               )}
+
+              {/* Price quatation requests page*/}
               <Route path="requests">
                 <Route index element={<OrderRequest />} />
                 <Route path=":priceQ" element={<RequestHandle />} />
@@ -103,23 +108,25 @@ function App() {
                 <Route path="details" element={<AddEditShipment />} />
                 <Route path="scan" element={<ScanAndUpdate />} />
               </Route>
+              {/* Protected routes for admin only */}
               {['ADMIN'].includes(currentUser) && (
                 <Route path="SpecialNotices">
                   <Route index element={<SpecialNotices />} />
                   <Route path="addEdit" element={<AddSpecialNotices />} />
                 </Route>
               )}
+
               {['ADMIN', 'MANAGER'].includes(currentUser) && (
-                <>
+                <> {/* complain and Reports page*/}
                   <Route path="complain">
                     <Route index element={<ComplainDetails />} />
                   </Route>
                   <Route path="reports" element={<Reports />} />
                 </>
               )}
-              <Route path="profile" element={<ProfilePage />} />
+              <Route path="profile" element={<ProfilePage />} /> {/* Profile page*/}
 
-              <Route path="neworder" element={<NewOrder />} />
+              <Route path="neworder" element={<NewOrder />} /> {/* New order page*/}
 
             </Route>
           )}

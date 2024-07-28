@@ -8,8 +8,8 @@ import Section2Img from "../assets/section2Img.png";
 import Navbar from "./navbar";
 
 export const Website = () => {
-  const [notices, setNotices] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [notices, setNotices] = useState(''); //Special notices
+  const [loading, setLoading] = useState(true); //Check all notices are loaded
 
   useEffect(() => {
     axios.get("http://localhost:3001/api/noitces/public")
@@ -24,7 +24,9 @@ export const Website = () => {
   }, []);
   return (
     <div>
+      {/* Navigation bar */}
       <Navbar />
+
       {/* Hero section */}
       <Box component='div'
         sx={{
@@ -45,7 +47,7 @@ export const Website = () => {
         </Box>
       </Box>
 
-      {/* Section 1 */}
+      {/* Section 1: About company */}
       <Box component='div' sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
         <Box component='div' sx={{ pt: '5rem', pl: '1rem' }}>
           <Box component='h1' sx={{ fontSize: '3.2rem' }}>Connect with Creative<br />
@@ -105,8 +107,7 @@ export const Website = () => {
         </>
       )}
 
-
-      {/* Services */}
+      {/* Services section */}
       <Box component='div' sx={{ mb: '4rem' }}>
         <Box component='h1' sx={{ fontSize: '2.5rem', textAlign: 'center', m: '2rem', mt: '4rem' }}>Our services</Box>
         <Box component='div' sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
@@ -177,12 +178,12 @@ export const Website = () => {
         </Box>
       </Box>
 
-      {/* Map */}
-      <Box component='div' sx={{  }}>
+      {/* Map section */}
+      <Box component='div' sx={{}}>
         <Box component='div' sx={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
           <Box component='div' sx={{ width: '50%', backgroundColor: '#3C85FC' }}>
             <h1 style={{ textAlign: 'center', color: 'white', fontSize: '2.7rem', marginBottom: '2rem', marginTop: '4rem' }}>Creative Freight Way Logistics Pvt Ltd Office</h1>
-            <h5 style={{ textAlign: 'center', color: 'white', fontSize: '1.5rem', fontWeight: '300', marginTop: '3rem'  }}>
+            <h5 style={{ textAlign: 'center', color: 'white', fontSize: '1.5rem', fontWeight: '300', marginTop: '3rem' }}>
               25A/1, Thoranawila junction, Makandana,<br />
               Kesbewa, Piliyandala,<br />
               Colombo, Sri Lanka
@@ -206,6 +207,7 @@ export const Website = () => {
         </Box>
       </Box>
 
+      {/* Footer section */}
       <Box component="footer" sx={{ py: 3, px: 2, mt: 'auto', backgroundColor: '#3f51b5', color: 'white' }}>
         <Container maxWidth="lg">
           <Grid container spacing={3}>
