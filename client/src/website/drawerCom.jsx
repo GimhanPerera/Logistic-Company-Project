@@ -2,6 +2,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { Drawer, IconButton, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import React, { useState } from 'react';
 
+//For responsiveness of navigation bar
 const DrawerCom = () => {
     const [openDrawer, setOpenDrawer] = useState(false)
     return (

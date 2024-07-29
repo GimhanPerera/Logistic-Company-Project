@@ -62,6 +62,7 @@ export const complainValidation = Yup.object({
         .max(254, "Complaint must be at most 254 characters long"),
 })
 
+//customer data validation
 export const addCustomerValidation = Yup.object({
     f_name: Yup.string().min(3).required("Please Enter first name"),  //first name
     l_name: Yup.string().min(3).required("Please Enter last name"),
@@ -124,6 +125,7 @@ export const priceQuotationByCustomerValidation = Yup.object({
     shippingmethod: Yup.string().required("Please Enter Shipping method"),
 })
 
+//Validation in Add packages
 export const addPackageValidation = Yup.object({
     items: Yup.string()
         .required("Please Enter items")
@@ -162,6 +164,7 @@ export const addPackageValidation = Yup.object({
         .max(1000, "Gross weight should be less than 1000KG"),
 })
 
+//IN scan the package
 export const scanPackagesValidation = Yup.object({
     shippingMark: Yup.string()
         .required("Shipping Mark cannot be empty"),
@@ -176,6 +179,7 @@ export const scanPackagesValidation = Yup.object({
         .required("Collected Count cannot be empty"),
 });
 
+//Supplyer validation
 export const addSupplier = Yup.object({
     name: Yup.string().min(3).required("Please Enter name"),
     country: Yup.string().min(3).required("Please Enter name"),
