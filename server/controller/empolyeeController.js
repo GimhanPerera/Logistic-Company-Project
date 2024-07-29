@@ -48,6 +48,7 @@ const setFromProfile = async (req, res) => {
         // Find the Employee by ID
         const employee = await Employee.findByPk(req.user.sub);
 
+        //Get the current emp data from new email
         const existingEmployee = await Employee.findOne({
             where: {
                 email: req.body.email,
@@ -56,9 +57,11 @@ const setFromProfile = async (req, res) => {
                 }
             }
         });
-        if (existingEmployee) {
+        if (existingEmployee) {//Check email is already in the system
             return res.status(400).json({ error: "Email already exists for another employee" });
         }
+
+        //Get the current emp data from new NIC
         const existingEmployee1 = await Employee.findOne({
             where: {
                 nic: req.body.nic,
@@ -67,9 +70,11 @@ const setFromProfile = async (req, res) => {
                 }
             }
         });
-        if (existingEmployee1) {
+        if (existingEmployee1) {//Check NIC is already in the system
             return res.status(400).json({ error: "NIC already exists for another employee" });
         }
+
+        //Get the current emp data from new TP
         const existingEmployee2 = await Employee.findOne({
             where: {
                 tel_number: req.body.tel_number,
@@ -78,7 +83,7 @@ const setFromProfile = async (req, res) => {
                 }
             }
         });
-        if (existingEmployee2) {
+        if (existingEmployee2) {//Check TP is already in the system
             return res.status(400).json({ error: "Telephone number already exists for another employee" });
         }
         // Check if the exists
@@ -86,12 +91,14 @@ const setFromProfile = async (req, res) => {
             return res.status(404).json({ error: "Employee not found" });
         }
 
+        //Set new data
         employee.f_name = req.body.f_name;
         employee.l_name = req.body.l_name;
         employee.nic = req.body.nic;
         employee.email = req.body.email;
         employee.tel_number = req.body.tel_number;
 
+        //Save data
         await employee.save();
         console.log("SAVED", employee)
         res.status(200).json(employee.dataValues);
@@ -208,11 +215,13 @@ const editByID = async (req, res) => {
         // Find the Customer by ID
         const employee = await Employee.findByPk(req.body.emp_id);
 
-        // Check if the notice exists
+        // if the employee not exists
         if (!employee) {
             console.log("ID not found: ", req.body.emp_id)
             return res.status(404).json({ error: "Employee not found" });
         }
+        
+        //Check Email is already in the system
         const existingEmployee = await Employee.findOne({
             where: {
                 email: req.body.email,
@@ -222,9 +231,11 @@ const editByID = async (req, res) => {
             }
         });
         
-        if (existingEmployee) {
+        if (existingEmployee) {//If email is already in the system
             return res.status(400).json({ error: "Email already exists for another employee" });
         }
+
+        //Check NIC is already in the system
         const existingEmployee1 = await Employee.findOne({
             where: {
                 nic: req.body.nic,
@@ -234,10 +245,12 @@ const editByID = async (req, res) => {
             }
         });
         
+        //IF NIC is already in the system
         if (existingEmployee1) {
             return res.status(400).json({ error: "NIC already exists for another employee" });
         }
 
+        //Check TP is already in the system
         const existingEmployee2 = await Employee.findOne({
             where: {
                 tel_number: req.body.tel_number,
@@ -247,10 +260,11 @@ const editByID = async (req, res) => {
             }
         });
         
-        if (existingEmployee2) {
+        if (existingEmployee2) {//If NIC is already in the system
             return res.status(400).json({ error: "telephone number already exists for another employee" });
         }
 
+        //Set data
         employee.f_name = req.body.f_name;
         employee.l_name = req.body.l_name;
         employee.nic = req.body.nic;
@@ -263,7 +277,7 @@ const editByID = async (req, res) => {
             employee.wrong_attempts = 0;
         }
 
-        await employee.save();
+        await employee.save();//save data
 
         res.status(200).json(employee.dataValues);
 
@@ -281,46 +295,52 @@ const addEmployee = async (req, res) => {
             order: [['emp_id', 'DESC']]
         });
 
+        //Check Email is already taken
         const existingEmployee = await Employee.findOne({
             where: {
                 email: req.body.email,
             }
         });
         
-        if (existingEmployee) {
-            console.log("EXISTE EMail")
+        if (existingEmployee) {////If email is already taken
+            console.log("EXISIT Email")
             return res.status(400).json({ error: "Email already exists for another employee" });
         }
+
+        //Check NIC is already in the system
         const existingEmployee1 = await Employee.findOne({
             where: {
                 nic: req.body.nic,
             }
         });
         
+        //If NIC is already in the system
         if (existingEmployee1) {
-            console.log("EXISTE NIC")
+            console.log("EXIST NIC")
             return res.status(400).json({ error: "NIC already exists for another employee" });
         }
+
+        //Check Telephone number is already in the system
         const existingEmployee2 = await Employee.findOne({
             where: {
                 tel_number: req.body.tel_number,
             }
         });
         
-        if (existingEmployee2) {
-            console.log("EXISTE telephone")
+        if (existingEmployee2) {//if telephone number is already in the system
+            console.log("EXIST telephone")
             return res.status(400).json({ error: "telephone number already exists for another employee" });
         }
 
         // Generate the new primary key
-        let newEmpId = 'EMP02';
-        if (lastEmployee) {
+        let newEmpId = 'EMP02';//set last ID as EMP02
+        if (lastEmployee) {//If there are employees, Create a new empID
             const lastEmpId = lastEmployee.emp_id;
             const empNumber = parseInt(lastEmpId.substring(3));
             newEmpId = `EMP${(empNumber + 1).toString().padStart(2, '0')}`;
         }
 
-        const passcode = await generatePassword();
+        const passcode = await generatePassword();//Generate a password
         const hashPassword = await bcrypt.hash(passcode, process.env.HASH);//convert password to hash
 
         // Create a new employee
@@ -330,16 +350,19 @@ const addEmployee = async (req, res) => {
             l_name: req.body.l_name,
             nic: req.body.nic,
             email: req.body.email,
-            password: hashPassword, // Ensure password is hashed before saving
+            password: hashPassword, // Password is hashed before saving
             tel_number: req.body.tel_number,
             status: req.body.status,
             position: req.body.position,
             last_attempt_date_time: new Date(), // Set initial date/time
-            wrong_attempts: 0 // Initialize wrong attempts
+            wrong_attempts: 0 // Initialial wrong attempts
         });
         console.log("PASSCODE: ", passcode)
+
+        //SMS body
         const message = `Hello ${req.body.f_name},\nWelcome to the company. Use following credentials to log to the system.\nemail: ${req.body.email}\nTemporary pwd: ${passcode}`
-        sendDirectSMS(req.body.tel_number, message, req.user.sub);//send sms
+        //Send SMS
+        sendDirectSMS(req.body.tel_number, message, req.user.sub);
 
         res.status(201).json(newEmployee);
     } catch (error) {

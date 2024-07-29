@@ -13,11 +13,11 @@ const { Op, fn, col, literal } = require('sequelize');
 //get dashboard data
 const getDashboardData = async (req, res) => {
     const currentYear = new Date().getFullYear();
-    const startOfMonth = new Date(new Date().setDate(1));
-    const endOfMonth = new Date(new Date().setMonth(new Date().getMonth() + 1, 0));
+    const startOfMonth = new Date(new Date().setDate(1));//Start date of this month
+    const endOfMonth = new Date(new Date().setMonth(new Date().getMonth() + 1, 0));//end date of this month
 
-    const startOfYear = new Date(new Date().getFullYear(), 0, 1);
-    const endOfYear = new Date(new Date().getFullYear(), 11, 31, 23, 59, 59);
+    const startOfYear = new Date(new Date().getFullYear(), 0, 1);//start data of this year
+    const endOfYear = new Date(new Date().getFullYear(), 11, 31, 23, 59, 59);//end date of this year
 
     // Generate all months of the current year
     const allMonths = Array.from({ length: 12 }, (_, i) => {
@@ -26,6 +26,7 @@ const getDashboardData = async (req, res) => {
     });
 
     try {
+        //Total income of this month
         const totalIncomeThisMonth = await Payment.sum('payment', {
             where: {
                 date_time: {
@@ -33,6 +34,8 @@ const getDashboardData = async (req, res) => {
                 }
             }
         });
+
+        //total Income of this year
         const totalIncomeThisYear = await Payment.sum('payment', {
             where: {
                 date_time: {
@@ -40,6 +43,8 @@ const getDashboardData = async (req, res) => {
                 }
             }
         });
+
+        //active shipment count
         const activeShipmentsCount = await Shipment.count({
             where: {
                 status: {
@@ -47,6 +52,8 @@ const getDashboardData = async (req, res) => {
                 }
             }
         });
+
+        //active order count
         const activeOrderCount = await Order.count({
             where: {
                 status: {
@@ -54,6 +61,8 @@ const getDashboardData = async (req, res) => {
                 }
             }
         });
+
+        //price quotation count
         const PriceRequestCount = await Price_quotation.count({
             where: {
                 status: {
@@ -142,6 +151,7 @@ const getDashboardData = async (req, res) => {
         //const customer = await Customer.findByPk(id) //ID eken one nan
         //const courier = await Courier.findAll({}) //{} : pass empty obj
 
+        //prepare the respond
         const respond = {
             totalIncomeThisMonth: totalIncomeThisMonth == null ? 0 : totalIncomeThisMonth,
             totalIncomeThisYear: totalIncomeThisYear == null ? 0 : totalIncomeThisYear,

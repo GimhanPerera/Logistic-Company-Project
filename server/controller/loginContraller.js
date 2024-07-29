@@ -20,6 +20,7 @@ const customerLogin = async (req, res) => {
             }
         });
 
+        //if credentials are wrong
         if (!customer) {
             console.error("Wrong username or password");
             return res.status(401).json({ error: "Wrong username or password" });
@@ -41,7 +42,7 @@ const customerLogin = async (req, res) => {
             console.error("Wrong username or password");
             return res.status(401).json({ error: "Wrong username or password" });
         }
-        if (customer.status === 'blocked') {
+        if (customer.status === 'blocked') {//check whether this is a blocked customer
             console.error("Your account is temporarily blocked. Please contact the company.");
             return res.status(403).json({ error: "Your account is temporarily blocked. Please contact the company." });
         }
@@ -73,13 +74,15 @@ const customerLogin = async (req, res) => {
 //Staff login
 const stuffLogin = async (req, res) => {
     try {
-        // Authentication
+        // Authentication: check user is a active or blocked user
         const userFromDB = await Employee.findOne({
             where: { email: req.body.email,
                 status: {
                     [Op.or]: ['active', 'blocked']
                 } }
         });
+
+        //If user is not exist
         if (!userFromDB) {
             console.error("Wrong username or password");
             return res.status(401).json({ error: "Wrong username or password" });
@@ -87,23 +90,26 @@ const stuffLogin = async (req, res) => {
 
         userFromDB.last_attempt_date_time = getCurrentSriLankanDateTime(); //Set attempt date time
 
+        //Check the password
         const isMatch = await bcrypt.compare(req.body.password, userFromDB.password);
         console.log("isMatch: ",isMatch)
 
+        //If the password is wrong
         if(!isMatch){
             userFromDB.wrong_attempts++;
-            if(userFromDB.wrong_attempts >= 3){
+            if(userFromDB.wrong_attempts >= 3){//set as blocked user, If more than 3 login attempts
                 userFromDB.status = 'blocked';
             }
             await userFromDB.save();
             console.error("Wrong username or password");
             return res.status(401).json({ error: "Wrong username or password" });
         }
-        if (userFromDB.status === 'blocked') {
+        if (userFromDB.status === 'blocked') {//If user is a blocked user
             console.error("Your account is temporarily blocked. Please contact the company.");
             return res.status(403).json({ error: "Your account is temporarily blocked. Please contact the company." });
         }
 
+        //If credentials are correct, Set wrong attemts as 0
         userFromDB.wrong_attempts = 0;
         await userFromDB.save();
 
@@ -119,6 +125,8 @@ const stuffLogin = async (req, res) => {
             const refreshToken = createRefreshToken(user, "6h"); // Create the refresh token
             refreshTokens.push(refreshToken);
             console.log("Access token: " + accessToken);
+
+            //Send tokens
             res.json({
                 isValid: true,
                 role: userFromDB.position,

@@ -6,8 +6,6 @@ const { getCurrentSriLankanDateTime } = require('../middleware/dateTime');
 
 const newOrder = async (req, res) => {//Add a order
     try {
-        console.log("TempPWD ",req.body.passcode)
-        //return
 
         // Extract the filename
         const { filename: productImage } = req.files['image'][0];
@@ -83,6 +81,7 @@ const newOrder = async (req, res) => {//Add a order
         // Insert the new record
         console.log("New PQ_ID: " + new_price_quotation_id);
 
+        //send SMS
         let chatLink='';
         if(req.body.chatLink != null || req.body.chatLink != ''){
             chatLink = `\nWECHAT link: ${req.body.chatLink}`;
@@ -213,17 +212,6 @@ const generateUniqueTrackingNumber = (existingTrackingNumbers) => {
 //     return formattedDate;
 // };
 
-// 2. Get all Courier
-const getCourierAndOrder = async (req, res) => {
-    //const courier = await Customer.findByPk(id) //ID eken one nan
-    const courier = await Order.findAll({
-        include: [{
-            model: Customer
-        }],
-        where: { order_id: '1000' }
-    })
-    res.status(200).json(courier)
-}
 
 //After customer login, Access the tracking details for customer
 const trackingDetailsOfACustomer = async (req, res) => {
