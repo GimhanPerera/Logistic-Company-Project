@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(200),
             allowNull: false,
         },
-        expire_date: {
+        expire_date: {//only date store here
             type: DataTypes.DATEONLY,
             allowNull: true,
         }

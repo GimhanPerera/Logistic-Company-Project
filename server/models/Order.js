@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(200),
             allowNull: true
         },
-        issue_date: {
+        issue_date: {//only date store here
             type: DataTypes.DATEONLY,
             allowNull: true
         },

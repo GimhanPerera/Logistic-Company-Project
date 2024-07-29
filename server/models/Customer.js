@@ -40,11 +40,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.DATE,
             allowNull: false
         },nicFront: {
-            type: DataTypes.STRING(20),
-            allowNull: true //For testing. Need to change to false
+            type: DataTypes.STRING(20),//store the name of the image
+            allowNull: true
         },nicBack: {
-            type: DataTypes.STRING(20),
-            allowNull: true //For testing. Need to change to false
+            type: DataTypes.STRING(20),//store the name of the image
+            allowNull: true
         }
     },{
         timestamps: false
